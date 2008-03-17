@@ -1,11 +1,11 @@
 Name: kdeutils
-Version: 3.5.6
+Version: 3.5.9
 Release: 1ev
 Summary: Several helpful utilities for KDE
 URL: http://www.kde.org/
 Group: User Interface/Desktops
-License: GPL, LGPL, BSD
-Vendor: MSP Slackware
+License: GPL-2, LGPL-2, BSD
+Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-g++, qt3, kdelibs, kdebase, fontconfig, freetype
@@ -36,20 +36,15 @@ BuildRequires: libICE, libX11, libSM, libXrender, libXrandr, libXext, expat
 
 %build
 %configure \
-	--enable-pch \
-	--enable-final \
 	--disable-debug \
 	--disable-warnings \
 	--without-xmms
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -60,7 +55,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
