@@ -1,5 +1,5 @@
 Name: lighttpd
-Version: 1.4.18
+Version: 1.4.19
 Release: 1ev
 Summary: A light httpd
 URL: http://www.lighttpd.net/
@@ -10,9 +10,9 @@ Source0: http://www.lighttpd.net/download/lighttpd-%{version}.tar.bz2
 Source1: %{name}-lighttpd.i
 Source2: %{name}-lighttpd.conf
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, openssl, pcre, bzip2
+BuildRequires: make, gcc, openssl, pcre, zlib, bzip2, libattr, libxml2
 %define _httpd_uid 500
-%define _nogroup_gid 99
+%define _httpd_gid 99
 
 %description
 lighttpd is a secure, fast, compliant, and very flexible Web server which has
@@ -28,17 +28,19 @@ Output-Compression, URL-Rewriting, SSL, and much more.
 
 %build
 %configure \
+	--with-attr \
 	--with-openssl \
 	--with-pcre \
+	--with-zlib \
 	--with-bzip2 \
 	--without-fam \
 	--with-webdav-props \
 	--with-webdav-locks
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 
 # Install manual pages (why aren't they copied by make install?)
@@ -70,7 +72,7 @@ useradd \
 exit 0
 
 %preun
-if [ $1 -eq 0 ]
+if [[ $1 -eq 0 ]]
 then
 	ngc -d daemon/lighttpd
 	ng-update del lighttpd default
@@ -84,7 +86,7 @@ exit 0
 
 %postun
 /sbin/ldconfig
-if [ $1 -eq 0 ] 
+if [[ $1 -eq 0 ]]
 then
 	userdel httpd
 fi > /dev/null 2>&1
@@ -108,3 +110,7 @@ exit 0
 %{_bindir}/spawn-fcgi
 %{_libdir}/mod_*.*
 %{_mandir}/man1/*.1*
+
+
+%changelog
+$Log$
