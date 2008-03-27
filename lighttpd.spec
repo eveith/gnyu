@@ -113,4 +113,4 @@ exit 0
 
 
 %changelog
-$Log$
+* $Log$
