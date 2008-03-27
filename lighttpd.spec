@@ -110,7 +110,3 @@ exit 0
 %{_bindir}/spawn-fcgi
 %{_libdir}/mod_*.*
 %{_mandir}/man1/*.1*
-
-
-%changelog
-* $Log$
