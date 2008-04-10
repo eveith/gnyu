@@ -1,6 +1,6 @@
 Name: subversion
 Version: 1.4.6
-Release: 1ev
+Release: 2ev
 Summary: A revision control system similar to CVS
 URL: http://subversion.tigris.org/
 Group: Development/Tools
@@ -10,7 +10,7 @@ Source0: http://subversion.tigris.org/downloads/subversion-%{version}.tar.bz2
 Source1: %{name}-svnserve.i
 Source2: %{name}-svnserve.conf.d
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc, gcc-g++, db >= 4.2, neon, zlib, apr
+BuildRequires: make >= 3.79.1, gcc, gcc-g++, db >= 4.2, neon, zlib, apr, sun-jdk
 %define _svnserve_uid 506
 %define _svnserve_gid 99
 
@@ -23,7 +23,7 @@ is a compelling replacement for CVS in the open source community.
 Summary: The subversion service
 Group: System Environment/Daemons
 License: Apache
-Requires: apr, zlib, db >= 4.2, subversion = %{version}-%{release}, ucspi-tcp
+Requires: ucspi-tcp
 
 %description server
 If you want to serve subversion repositories to your developers, you must
@@ -39,31 +39,28 @@ install the subversion-server package.
 	--enable-dso \
 	--enable-javahl \
 	--with-ssl 
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && %{__rm} -rf "$RPM_BUILD_ROOT"
-%{__make_install} DESTDIR="%{buildroot}"
-
-%{__rm} -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
-
+[[ "%{buildroot}" != '/' ]] && %{__rm} -rf "%{buildroot}"
+%{__make_install} DESTDIR='%{buildroot}'
+%{__rm} -f %{buildroot}/%{_infodir}/dir
 %find_lang subversion
 
 
 # Change into install directory to perform some setup
-
 pushd "$RPM_BUILD_ROOT"
 
-%{__mkdir_p} srv/svn etc/initng/{daemon,conf.d}
+%{__mkdir_p} srv/svn etc/initng/{daemon,iconfig}
 
 # Create service file
-cat < %{SOURCE1} | sed \
+%{__cat} < %{SOURCE1} | %{__sed} \
 	-e 's,@_SVNSERVE_UID@,%{_svnserve_uid},g' \
 	-e 's,@_SVNSERVE_GID@,%{_svnserve_gid},g' \
 	-e 's,@svnserve@,%{_bindir}/svnserve,g' \
 	> etc/initng/daemon/svnserve.i
-%{__cat} < %{SOURCE2} > etc/initng/conf.d/svnserve
+%{__cat} < %{SOURCE2} > etc/initng/iconfig/svnserve
 
 popd
 
@@ -86,14 +83,15 @@ useradd \
 ngc -r daemon/svnserve > /dev/null 2>&1 ||:
 
 %preun server
-[ $1 -eq 0 ] && /sbin/ngc -d daemon/svnserve >/dev/null 2>&1 || :
+[[ $1 -eq 0 ]] && /sbin/ngc -d daemon/svnserve >/dev/null 2>&1 || :
 
 %postun server
-if [ $1 -eq 0 ]
+if [[ $1 -eq 0 ]]
 then
-	/sbin/ng-update del daemon/svnserve > /dev/null 2>&1 || :
-	userdel svnserve > /dev/null 2>&1 || :
-fi
+	ng-update del daemon/svnserve
+	userdel svnserve
+fi > /dev/null 2>&1
+exit 0
 
 
 %clean
@@ -117,7 +115,7 @@ fi
 %{_mandir}/man1/svnversion.1*
 
 %files server
-%attr(0600, root, root) %config(noreplace) /etc/initng/conf.d/svnserve
+%attr(0600, root, root) %config(noreplace) /etc/initng/iconfig/svnserve
 /etc/initng/daemon/svnserve.i
 %{_mandir}/man8/svnserve.8*
 %{_mandir}/man5/svnserve.conf.5*
