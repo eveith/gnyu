@@ -23,7 +23,6 @@ They are highly customizable.
 
 %prep
 %setup -q -n docbook-dsssl-%{version}
-cp %{SOURCE1} Makefile
 
 
 %build
@@ -34,49 +33,25 @@ exit 0
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__install} -d -m 0755 \
 	%{buildroot}/{%{_bindir},%{_mandir}/man1} \
-	%{buildroot}/usr/share/sgml/docbook/%{name}-%{version}}
+	%{buildroot}/%{_datadir}/sgml/docbook/%{name}-%{version}
 %{__install} -m 0755 bin/collateindex.pl %{buildroot}/%{_bindir}
 %{__install} -m 0644 bin/collateindex.pl.1 %{buildroot}/%{_mandir}/man1
-%{__cp} -v -R * %{buildroot}/usr/share/sgml/%{name}-%{version}/
-%{__mkdir} %{buildroot}/etc/sgml
-touch %{buildroot}/etc/sgml/%{name}-%{version}.cat
+%{__cp} -v -R * %{buildroot}/usr/share/sgml/docbook/%{name}-%{version}/
+%{__mkdir_p} %{buildroot}/etc/sgml
+touch %{buildroot}/%{_sysconfdir}/sgml/%{name}-%{version}.cat
 
 
 %post
-rel=$(find /etc/sgml -type f -name 'sgml-docbook-3.0-*.cat'|head -n1)
-rel=${rel##*-}
-rel=${rel%.cat}
-for centralized in /etc/sgml/*-docbook-*.cat
-do
-    /usr/bin/install-catalog --remove $centralized \
-        /usr/share/sgml/docbook/dsssl-stylesheets-*/catalog \
-        >/dev/null 2>/dev/null
-done
-
-for centralized in /etc/sgml/*-docbook-*$rel.cat
-do
-    /usr/bin/install-catalog --add $centralized \
-        /usr/share/sgml/openjade-%{openjadever}/catalog \
-        > /dev/null 2>/dev/null
-    /usr/bin/install-catalog --add $centralized \
-        /usr/share/sgml/docbook/dsssl-stylesheets-%{version}/catalog \
-        > /dev/null 2>/dev/null
-done
+install-catalog --add %{_sysconfdir}/sgml/%{name}-%{version}.cat \
+	%{_datadir}/sgml/docbook/%{name}-%{version}/catalog
+install-catalog --add %{_sysconfdir}/sgml/%{name}-%{version}.cat \
+	%{_datadir}/sgml/docbook/%{name}-%{version}/common/catalog
 
 %postun
-if [ "$1" = "0" ]
-then
-	for centralized in /etc/sgml/*-docbook-*.cat
-	do
-		/usr/bin/install-catalog --remove $centralized \
-			/usr/share/sgml/openjade-%{openjadever}/catalog > /dev/null 2>/dev/null
-		/usr/bin/install-catalog --remove $centralized \
-			/usr/share/sgml/docbook/dsssl-stylesheets-%{version}/catalog \
-			> /dev/null 2>/dev/null
-	done
-fi
-exit 0
-
+install-catalog --remove %{_sysconfdir}/sgml/%{name}-%{version}.cat \
+	%{_datadir}/sgml/docbook/%{name}-%{version}/catalog
+install-catalog --remove %{_sysconfdir}/sgml/%{name}-%{version}.cat \
+	%{_datadir}/sgml/docbook/%{name}-%{version}/common/catalog
 
 %clean
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
@@ -87,5 +62,5 @@ exit 0
 %doc BUGS README ChangeLog WhatsNew
 %ghost %config /etc/sgml/%{name}-%{version}.cat
 %{_bindir}/collateindex.pl
-%{_mandir}/man1/collateindex.1*
-/usr/share/sgml/docbook/%{name}-%{version}/
+%{_mandir}/man1/collateindex.pl.1*
+%{_datadir}/sgml/docbook/%{name}-%{version}/
