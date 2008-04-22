@@ -1,16 +1,17 @@
 Name: xine-lib
-Version: 1.1.8
-Release: 1ev
+Version: 1.1.12
+Release: 2ev
 Summary: A audio and video decoder and playback library
 URL: http://www.xinehq.de/
 Group: System Environment/Libraries
-License: GPL, LGPL
-Vendor: MSP Slackware
-Source:  http://prdownloads.sourceforge.net/xine/%{name}-%{version}.tar.bz2
+License: GPL-2, LGPL-2
+Vendor: GNyU-Linux
+Source: http://prdownloads.sourceforge.net/xine/%{name}-%{version}.tar.bz2
 Patch0: %{name}-1.1.1-deepbind-939.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libogg, libvorbis, alsa-lib, zlib
-BuildRequires: libflac, samba-libs, libmng, mesalib, libtheora
+BuildRequires: make, gcc, gcc-g++, libogg, libvorbis, alsa-lib, zlib, freetype
+BuildRequires: libflac, samba-libs, libmng, mesalib, libtheora, fontconfig
+BuildRequires: gawk, sed, libX11, libXext
 
 %description
 xine is a free (gpl-licensed) high-performance, portable and reusable
@@ -52,22 +53,21 @@ playback and video processing purposes.
 	--without-speex \
 	--with-libflac \
 	--without-imagemagick \
-	--without-freetype \
-	--without-fontconfig \
+	--with-freetype \
+	--with-fontconfig \
 	--with-alsa \
 	--without-esound \
 	--without-fusionsound \
 	--without-jack \
-	--with-w32-path="%{_libdir}/win32"
-make %{_smp_mflags}
+	--with-w32-path='%{_libdir}/win32'
+%{__make} %{?_smp_mflags}
 	
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-mkdir -p "${RPM_BUILD_ROOT}/%{_libdir}/win32"
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
+%{__mkdir_p} '%{buildroot}/%{_libdir}/win32'
 %find_lang libxine1
 
 
@@ -79,7 +79,7 @@ mkdir -p "${RPM_BUILD_ROOT}/%{_libdir}/win32"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f libxine1.lang
@@ -88,6 +88,7 @@ mkdir -p "${RPM_BUILD_ROOT}/%{_libdir}/win32"
 %doc %{_datadir}/doc/xine-lib
 # %doc %{_datadir}/doc/xine
 %{_bindir}/xine-config
+%{_bindir}/xine-list-1.1
 %{_libdir}/libxine.*
 %{_libdir}/xine/
 %{_libdir}/pkgconfig/libxine.pc
