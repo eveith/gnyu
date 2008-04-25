@@ -1,34 +1,34 @@
 Name: fontconfig
-Version: 2.4.1
-Release: 1ev
+Version: 2.4.2
+Release: 2ev
 Summary: A font access configuration and customization library
-URL: http://www.freedesktop.org/wiki/Software_2ffontconfig
+URL: http://www.freedesktop.org/wiki/Software/fontconfig
 Group: System Environment/Libraries
 License: Public Domain
 Vendor: GNyU-Linux
-Source: http://fontconfig.org/release/fontconfig-2.4.1.tar.gz
+Source: http://fontconfig.org/release/fontconfig-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: gcc, make >= 3.79.1, docbook-utils, expat
 
 %description
 Fontconfig can: 
- - discover new fonts when installed automatically, removing a common source of
-configuration problems. 
- - perform font name substitution, so that appropriate alternative fonts can be
-selected if fonts are missing. 
- - identify the set of fonts required to completely cover a set of languages. 
- - have GUI configuration tools built as it uses an XML-based configuration file
-(though with autodiscovery, we believe this need is minimized). 
- - efficiently and quickly find the fonts you need among the set of fonts you
-have installed, even if you have installed thousands of fonts, while minimzing
-memory usage. 
- - be used in concert with the X Render Extension and FreeType to implement high
-quality, anti-aliased and subpixel rendered text on a display. 
+ · discover new fonts when installed automatically, removing a common source of
+   configuration problems. 
+ · perform font name substitution, so that appropriate alternative fonts can be
+   selected if fonts are missing. 
+ · identify the set of fonts required to completely cover a set of languages. 
+ · have GUI configuration tools built as it uses an XML-based configuration file
+   (though with autodiscovery, we believe this need is minimized). 
+ · efficiently and quickly find the fonts you need among the set of fonts you
+   have installed, even if you have installed thousands of fonts, while 
+   minimzing memory usage. 
+ · be used in concert with the X Render Extension and FreeType to implement high
+   quality, anti-aliased and subpixel rendered text on a display. 
 Fontconfig does not: 
- - render the fonts themselves (this is left to FreeType or other rendering 
-mechanisms) 
- - depend on the X Window System in any fashion, so that printer only
-applications do not have such dependencies
+ · render the fonts themselves (this is left to FreeType or other rendering 
+   mechanisms) 
+ · depend on the X Window System in any fashion, so that printer only
+   applications do not have such dependencies
 
 %prep
 %setup -q
