@@ -5,34 +5,35 @@ Summary: The X Server
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.x.org/pub/individual/xserver/xorg-server-%{version}.tar.bz2
-Patch0: %{name}-1.2.0-fix-amd-cpu-detection.patch
-Patch1: %{name}-1.2.0-properly-free-device-devprivates-memory-leak-fix.patch
-Patch2: %{name}-1.2.0-typo-fix.patch
-Patch3: %{name}-1.2.0-zero-out-client-devprivates-on-allocation.patch
-Patch4: %{name}-1.3-0003-Fix-for-CVE-2007-6427-Xinput-extension-memory-corr.patch
-Patch5: %{name}-1.3-0006-Fix-for-CVE-2007-5958-File-existence-disclosure.patch
-Patch6: %{name}-1.3.0.0-fix-dual-head-screen-resolutions.patch
-Patch7: %{name}-1.3.0.0-fix-randr-resizing.patch
-Patch8: %{name}-1.3.0.0-fix-xephyr-amd64-segfault.patch
-Patch9: %{name}-1.3.0.0-fix-xkb-openoffice-hangs.patch
-Patch10: %{name}-1.3.0.0-ramdac.patch
-Patch11: %{name}-1.3.0.0-use-proc-instead-of-sys.patch
-Patch12: %{name}-1.3.0.0-xephyr_crash_at_exit.patch
+Patch0: %{name}-1.3.0.0-fix-xkb-openoffice-hangs.patch
+Patch1: %{name}-1.3.0.0-fix-dual-head-screen-resolutions.patch
+Patch2: %{name}-1.3.0.0-fix-randr-resizing.patch
+Patch3: %{name}-1.3.0.0-fix-xephyr-amd64-segfault.patch
+Patch4: %{name}-1.3.0.0-ramdac.patch
+Patch5: %{name}-use-composite-for-unequal-depths.patch
+Patch6: %{name}-1.2.0-fix-amd-cpu-detection.patch
+Patch7: %{name}-1.2.0-properly-free-device-devprivates-memory-leak-fix.patch
+Patch8: %{name}-1.2.0-typo-fix.patch
+Patch9: %{name}-1.2.0-zero-out-client-devprivates-on-allocation.patch
+Patch10: %{name}-1.3.0.0-use-proc-instead-of-sys.patch
+Patch11: %{name}-avoid-crash-on-minimized-xv-window.patch
+Patch12: %{name}-xorg-server-sam225bw-quirks.patch
 Patch13: %{name}-1.3-alpha-build-fix.patch
-Patch14: %{name}-1.4-0001-Fix-for-CVE-2007-5760-XFree86-Misc-extension-out-o.patch
-Patch15: %{name}-1.4-0002-Fix-for-CVE-2007-6428-TOG-cup-extension-memory-cor.patch
-Patch16: %{name}-1.4-0004-Fix-for-CVE-2007-6429-MIT-SHM-and-EVI-extensions-i.patch
-Patch17: %{name}-1.4-0005-Fix-for-CVE-2008-0006-PCF-Font-parser-buffer-overf.patch
-Patch18: %{name}-1.4-0008-CVE-2007-6429-Always-test-for-size-offset-wrapping.patch
-Patch19: %{name}-1.4-0009-Don-t-break-grab-and-focus-state-for-a-window-when-r.patch
-Patch20: %{name}-avoid-crash-on-minimized-xv-window.patch
-Patch21: %{name}-use-composite-for-unequal-depths.patch
-Patch22: %{name}-xorg-server-1.4.0.90-automake-1.10.1-fixup.patch
-Patch23: %{name}-xorg-server-sam225bw-quirks.patch
-Patch24: %{name}-xorg-x11-server-1.0.1-fpic-libxf86config.patch
-Patch25: xorg-server-1.2.0-xcmisc-1.patch
+Patch14: %{name}-1.3.0.0-xephyr_crash_at_exit.patch
+Patch15: %{name}-xorg-x11-server-1.0.1-fpic-libxf86config.patch
+Patch16: %{name}-1.4-0001-Fix-for-CVE-2007-5760-XFree86-Misc-extension-out-o.patch
+Patch17: %{name}-1.4-0002-Fix-for-CVE-2007-6428-TOG-cup-extension-memory-cor.patch
+Patch18: %{name}-1.3-0003-Fix-for-CVE-2007-6427-Xinput-extension-memory-corr.patch
+Patch19: %{name}-1.4-0004-Fix-for-CVE-2007-6429-MIT-SHM-and-EVI-extensions-i.patch
+Patch20: %{name}-1.4-0005-Fix-for-CVE-2008-0006-PCF-Font-parser-buffer-overf.patch
+Patch21: %{name}-1.3-0006-Fix-for-CVE-2007-5958-File-existence-disclosure.patch
+Patch22: %{name}-1.4-0007-CVE-2007-6429-Don-t-spuriously-reject-8bpp-shm-pix.patch
+Patch23: %{name}-1.4-0008-CVE-2007-6429-Always-test-for-size-offset-wrapping.patch
+Patch24: %{name}-1.4-0009-Don-t-break-grab-and-focus-state-for-a-window-when-r.patch
+Patch25: %{name}-xorg-server-1.4.0.90-automake-1.10.1-fixup.patch
+Patch26: xorg-server-1.2.0-xcmisc-1.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: coreutils, sed, grep, make, gcc, pkg-config, zlib, mesalib
 BuildRequires: x11-fonts, xkeyboard-config, libdrm, libICE, libSM, libX11
@@ -59,7 +60,7 @@ The Xorg Server is the core of the X Window system.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
+%patch12 -p0
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
@@ -69,9 +70,13 @@ The Xorg Server is the core of the X Window system.
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
-%patch22 -p0
-%patch23 -p0
+%patch22 -p1
+%patch23 -p1
 %patch24 -p1
+%patch25 -p0
+%{__aclocal}
+%{__automake} --add-missing
+%{__autoconf}
 
 
 %build
@@ -81,6 +86,7 @@ The Xorg Server is the core of the X Window system.
 	--with-dri-driver-path=%{_libdir}/X11/modules/dri \
 	--with-xkb-output=%{_localstatedir}/lib/xkb \
 	--disable-xprint \
+	--disable-dmx \
 	--enable-install-setuid \
 	--enable-xorgcfg \
 	--enable-kdrive \
@@ -114,24 +120,12 @@ touch '%{buildroot}/%{_sysconfdir}/X11/xorg.conf'
 %ghost %config(noreplace) %{_sysconfdir}/X11/xorg.conf
 %dir %{_sysconfdir}/X11/Xsession.d
 %{_bindir}/X
-%{_bindir}/Xdmx
 %{_bindir}/Xfake
 %{_bindir}/Xneomagic
 %{_bindir}/Xnest
 %attr(4755, root, root) %{_bindir}/Xorg
 %{_bindir}/Xvfb
 %{_bindir}/cvt
-%{_bindir}/dmxaddinput
-%{_bindir}/dmxaddscreen
-%{_bindir}/dmxreconfig
-%{_bindir}/dmxresize
-%{_bindir}/dmxrminput
-%{_bindir}/dmxrmscreen
-%{_bindir}/dmxtodmx
-%{_bindir}/dmxwininfo
-%{_bindir}/vdltodmx
-%{_bindir}/xdmx
-%{_bindir}/xdmxconfig
 %{_bindir}/gtf
 %{_bindir}/inb
 %{_bindir}/inl
@@ -167,7 +161,6 @@ touch '%{buildroot}/%{_sysconfdir}/X11/xorg.conf'
 %{_libdir}/X11/modules/
 %{_libdir}/xserver/
 %{_libdir}/pkgconfig/xorg-server.pc
-%{_mandir}/man1/Xdmx.1x*
 %{_mandir}/man1/Xnest.1*
 %{_mandir}/man1/Xorg.1*
 %{_mandir}/man1/Xserver.1*
@@ -178,9 +171,6 @@ touch '%{buildroot}/%{_sysconfdir}/X11/xorg.conf'
 %{_mandir}/man1/scanpci.1*
 %{_mandir}/man1/xorgcfg.1*
 %{_mandir}/man1/xorgconfig.1*
-%{_mandir}/man1/dmxtodmx.1x.gz
-%{_mandir}/man1/vdltodmx.1x.gz
-%{_mandir}/man1/xdmxconfig.1x.gz
 %{_mandir}/man4/exa.4*
 %{_mandir}/man4/fbdevhw.4*
 %{_mandir}/man5/xorg.conf.5*
