@@ -1,33 +1,16 @@
 Name: pango
-Version: 1.16.5
-Release: 1ev
+Version: 1.18.4
+Release: 2ev
 Summary: A framework for the layout and rendering of international text
 URL: http://www.pango.org/
 Group: System Environement/Libraries
 License: LGPL
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.gnome.org/pub/GNOME/sources/%{name}/1.16/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, glib2 >= 2.10.0, fontconfig
-BuildRequires: freetype >= 2.0.4, cairo
-Requires: glib2 >= 2.10.0, fontconfig, freetype >= 2.0.4, cairo
-Provides: libtool(%{_libdir}/libpango-1.0.la)
-Provides: libtool(%{_libdir}/libpangox-1.0.la)
-Provides: libtool(%{_libdir}/libpangoft2-1.0.la)
-Provides: libtool(%{_libdir}/libpangoxft-1.0.la)
-Provides: libtool(%{_libdir}/libpangocairo-1.0.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-arabic-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-arabic-lang.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-basic-x.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-basic-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-hangul-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-hebrew-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-indic-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-indic-lang.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-khmer-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-syriac-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-thai-fc.la)
-Provides: libtool(%{_libdir}/pango/1.5.0/modules/pango-tibetan-fc.la)
+BuildRequires: coreutils, sed, grep, make >= 3.79.1, gcc, zlib
+BuildRequires: libX11, libXau, libXdmcp, libXft, libXrender, libxcb
+BuildRequires: glib2 >= 2.10.0, fontconfig, freetype >= 2.0.4, cairo
 
 %description
 The goal of the Pango project is to provide an Open Source framework for the
@@ -41,32 +24,32 @@ languages.
 
 
 %build
-if [ -r "%{_prefix}/X11R6/lib/pkgconfig/xft.pc" -a \
-		! -r "%{_libdir}/pkgconfig/xft.pc" ]
+if [[ -r '%{_prefix}/X11R6/lib/pkgconfig/xft.pc' \
+		&& ! -r '%{_libdir}/pkgconfig/xft.pc' ]]
 then
 	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:%{_prefix}/X11R6/lib/pkgconfig"
 fi
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
-touch "${RPM_BUILD_ROOT}/%{_sysconfdir}/pango/pango.modules"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
+touch '%{buildroot}/%{_sysconfdir}/pango/pango.modules'
 
 
 %post
 /sbin/ldconfig
-%{_bindir}/pango-querymodules > %{_sysconfdir}/pango/pango.modules
+%{_bindir}/pango-querymodules > '%{_sysconfdir}/pango/pango.modules'
 
 %postun
 /sbin/ldconfig
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
