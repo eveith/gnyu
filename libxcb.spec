@@ -1,16 +1,16 @@
 Name: libxcb
-Version: 1.0
-Release: 1ev
+Version: 1.1
+Release: 2ev
 Summary: A programmatic interface to the X Window System Protocol
-URL: http://www.x.org/
+URL: http://xcb.freedesktop.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
-Source: ftp://ftp.x.org/pub/current/src/extras/libxcb-%{version}.tar.bz2
+Vendor: GNyU-Linux
+Source: ftp://xcb.freedesktop.org/dist/libxcb-%{version}.tar.bz2
 Patch: %{name}-1.0-sloppy_lock-1.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, xcb-proto, libXdmcp, libXau, pkg-config, libxslt
-BuildRequires: doxygen, libpthread-stubs
+BuildRequires: make, gcc, xcb-proto >= 1.1, libXdmcp, libXau
+BuildRequires: pkg-config, libxslt, doxygen, libpthread-stubs
 
 %description
 The libxcb package provides an interface to the X Window System protocol,
@@ -21,17 +21,16 @@ both.
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -42,7 +41,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
