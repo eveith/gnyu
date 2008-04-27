@@ -1,14 +1,15 @@
 Name: xcb-proto
-Version: 1.0
-Release: 1ev
+Version: 1.1
+Release: 2ev
 Summary: XML-XCB protocol descriptions for libxcb
-URL: http://www.x.org/
+URL: http://xcb.freedesktop.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
-Source: ftp://ftp.x.org/pub/current/src/extras/xcb-proto-%{version}.tar.bz2
+Vendor: GNyU-Linux
+Source: ftp://xcb.freedesktop.org/dist/xcb-proto-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libxml2
+BuildRequires: coreutils, gawk, make, gcc, libxml2, pkg-config
+BuildArch: noarch
 Requires: pkg-config
 
 %description
@@ -22,26 +23,16 @@ uses to generate the majority of its code and API.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
-%post
-/sbin/ldconfig
-
-%postun
-/sbin/ldconfig
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
