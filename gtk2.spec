@@ -1,15 +1,18 @@
 Name: gtk2
-Version: 2.10.14
-Release: 2ev
+Version: 2.12.9
+Release: 3ev
 Summary: The GIMP Toolkit
 URL: http://www.gtk.org/
 Group: System Environment/Libraries
-License: LGPL-2
+License: LGPL-2.1
 Vendor: GNyU-Linux
-Source: ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-%{version}.tar.bz2
+Source: ftp://ftp.gtk.org/pub/gtk/v2.12/gtk+-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc, glib2 >= 2.12, libpng, libtiff, libjpeg
-BuildRequires: pango >= 1.13, cairo >= 1.2, atk >= 1.9, pkg-config
+BuildRequires: make >= 3.79.1, gcc, glib2 >= 2.13.5, pango >= 1.17.3, atk >= 1.9
+BuildRequires: cairo >= 1.2, pkg-config >= 0.9.0, libjpeg, libpng, zlib
+BuildRequires: libtiff >= 3.6.0, coreutils, grep, sed
+BuildRequires: libX11, libXau, libXcomposite, libXcursor, libXdamage, libXdmcp
+BuildRequires: libXrender, libxcb
 
 %description
 GTK+ is a multi-platform toolkit for creating graphical user interfaces.
@@ -59,6 +62,8 @@ small one-off projects to complete application suites.
 %doc %{_datadir}/gtk-doc/html/gtk
 %dir %{_datadir}/gtk-doc
 %dir %{_datadir}/gtk-doc/html
+%dir %{_sysconfdir}/gtk-2.0
+%config %{_sysconfdir}/gtk-2.0/im-multipress.conf
 %{_datadir}/themes
 %{_datadir}/gtk-2.0
 %{_includedir}/gtk-2.0/
@@ -79,9 +84,11 @@ small one-off projects to complete application suites.
 %{_mandir}/man1/gdk-pixbuf-query-loaders.1*
 %{_mandir}/man1/gtk-query-immodules-2.0.1*
 %{_mandir}/man1/gtk-update-icon-cache.1*
+%{_mandir}/man1/gtk-builder-convert.1*
 %{_datadir}/aclocal/gtk-2.0.m4
 %{_bindir}/gdk-pixbuf-csource
 %{_bindir}/gdk-pixbuf-query-loaders
 %{_bindir}/gtk-demo
 %{_bindir}/gtk-query-immodules-2.0
 %{_bindir}/gtk-update-icon-cache
+%{_bindir}/gtk-builder-convert
