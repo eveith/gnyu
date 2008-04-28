@@ -1,11 +1,11 @@
 Name: kdebase
-Version: 3.5.8
-Release: 1ev
+Version: 3.5.9
+Release: 2ev
 Summary: Base package of the K Desktop Environment (KDE)
 URL: http://www.kde.org/
 Group: User Interface/Desktops
-License: GPL, LGPL, BSD
-Vendor: MSP Slackware
+License: GPL-2, LGPL-2, BSD
+Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/%{name}-%{version}.tar.bz2
 Source1: %{name}-kdm.pamd
 Source2: %{name}-kdm.i
@@ -16,244 +16,8 @@ BuildRequires: zlib, libxml2 >= 2.4.8, libxslt >= 1.0.7, cups >= 1.1.9, perl
 BuildRequires: samba-libs, hal >= 0.4.0, dbus >= 0.2, cyrus-sasl, libstdc++
 BuildRequires: openssl >= 0.9.6, libpam, mesalib, libtiff, libpng, libjpeg
 BuildRequires: libmng, freetype >= 2.0.0, libogg, libvorbis, libusb, sudo, sed
-BuildRequires: openldap-libs, %{_datadir}/usb.ids, dbus-qt3
+BuildRequires: openldap-libs, %{_datadir}/usb.ids, dbus-qt3, coreutils
 BuildRequires: automake-110, kdelibs = %{version}
-Provides: libtool(%{_libdir}/kde3/kded_favicons.la)
-Provides: libtool(%{_libdir}/kde3/konq_sound.la)
-Provides: libtool(%{_libdir}/kde3/kate.la)
-Provides: libtool(%{_libdir}/kde3/kwrite.la)
-Provides: libtool(%{_libdir}/kde3/kcminit.la)
-Provides: libtool(%{_libdir}/kde3/kcminit_startup.la)
-Provides: libtool(%{_libdir}/kde3/kcm_useraccount.la)
-Provides: libtool(%{_libdir}/kde3/kcm_printmgr.la)
-Provides: libtool(%{_libdir}/kde3/kjobviewer.la)
-Provides: libtool(%{_libdir}/kde3/kprinter.la)
-Provides: libtool(%{_libdir}/kde3/kio_print.la)
-Provides: libtool(%{_libdir}/kde3/libkdeprint_part.la)
-Provides: libtool(%{_libdir}/kde3/kgreet_classic.la)
-Provides: libtool(%{_libdir}/kde3/kgreet_winbind.la)
-Provides: libtool(%{_libdir}/kde3/libkfindpart.la)
-Provides: libtool(%{_libdir}/kde3/khelpcenter.la)
-Provides: libtool(%{_libdir}/kde3/kcm_khotkeys.la)
-Provides: libtool(%{_libdir}/kde3/kcm_khotkeys_init.la)
-Provides: libtool(%{_libdir}/kde3/kded_khotkeys.la)
-Provides: libtool(%{_libdir}/kde3/khotkeys.la)
-Provides: libtool(%{_libdir}/kde3/khotkeys_arts.la)
-Provides: libtool(%{_libdir}/kde3/kio_about.la)
-Provides: libtool(%{_libdir}/kde3/kcm_cgi.la)
-Provides: libtool(%{_libdir}/kde3/kio_cgi.la)
-Provides: libtool(%{_libdir}/kde3/kio_floppy.la)
-Provides: libtool(%{_libdir}/kde3/kio_filter.la)
-Provides: libtool(%{_libdir}/kde3/kio_fish.la)
-Provides: libtool(%{_libdir}/kde3/kio_info.la)
-Provides: libtool(%{_libdir}/kde3/kio_mac.la)
-Provides: libtool(%{_libdir}/kde3/kio_man.la)
-Provides: libtool(%{_libdir}/kde3/libkmanpart.la)
-Provides: libtool(%{_libdir}/kde3/kio_nfs.la)
-Provides: libtool(%{_libdir}/kde3/kio_nntp.la)
-Provides: libtool(%{_libdir}/kde3/kio_pop3.la)
-Provides: libtool(%{_libdir}/kde3/kio_smtp.la)
-Provides: libtool(%{_libdir}/kde3/kio_sftp.la)
-Provides: libtool(%{_libdir}/kde3/kio_tar.la)
-Provides: libtool(%{_libdir}/kde3/kio_finger.la)
-Provides: libtool(%{_libdir}/kde3/kio_thumbnail.la)
-Provides: libtool(%{_libdir}/kde3/imagethumbnail.la)
-Provides: libtool(%{_libdir}/kde3/textthumbnail.la)
-Provides: libtool(%{_libdir}/kde3/htmlthumbnail.la)
-Provides: libtool(%{_libdir}/kde3/djvuthumbnail.la)
-Provides: libtool(%{_libdir}/kde3/cursorthumbnail.la)
-Provides: libtool(%{_libdir}/kde3/kio_ldap.la)
-Provides: libtool(%{_libdir}/kde3/kio_smb.la)
-Provides: libtool(%{_libdir}/kde3/kio_settings.la)
-Provides: libtool(%{_libdir}/kde3/kio_trash.la)
-Provides: libtool(%{_libdir}/kde3/kfile_trash.la)
-Provides: libtool(%{_libdir}/kde3/kio_media.la)
-Provides: libtool(%{_libdir}/kde3/kded_mediamanager.la)
-Provides: libtool(%{_libdir}/kde3/kded_medianotifier.la)
-Provides: libtool(%{_libdir}/kde3/kfile_media.la)
-Provides: libtool(%{_libdir}/kde3/kcm_media.la)
-Provides: libtool(%{_libdir}/kde3/kio_remote.la)
-Provides: libtool(%{_libdir}/kde3/kded_remotedirnotify.la)
-Provides: libtool(%{_libdir}/kde3/kio_home.la)
-Provides: libtool(%{_libdir}/kde3/kded_homedirnotify.la)
-Provides: libtool(%{_libdir}/kde3/kio_system.la)
-Provides: libtool(%{_libdir}/kde3/kded_systemdirnotify.la)
-Provides: libtool(%{_libdir}/kde3/klipper_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/klipper.la)
-Provides: libtool(%{_libdir}/kde3/kmenuedit.la)
-Provides: libtool(%{_libdir}/kde3/kcontroledit.la)
-Provides: libtool(%{_libdir}/kde3/libkonsolepart.la)
-Provides: libtool(%{_libdir}/kde3/kded_kwrited.la)
-Provides: libtool(%{_libdir}/kde3/konsole.la)
-Provides: libtool(%{_libdir}/kde3/ksplashdefault.la)
-Provides: libtool(%{_libdir}/kde3/ksplashstandard.la)
-Provides: libtool(%{_libdir}/kde3/ksplashredmond.la)
-Provides: libtool(%{_libdir}/kde3/kcm_ksplashthemes.la)
-Provides: libtool(%{_libdir}/kde3/sysguard_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/kwin.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kwinoptions.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kwindecoration.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kwinrules.la)
-Provides: libtool(%{_libdir}/kde3/kwin_rules_dialog.la)
-Provides: libtool(%{_libdir}/kde3/kwin_plastik_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_plastik.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_b2.la)
-Provides: libtool(%{_libdir}/kde3/kwin_b2_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_default.la)
-Provides: libtool(%{_libdir}/kde3/kwin_default_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_keramik.la)
-Provides: libtool(%{_libdir}/kde3/kwin_keramik_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_laptop.la)
-Provides: libtool(%{_libdir}/kde3/kwin_modernsys_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_modernsys.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_quartz.la)
-Provides: libtool(%{_libdir}/kde3/kwin_quartz_config.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_redmond.la)
-Provides: libtool(%{_libdir}/kde3/kwin3_web.la)
-Provides: libtool(%{_libdir}/kde3/kcm_keyboard.la)
-Provides: libtool(%{_libdir}/kde3/kxkb.la)
-Provides: libtool(%{_libdir}/kde3/libnsplugin.la)
-Provides: libtool(%{_libdir}/kde3/kcm_nsplugins.la)
-Provides: libtool(%{_libdir}/kde3/konqueror.la)
-Provides: libtool(%{_libdir}/kde3/kfmclient.la)
-Provides: libtool(%{_libdir}/kde3/konq_iconview.la)
-Provides: libtool(%{_libdir}/kde3/konq_listview.la)
-Provides: libtool(%{_libdir}/kde3/keditbookmarks.la)
-Provides: libtool(%{_libdir}/kde3/konq_shellcmdplugin.la)
-Provides: libtool(%{_libdir}/kde3/konq_aboutpage.la)
-Provides: libtool(%{_libdir}/kde3/konq_sidebar.la)
-Provides: libtool(%{_libdir}/kde3/konqsidebar_tree.la)
-Provides: libtool(%{_libdir}/kde3/konq_sidebartree_dirtree.la)
-Provides: libtool(%{_libdir}/kde3/konq_sidebartree_history.la)
-Provides: libtool(%{_libdir}/kde3/kcm_history.la)
-Provides: libtool(%{_libdir}/kde3/konq_sidebartree_bookmarks.la)
-Provides: libtool(%{_libdir}/kde3/konqsidebar_web.la)
-Provides: libtool(%{_libdir}/kde3/kded_konqy_preloader.la)
-Provides: libtool(%{_libdir}/kde3/konq_remoteencoding.la)
-Provides: libtool(%{_libdir}/kde3/libkhtmlkttsdplugin.la)
-Provides: libtool(%{_libdir}/kde3/ksmserver.la)
-Provides: libtool(%{_libdir}/kde3/kicker.la)
-Provides: libtool(%{_libdir}/kde3/dockbar_panelextension.la)
-Provides: libtool(%{_libdir}/kde3/taskbar_panelextension.la)
-Provides: libtool(%{_libdir}/kde3/kasbar_panelextension.la)
-Provides: libtool(%{_libdir}/kde3/sidebar_panelextension.la)
-Provides: libtool(%{_libdir}/kde3/clock_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/systemtray_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/minipager_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/taskbar_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/run_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/launcher_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/naughty_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/lockout_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/menu_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/media_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/trash_panelapplet.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_find.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_kdeprint.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_prefmenu.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_recentdocs.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_konsole.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_konqueror.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_remotemenu.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_systemmenu.la)
-Provides: libtool(%{_libdir}/kde3/kickermenu_kate.la)
-Provides: libtool(%{_libdir}/kde3/appletproxy.la)
-Provides: libtool(%{_libdir}/kde3/extensionproxy.la)
-Provides: libtool(%{_libdir}/kde3/kcm_bell.la)
-Provides: libtool(%{_libdir}/kde3/kcm_background.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kdnssd.la)
-Provides: libtool(%{_libdir}/kde3/kcm_filetypes.la)
-Provides: libtool(%{_libdir}/kde3/kcm_samba.la)
-Provides: libtool(%{_libdir}/kde3/kcm_input.la)
-Provides: libtool(%{_libdir}/kde3/kcm_info.la)
-Provides: libtool(%{_libdir}/kde3/kcm_ioslaveinfo.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kdm.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kicker.la)
-Provides: libtool(%{_libdir}/kde3/kcm_locale.la)
-Provides: libtool(%{_libdir}/kde3/kcm_launch.la)
-Provides: libtool(%{_libdir}/kde3/kcm_keys.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kio.la)
-Provides: libtool(%{_libdir}/kde3/kcm_konq.la)
-Provides: libtool(%{_libdir}/kde3/kstyle_keramik_config.la)
-Provides: libtool(%{_libdir}/kde3/kcm_style.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kded.la)
-Provides: libtool(%{_libdir}/kde3/kcm_konqhtml.la)
-Provides: libtool(%{_libdir}/kde3/libkuriikwsfilter.la)
-Provides: libtool(%{_libdir}/kde3/libkurisearchfilter.la)
-Provides: libtool(%{_libdir}/kde3/libkshorturifilter.la)
-Provides: libtool(%{_libdir}/kde3/liblocaldomainurifilter.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kurifilt.la)
-Provides: libtool(%{_libdir}/kde3/kcm_arts.la)
-Provides: libtool(%{_libdir}/kde3/kcontrol.la)
-Provides: libtool(%{_libdir}/kde3/kcm_knotify.la)
-Provides: libtool(%{_libdir}/kde3/kcm_clock.la)
-Provides: libtool(%{_libdir}/kde3/kcm_access.la)
-Provides: libtool(%{_libdir}/kde3/kaccess.la)
-Provides: libtool(%{_libdir}/kde3/kcm_colors.la)
-Provides: libtool(%{_libdir}/kde3/kcm_energy.la)
-Provides: libtool(%{_libdir}/kde3/kcm_fonts.la)
-Provides: libtool(%{_libdir}/kde3/kcm_css.la)
-Provides: libtool(%{_libdir}/kde3/kcm_icons.la)
-Provides: libtool(%{_libdir}/kde3/kcm_screensaver.la)
-Provides: libtool(%{_libdir}/kde3/kcm_taskbar.la)
-Provides: libtool(%{_libdir}/kde3/kcm_crypto.la)
-Provides: libtool(%{_libdir}/kde3/kcm_privacy.la)
-Provides: libtool(%{_libdir}/kde3/kcm_smserver.la)
-Provides: libtool(%{_libdir}/kde3/kcm_konsole.la)
-Provides: libtool(%{_libdir}/kde3/kcm_spellchecking.la)
-Provides: libtool(%{_libdir}/kde3/kcm_usb.la)
-Provides: libtool(%{_libdir}/kde3/kcm_nic.la)
-Provides: libtool(%{_libdir}/kde3/fontthumbnail.la)
-Provides: libtool(%{_libdir}/kde3/libkfontviewpart.la)
-Provides: libtool(%{_libdir}/kde3/kcm_fontinst.la)
-Provides: libtool(%{_libdir}/kde3/kfile_font.la)
-Provides: libtool(%{_libdir}/kde3/kio_fonts.la)
-Provides: libtool(%{_libdir}/kde3/kcm_randr.la)
-Provides: libtool(%{_libdir}/kde3/kcm_componentchooser.la)
-Provides: libtool(%{_libdir}/kde3/kcm_performance.la)
-Provides: libtool(%{_libdir}/kde3/kcm_xinerama.la)
-Provides: libtool(%{_libdir}/kde3/kcm_display.la)
-Provides: libtool(%{_libdir}/kde3/kcm_kthememanager.la)
-Provides: libtool(%{_libdir}/kde3/kcm_joystick.la)
-Provides: libtool(%{_libdir}/kde3/kdesktop.la)
-Provides: libtool(%{_libdir}/libkonq.la)
-Provides: libtool(%{_libdir}/libkateutils.la)
-Provides: libtool(%{_libdir}/libkateinterfaces.la)
-Provides: libtool(%{_libdir}/libkdeinit_kate.la)
-Provides: libtool(%{_libdir}/libkdeinit_kwrite.la)
-Provides: libtool(%{_libdir}/libkdeinit_kcminit.la)
-Provides: libtool(%{_libdir}/libkdeinit_kcminit_startup.la)
-Provides: libtool(%{_libdir}/libkdeinit_kjobviewer.la)
-Provides: libtool(%{_libdir}/libkdeinit_kprinter.la)
-Provides: libtool(%{_libdir}/libkdeinit_khelpcenter.la)
-Provides: libtool(%{_libdir}/libkhotkeys_shared.la)
-Provides: libtool(%{_libdir}/libkdeinit_khotkeys.la)
-Provides: libtool(%{_libdir}/libkdeinit_klipper.la)
-Provides: libtool(%{_libdir}/libkdeinit_kmenuedit.la)
-Provides: libtool(%{_libdir}/libkdeinit_kcontroledit.la)
-Provides: libtool(%{_libdir}/libkdeinit_konsole.la)
-Provides: libtool(%{_libdir}/libksplashthemes.la)
-Provides: libtool(%{_libdir}/libksgrd.la)
-Provides: libtool(%{_libdir}/libkdecorations.la)
-Provides: libtool(%{_libdir}/libkdeinit_kwin.la)
-Provides: libtool(%{_libdir}/libkdeinit_kwin_rules_dialog.la)
-Provides: libtool(%{_libdir}/libkdeinit_kxkb.la)
-Provides: libtool(%{_libdir}/libkdeinit_konqueror.la)
-Provides: libtool(%{_libdir}/libkdeinit_kfmclient.la)
-Provides: libtool(%{_libdir}/libkdeinit_keditbookmarks.la)
-Provides: libtool(%{_libdir}/libkonqsidebarplugin.la)
-Provides: libtool(%{_libdir}/libkdeinit_ksmserver.la)
-Provides: libtool(%{_libdir}/libkickermain.la)
-Provides: libtool(%{_libdir}/libtaskmanager.la)
-Provides: libtool(%{_libdir}/libtaskbar.la)
-Provides: libtool(%{_libdir}/libkdeinit_kicker.la)
-Provides: libtool(%{_libdir}/libkasbar.la)
-Provides: libtool(%{_libdir}/libkdeinit_appletproxy.la)
-Provides: libtool(%{_libdir}/libkdeinit_extensionproxy.la)
-Provides: libtool(%{_libdir}/libkdeinit_kcontrol.la)
-Provides: libtool(%{_libdir}/libkdeinit_kaccess.la)
-Provides: libtool(%{_libdir}/libkfontinst.la)
-Provides: libtool(%{_libdir}/libkdeinit_kdesktop.la)
 
 %description
 kdebase is the second mandatory package (besides kdelibs) for the K Desktop
@@ -268,8 +32,6 @@ libraries.
 
 %build
 %configure \
-	--enable-pch \
-	--enable-final \
 	--disable-debug \
 	--disable-warnings \
 	--without-shadow --disable-shadow \
@@ -285,7 +47,7 @@ libraries.
 	--with-samba \
 	--with-cdparanoia \
 	--disable-rpath 
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
@@ -303,7 +65,7 @@ pushd '%{buildroot}'
 # The InitNG service file for kdm
 %{__mkdir_p} etc/initng/daemon
 %{__cat} < %{SOURCE2} \
-	| sed -e 's,@kdm@,%{_bindir}/kdm,g' \
+	| %{__sed} -e 's,@kdm@,%{_bindir}/kdm,g' \
 	> etc/initng/daemon/kdm.i
 
 popd
@@ -336,7 +98,7 @@ popd
 
 %clean
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-rm -f files.list ||:
+%{__rm} -f files.list ||:
 
 
 %files
@@ -370,9 +132,10 @@ rm -f files.list ||:
 %config(noreplace) /etc/pam.d/k*
 /etc/initng/daemon/kdm.i
 /etc/ksysguarddrc
-/etc/xdg/menus/*
+/etc/xdg/menus/*.menu
 /etc/xdg/menus/applications-merged/
-%{_libdir}/*
+%{_libdir}/*.*
+%{_libdir}/kde3/*.*
 %{_libdir}/kconf_update_bin/
 %{_includedir}/*.h
 %{_includedir}/kate/*.h
@@ -439,8 +202,8 @@ rm -f files.list ||:
 %{_datadir}/wallpapers/
 %{_datadir}/fonts/
 %{_datadir}/templates/
-%dir %{_datadir}/locale/l10n
-%{_datadir}/locale/*
+%{_datadir}/locale/l10n/
+%{_datadir}/locale/en_US/*.desktop
 %{_datadir}/desktop-directories/
 %{_datadir}/icons/crystalsvg/
 %{_datadir}/icons/hicolor/*/*/*
@@ -451,5 +214,7 @@ rm -f files.list ||:
 %{_datadir}/sounds/
 %{_datadir}/servicetypes/*
 %{_datadir}/config.kcfg/
-%dir %{_datadir}/config/kdm
-%{_datadir}/config/*
+%{_datadir}/config/kdm/
+%{_datadir}/config/*rc
+%{_datadir}/config/kdesktop_custom_menu?
+%{_datadir}/config/kxkb_groups
