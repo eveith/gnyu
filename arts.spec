@@ -1,36 +1,17 @@
 Name: arts
-Version: 1.5.6
-Release: 1ev
+Version: 1.5.9
+Release: 2ev
 Summary: Analogue Realtime Synthesizer - KDE's sound server
 URL: http://www.arts-project.org/
 Group: Applications/Multimedia
 License: LGPL, Artistic
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: http://download.kde.org/stable/3.5.6/src/arts-%{version}.tar.bz2
+Vendor: GNyU-Linux
+Source: http://download.kde.org/stable/3.5.9/src/arts-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: zlib, gcc-core, gcc-g++, make >= 3.79.1, libxml2 >= 2.4.8,
-BuildRequires: libstdc++
+BuildRequires: gcc, gcc-g++, make >= 3.79.1, libxml2 >= 2.4.8, zlib
+BuildRequires: libICE, libSM, libX11, libXau, libXcursor, libXdmcp, libXext
+BuildRequires: libXft, libXinerama, libXrandr, libXrender, libstdc++
 BuildRequires: glib2 >= 2.4, libxslt >= 1.0.7, libogg, libaudiofile, alsa-lib
-Requires: zlib, libxml2 >= 2.4.8, libxslt >= 1.0.7, libogg, glib2 >= 2.4
-Requires: libaudiofile, alsa-lib, libstdc++
-Provides: libtool(/usr/lib/libartsc.la)
-Provides: libtool(/usr/lib/libartscbackend.la)
-Provides: libtool(/usr/lib/libartsdsp.la)
-Provides: libtool(/usr/lib/libartsdsp_st.la)
-Provides: libtool(/usr/lib/libartsflow.la)
-Provides: libtool(/usr/lib/libartsflow_idl.la)
-Provides: libtool(/usr/lib/libartsgslplayobject.la)
-Provides: libtool(/usr/lib/libartswavplayobject.la)
-Provides: libtool(/usr/lib/libgmcop.la)
-Provides: libtool(/usr/lib/libkmedia2.la)
-Provides: libtool(/usr/lib/libkmedia2_idl.la)
-Provides: libtool(/usr/lib/libmcop.la)
-Provides: libtool(/usr/lib/libmcop_mt.la)
-Provides: libtool(/usr/lib/libqtmcop.la)
-Provides: libtool(/usr/lib/libsoundserver_idl.la)
-Provides: libtool(/usr/lib/libx11globalcomm.la)
-
 
 %description
 aRts simulates a complete "modular analog synthesizer" on your - digital -
@@ -59,16 +40,14 @@ KDE-libs for most things).
 %configure \
 	--with-alsa \
 	--with-audiofile \
-	--enable-final \
-	--enable-pch \
 	--disable-warnings \
 	--disable-debug
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
@@ -79,7 +58,7 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
