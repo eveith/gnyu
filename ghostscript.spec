@@ -8,7 +8,7 @@ License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs862/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, fontconfig, libpng, libjpeg, zlib, cups
+BuildRequires: make, gcc, fontconfig, libpng, libjpeg, zlib, cups-libs
 BuildRequires: coreutils, gawk, perl, libstdc++, pkg-config
 BuildRequires: gtk2, libX11, libSM, libICE, libXext, libXt
 Requires: gnu-gs-fonts
@@ -54,7 +54,8 @@ done
 	--without-jasper \
 	--with-drivers=ALL \
 	--with-gtk \
-	--with-x
+	--with-x \
+    --with-cups
 %{__make} %{?_smp_mflags}
 
 %install
