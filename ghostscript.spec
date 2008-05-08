@@ -54,6 +54,7 @@ done
 	--without-jasper \
 	--with-drivers=ALL \
 	--with-gtk \
+	--with-omni \
 	--with-x \
     --with-cups
 %{__make} %{?_smp_mflags}
