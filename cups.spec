@@ -1,6 +1,6 @@
 Name: cups
 Version: 1.3.7
-Release: 2ev
+Release: 3ev
 Summary: Common Unix Printing System
 URL: http://www.cups.org/
 Group: System Environment/Daemons
@@ -31,7 +31,7 @@ Patch41: cups-relro.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 BuildRequires: coreutils, grep, sed, make >= 3.80, gcc, gcc-g++, pkg-config
 BuildRequires: libjpeg, libpng, libtiff, libpam, heimdal-libs, openldap-libs
-BuildRequires: pcre, perl, dbus >= 0.60, openslp, openssl, zlib
+BuildRequires: pcre, perl, dbus >= 0.60, openslp, gnutls, zlib
 Requires: perl
 Provides: %{_bindir}/lpq, /usr/bin/lpr, /usr/bin/lp, /usr/bin/cancel 
 Provides: %{_bindir}/lprm, /usr/bin/lpstat
@@ -78,6 +78,7 @@ some other packages.
 	--enable-slp \
 	--enable-ldap \
 	--enable-openssl \
+	--disable-gnutls \
 	--enable-pam \
 	--enable-threads \
 	--disable-dnssd \
@@ -119,7 +120,7 @@ touch '%{buildroot}/%{_sysconfdir}/cups/printers.conf' \
 	'%{buildroot}/etc'/{init.d,rc?.d}
 
 
-%post
+%pre
 {
 	groupadd \
 		-g '%{_lp_gid}' \
@@ -127,8 +128,8 @@ touch '%{buildroot}/%{_sysconfdir}/cups/printers.conf' \
 	useradd \
 		-u '%{_lp_uid}' \
 		-g '%{_lp_gid}' \
-		-c 'Printer Spooler'
-		-d '%{_localstatedir}/cups'
+		-c 'Printer Spooler' \
+		-d '%{_localstatedir}/spool/cups' \
 		-s /sbin/nologin \
 		lp
 } > /dev/null 2>&1
