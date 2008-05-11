@@ -1,6 +1,6 @@
 Name: hplip
-Version: 2.8.2
-Release: 1ev
+Version: 2.8.5
+Release: 2ev
 Summary: Imaging and printing drivers for HP products
 URL: http://hplip.sourceforge.net/
 Group: System Environment/Base
@@ -8,8 +8,8 @@ License: GPL-2
 Vendor: GNyU-Linux
 Source: http://prdownloads.sourceforge.net/hplip/hplip-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-g++ openssl, espgs, libjpeg, libusb, cups
-BuildRequires: python >= 2.2, foomatic-filters >= 3.0
+BuildRequires: coreutils, grep, sed, make, gcc, gcc-g++, cups, libjpeg
+BuildRequires: libstdc++
 Requires: foomatic-filters >= 3.0
 
 %description
@@ -31,9 +31,10 @@ Business Inkjet, LaserJet, Edgeline MFP, and LaserJet MFP.
 	--enable-pp-build \
 	--disable-scan-build \
 	--disable-fax-build \
-	--enable-foomatic-ppd-install \
 	--enable-foomatic-drv-install \
-	--enable-foomatic-rip-hplip-install
+	--with-drvdir='%{_libdir}/cups/driver' \
+	--with-hpppddir='%{_datadir}/cups/model' \
+	--disable-foomatic-rip-hplip
 %{__make} %{?_smp_mflags}
 
 
@@ -60,9 +61,7 @@ Business Inkjet, LaserJet, Edgeline MFP, and LaserJet MFP.
 %doc COPYING doc/*html doc/howtos doc/images doc/install doc/styles
 %doc doc/tech_docs doc/troubleshooting
 %{_bindir}/hpijs
+%{_libdir}/cups/filter/hplipjs
 %{_libdir}/cups/filter/foomatic-rip-hplip
-%dir %{_datadir}/cups/drv
-%dir %{_datadir}/cups/drv/hp
-%{_datadir}/cups/drv/hp/hpijs.drv
-%dir %{_datadir}/ppd
-%{_datadir}/ppd/HP/
+%{_libdir}/cups/driver/hpijs.drv
+%{_datadir}/cups/model/*.ppd*
