@@ -1,16 +1,16 @@
 Name: foomatic-filters
 Version: 3.0
-%define reldate 20071023
-Release: 1ev
+%define reldate 20080511
+Release: 2ev
 Summary: Universal print filter to convert PS data into the printer's format
 URL: http://www.linux-foundation.org/en/OpenPrinting/Database/Foomatic
 Group: System Environment/Base
 License: GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://www.openprinting.org/download/foomatic/%{name}-%{version}-%{reldate}.tar.gz
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildArch: noarch
-BuildRequires: make
+BuildRequires: coreutils, grep, sed, make, cups
 Requires: cups, perl
 
 %description
@@ -25,26 +25,26 @@ printer/driver specific, but spooler-independent PPD file.
 
 %build
 %configure
-make
+%{__make}
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 # Sorry, we don't support ppr. (http://ppr.sf.net/)
-rm -rf "${RPM_BUILD_ROOT}/%{_libdir}/ppr"
+%{__rm} -rf '%{buildroot}/%{_libdir}/ppr'
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc COPYING README TODO ChangeLog USAGE
-%dir /etc/foomatic
-%config(noreplace) /etc/foomatic/filter.conf
-/etc/foomatic/filter.conf.sample
+%dir %{_sysconfdir}/foomatic
+%config(noreplace) %{_sysconfdir}/foomatic/filter.conf
+%{_sysconfdir}/foomatic/filter.conf.sample
 %{_bindir}/foomatic-rip
 %{_bindir}/foomatic-gswrapper
 %{_libdir}/cups/backend/beh
