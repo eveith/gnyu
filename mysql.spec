@@ -1,6 +1,6 @@
 Name: mysql
 Version: 5.0.51a
-Release: 1ev
+Release: 2ev
 Summary: A fast SQL database system: Programs and shared libraries
 URL: http://www.mysql.com/
 Group: Applications/Databases
