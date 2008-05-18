@@ -1,15 +1,14 @@
 Name: libgpg-error
-Version: 1.4
-Release: 1ev
+Version: 1.6
+Release: 2ev
 Summary: A helper library that provides a common set of error codes
 URL: http://www.gnupg.org/related_software/libgpg-error/index.html
 Group: System Environment/Libraries
 License: LGPL
 Vendor: MSP Slackware
-Source: ftp://ftp.gnupg.org/gcrypt/%{name}/%{name}-%{version}.tar.gz
+Source: ftp://ftp.gnupg.org/gcrypt/%{name}/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, bison, gawk
-Provides: libtool(%{_libdir}/libgpg-error.la)
+BuildRequires: coreutils, grep, sed, make, gcc, bison, gawk
 
 %description
 Libgpg-error is a small library that defines common error values for all GnuPG
@@ -23,17 +22,13 @@ DirMngr, Pinentry, SmartCard Daemon and possibly more in the future.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 %find_lang libgpg-error
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
 
 
 %post
@@ -44,7 +39,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f libgpg-error.lang
