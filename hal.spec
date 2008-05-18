@@ -1,6 +1,6 @@
 Name: hal
 Version: 0.5.9.1
-Release: 1ev
+Release: 2ev
 Summary: The Linux hardware abstraction layer
 License: GPL
 Group: System Environment/Daemons
@@ -8,13 +8,14 @@ Source: http://hal.freedesktop.org/releases/hal-%{version}.tar.gz
 Source1: %{name}-hald.i
 Patch0: %{name}-dbus_close.patch
 Patch1: %{name}-kernel-headers-26.patch
+Patch2: %{name}-allow-plugdev-group-on-volumes-and-power-management.patch
 URL: http://www.freedesktop.org/wiki/Software/hal
 Vendor: MSP Slackware
-BuildRequires: dbus >= 0.60, udev >= 089, glib2 >= 2.6.0
-BuildRequires: expat >= 1.95.8, bash >= 2.0, dbus-glib, util-linux >= 2.12
+BuildRequires: coreutils, grep, sed, bash >= 2.0, make, gcc
+BuildRequires: dbus >= 0.60, udev >= 089, glib2 >= 2.6.0, expat >= 1.95.8
+BuildRequires: dbus-glib, util-linux >= 2.12, perl-XML-Parser, gettext
 Requires: hal-info
 BuildRoot: %{_tmppath}/%{name}-root
-Provides: libtool(%{_libdir}/libhal.la), libtool(%{_libdir}/libhal-storage.la)
 %define _hald_uid 82
 %define _hal_gid 24
 
@@ -34,22 +35,23 @@ Stuff like this is important to the major desktop environments.
 
 %prep
 %setup -q
-# %patch -P 0 -p 1
 %patch1 -p1
+%patch2 -p1
 
 
 %build
 %configure \
-	--with-pid-file=%{_localstatedir}/run/hald.pid \
-	--with-dbus-sys=/%{_sysconfdir}/dbus-1/system.d \
+	--enable-manpages \
+	--disable-gtk-doc \
+	--disable-policy-kit \
+	--enable-umount-helper \
+	--with-pid-file='%{_localstatedir}/run/hald.pid' \
+	--with-hwdata='%{_datadir}' \
+	--with-dbus-sys='%{_sysconfdir}/dbus-1/system.d' \
 	--with-hal-user=hald \
 	--with-hal-group=hal \
-	--with-doc-dir=%{_docdir}/%{name}-%{version} \
-	--disable-doxygen-docs \
-	--disable-docbook-docs \
-	--disable-policy-kit \
-	--enable-umount-helper
-%{__make}
+	--with-doc-dir=%{_docdir}/%{name}-%{version}
+%{__make} %{?_smp_mflags}
 
 
 %install
@@ -58,17 +60,17 @@ Stuff like this is important to the major desktop environments.
 %find_lang hal
 
 # Install HAL service file for InitNG 
-%{__mkdir_p} ${RPM_BUILD_ROOT}/%{_sysconfdir}/initng/daemon
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
 %{__cat} < %{SOURCE1} \
 	| %{__sed} \
 		-e 's,@rm@,%{__rm},g' \
 		-e 's,@localstatedir@,%{_localstatedir},g' \
 		-e 's,@hald@,%{_sbindir}/hald,g' \
-	> %{buildroot}/etc/initng/daemon/hald.i
+	> '%{buildroot}/%{_sysconfdir}/initng/daemon/hald.i'
 
 # Create ghost cache file; hald will create it at first run.
-%{__mkdir_p} %{buildroot}/%{_localstatedir}/cache/hald
-touch %{buildroot}/%{_localstatedir}/cache/hald/fdi-cache
+%{__mkdir_p} '%{buildroot}/%{_localstatedir}/cache/hald'
+touch '%{buildroot}/%{_localstatedir}/cache/hald/fdi-cache'
 
 
 %pre
@@ -76,18 +78,19 @@ touch %{buildroot}/%{_localstatedir}/cache/hald/fdi-cache
 	userdel hald
 	groupdel hal
 } > /dev/null 2>&1
-groupadd -g %{_hal_gid} hal
+groupadd -g '%{_hal_gid}' hal
 useradd \
-	-u %{_hald_uid} \
-	-g hal \
+	-u '%{_hald_uid}' \
+	-g '%{_hal_gid}' \
 	-c 'Hardware Abstraction Layer' \
 	-s /sbin/nologin \
 	-d %{_sysconfdir}/hal \
 	hald
+kill -HUP $(< %{_localstatedir}/run/dbus.pid)
 exit 0
 
 %postun
-if [ $1 -eq 0 ]
+if [[ "${1}" -eq 0 ]]
 then
 	ngc -d daemon/hald
 	ng-update delete hald default
@@ -111,9 +114,9 @@ exit 0
 %doc %{_datadir}/gtk-doc/html/libhal
 %doc %{_datadir}/gtk-doc/html/libhal-storage
 /etc/udev/rules.d/*
-/etc/initng/daemon/hald.i
-/%{_sysconfdir}/hal/
-/%{_sysconfdir}/dbus-1/system.d/hal.conf
+%{_sysconfdir}/initng/daemon/hald.i
+%{_sysconfdir}/hal/
+%config %{_sysconfdir}/dbus-1/system.d/hal.conf
 /sbin/umount.hal
 %{_bindir}/hal-*
 %{_bindir}/lshal
