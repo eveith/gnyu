@@ -1,16 +1,17 @@
 Name: gettext
 Version: 0.17
 Release: 1ev
-Summary: GNU libraries and utilities for multi-lingual messages.
+Summary: GNU libraries and utilities for multi-lingual messages
 License: GPL/LGPL
 Group: System Environment/Base
 Source: ftp://ftp.gnu.org/gnu/gettext/%{name}-%{version}.tar.gz
 URL: http://www.gnu.org/software/gettext/
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source1: po-mode-init.el
 Source2: msghack.py
 Patch1: gettext-0.14.3-gcc4.patch
-BuildRequires: libtool, bison, gcc-g++, gcc
+BuildRequires: coreutils, grep, sed, make, libtool, bison, gcc-g++, gcc, jdk
+BuildRequires: zlib, perl, ncurses, glib2, libcroco
 Buildroot: %{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -40,11 +41,20 @@ develop internationalized applications and to translate existing messages.
 %setup -q
 %patch1 -p1 -b .gcc4
 
+# Fix perl path:
+for file in gettext-runtime/libasprintf/texi2html \
+		gettext-tools/doc/texi2html
+do
+	%{__sed} -i 's,#!/usr/local/bin/perl,#!%{__perl},g' "${file}"
+done
+
+
 %build
 [[ -f  /usr/share/automake/depcomp ]] \
 	&& %{__cp} -f /usr/share/automake/{depcomp,ylwrap} . || :
 
 %configure \
+	--without-emacs \
 	--enable-nls \
 	--enable-shared 
 %{__make} %{?_smp_mflags}
@@ -53,9 +63,10 @@ develop internationalized applications and to translate existing messages.
 %install
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
-%{__install} -m 0755 %{SOURCE2} %{buildroot}/%{_bindir}/msghack
-%{__rm} -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
-%{__mv} %{buildroot}/%{_datadir}/doc ${RPM_BUILD_DIR}/%{name}-%{version}/Doc
+%{__install} -m 0755 '%{SOURCE2}' '%{buildroot}/%{_bindir}/msghack'
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
+%{__mv} '%{buildroot}/%{_datadir}/doc' \
+	"${RPM_BUILD_DIR}/%{name}-%{version}/Doc"
 
 %find_lang gettext-runtime
 %find_lang gettext-tools
@@ -66,7 +77,6 @@ develop internationalized applications and to translate existing messages.
 
 %post
 /sbin/ldconfig
-exit 0
 
 %postun
 /sbin/ldconfig
