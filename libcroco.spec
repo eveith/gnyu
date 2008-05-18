@@ -1,17 +1,14 @@
 Name: libcroco
 Version: 0.6.1
-Release: 1ev
+Release: 2ev
 Summary: A CSS parsing and manipulation library 
 URL: http://www.freespiders.org/projects/libcroco/
 Group: System Environment/Libraries
 License: LGPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnome.org/pub/GNOME/sources/%{name}/0.6/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, glib2, libxml2
-Requires: glib2, libxml2
-Provides: libtool(%{_libdir}/libcroco-0.6.la)
+BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, glib2, libxml2
 
 %description
 Libcroco is a general CSS parsing and manipulation library written in C for
@@ -28,12 +25,12 @@ portability layer.
 %configure \
 	--enable-checks \
 	--enable-gtk-doc
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -44,7 +41,7 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
