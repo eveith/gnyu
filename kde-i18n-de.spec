@@ -1,14 +1,14 @@
 Name: kde-i18n-de
-Version: 3.5.6
+Version: 3.5.9
 Release: 1ev
 Summary: German translations for KDE 
 URL: http://www.kde.org/
 Group: User Interface/Desktops
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kde-i18n/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
+BuildRequires: make, gettext
 BuildArch: noarch
 
 %description
@@ -21,16 +21,16 @@ Provides translations for KDE into German.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
