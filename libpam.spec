@@ -1,19 +1,18 @@
 Name: libpam
-Version: 0.99.9.0
-Release: 1ev
+Version: 1.0.1
+Release: 2ev
 Summary: Linux Pluggable Authentication Modules
 URL: http://www.kernel.org/pub/linux/libs/pam
 Group: System Environment/Base
 License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source0: ftp://ftp.kernel.org/pub/linux/libs/pam/pre/library/Linux-PAM-%{version}.tar.bz2
-Patch0: libpam-0.99.6.2-unix-username.patch
-Source1: libpam-system-auth
-Source2: libpam-other
+Vendor: GNyU-Linux
+Source0: ftp://ftp.kernel.org/pub/linux/libs/pam/library/Linux-PAM-%{version}.tar.bz2
+Patch0: %{name}-0.99.6.2-unix-username.patch
+Source1: %{name}-system-auth
+Source2: %{name}-other
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, sed, db, gettext, flex, bison
-Provides: libtool(%{_libdir}/libpam.la)
+BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, flex, bison, gettext
+BuildRequires: db
 
 %description
 PAM is a flexible mechanism for authenticating users.
@@ -34,7 +33,7 @@ at the discretion of the local system administrator.
 
 %prep
 %setup -q -n Linux-PAM-%{version}
-[ "%{version}" = "0.99.6.2" ] && %patch0 -p1
+[[ '%{version}' = '0.99.6.2' ]] && %patch0 -p1
 
 
 %build
@@ -44,32 +43,31 @@ at the discretion of the local system administrator.
 	--enable-docdir=%{_docdir}/%{name} \
 	--docdir=%{_docdir}/%{name} \
 	--enable-securedir=/%{_lib}/security \
+	--enable-db=db \
 	--disable-selinux \
 	--disable-audit \
 	--disable-prelude \
 	--disable-rpath
-
 %{__make} %{?_smp_mflags}
 %{__make} check
-# make xtests
 
 
 %install
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
-%{__rm} -f %{buildroot}/%{_infodir}/dir
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
 %find_lang Linux-PAM
 
-%{__mkdir_p} %{buildroot}/etc/pam.d
+%{__mkdir_p} '%{buildroot}/etc/pam.d'
 
 # Install default system auth/account/session/password files
-%{__cat} < %{SOURCE1} > %{buildroot}/etc/pam.d/system-auth
+%{__cat} < '%{SOURCE1}' > '%{buildroot}/etc/pam.d/system-auth'
 
 # Create a non-weak "other" configuration that at least allows to log in
-%{__cat} < %{SOURCE2} > %{buildroot}/etc/pam.d/other
+%{__cat} < '%{SOURCE2}' > '%{buildroot}/etc/pam.d/other'
 
-%{__mv} %{buildroot}/%{_docdir}/%{name} \
-	${RPM_BUILD_DIR}/Linux-PAM-%{version}/Documentation
+%{__mv} '%{buildroot}/%{_docdir}/%{name}' \
+	"${RPM_BUILD_DIR}/Linux-PAM-%{version}/Documentation"
 
 
 %post
@@ -86,21 +84,22 @@ at the discretion of the local system administrator.
 %files -f Linux-PAM.lang
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS README CHANGELOG ChangeLog Copyright NEWS
-%doc Documentation/
-%config(noreplace) /etc/environment
-%dir /etc/pam.d
-%config(noreplace) /etc/pam.d/system-*
-%config(noreplace) /etc/pam.d/other
-%dir /etc/security
-%config(noreplace) /etc/security/access.conf
-%config(noreplace) /etc/security/group.conf
-%config(noreplace) /etc/security/limits.conf
-%config(noreplace) /etc/security/pam_env.conf
-%config(noreplace) /etc/security/time.conf
-%config(noreplace) /etc/security/namespace.*
+%doc Documentation/ doc/sag doc/mwg doc/adg
+%config(noreplace) %{_sysconfdir}/environment
+%dir %{_sysconfdir}/pam.d
+%config(noreplace) %{_sysconfdir}/pam.d/system-*
+%config(noreplace) %{_sysconfdir}/pam.d/other
+%dir %{_sysconfdir}/security
+%config(noreplace) %{_sysconfdir}/security/access.conf
+%config(noreplace) %{_sysconfdir}/security/group.conf
+%config(noreplace) %{_sysconfdir}/security/limits.conf
+%config(noreplace) %{_sysconfdir}/security/pam_env.conf
+%config(noreplace) %{_sysconfdir}/security/time.conf
+%config(noreplace) %{_sysconfdir}/security/namespace.*
 %{_includedir}/security/
 /%{_lib}/libpam*.*
 /%{_lib}/security/
 %{_mandir}/*/*
 %{_sbindir}/pam_tally
+%{_sbindir}/unix_update
 %attr(4755, root, root) %{_sbindir}/unix_chkpwd
