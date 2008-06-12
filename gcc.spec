@@ -1,5 +1,5 @@
 Name: gcc
-Version: 4.2.3
+Version: 4.2.4
 Release: 2ev
 Summary: The GNU Compiler Collection (Core Package)
 License: GPL-3
@@ -7,7 +7,7 @@ Group: Development/Languages
 Vendor: GNyU-Linux
 Source0: ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 URL: http://gcc.gnu.org/
-BuildRequires: coreutils, grep, sed, gettext, gcc, make >= 3.79.1, binutils,
+BuildRequires: coreutils, grep, sed, gettext, gcc, make >= 3.79.1, binutils
 BuildRequires: bison
 BuildRoot: %{_tmppath}/%{name}-root
 Provides: gcc-core = %{version}
@@ -61,8 +61,6 @@ It is used by every program that is written in C++ and dynamically linked.
 
 
 %prep
-# %setup -q -T -b0
-# %setup -q -D -T -b1 -n "gcc-%{version}"
 %setup -q
 %{__rm} -rf %{_builddir}/%{name}-obj
 %{__mkdir_p} %{_builddir}/%{name}-obj
@@ -113,24 +111,24 @@ pushd %{_builddir}/%{name}-obj
 popd
 
 # Remove libiberty.a, this is shipped by GNU binutils.
-%{__rm} -f "$RPM_BUILD_ROOT/%{_libdir}/libiberty.a"
+%{__rm} -f '%{buildroot}/%{_libdir}/libiberty.a'
 
 %find_lang gcc
 %find_lang libstdc++
 
-pushd %{buildroot}/%{_bindir}
+pushd '%{buildroot}/%{_bindir}'
 %{__ln_s} gcc cc
 # %{__ln_s} %{_target_platform}-g++ g++
 # %{__ln_s} %{_target_platform}-g++ c++
 # %{__ln_s} %{_target_platform}-g++ %{_target_platform}-c++
 popd
 
-%{__rm} -f $RPM_BUILD_ROOT/%{_infodir}/dir
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
 %clean
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__rm} -rf %{_builddir}/%{name}-obj
+%{__rm} -rf '%{_builddir}/%{name}-obj'
 
 
 %post
@@ -155,12 +153,12 @@ update-info-dir
 %{_bindir}/*cc*
 %{_bindir}/cpp
 %{_bindir}/gcov
-%{_infodir}/cpp.info*
-%{_infodir}/cppinternals.info*
-%{_infodir}/gcc.info*
-%{_infodir}/gccinstall.info*
-%{_infodir}/gccint.info*
-%{_infodir}/libgomp.info*
+%doc %{_infodir}/cpp.info*
+%doc %{_infodir}/cppinternals.info*
+%doc %{_infodir}/gcc.info*
+%doc %{_infodir}/gccinstall.info*
+%doc %{_infodir}/gccint.info*
+%doc %{_infodir}/libgomp.info*
 %{_libdir}/gcc/
 %{_libdir}/libgomp.*
 %{_libdir}/libmudflap*.*
@@ -174,12 +172,12 @@ update-info-dir
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixinc.sh
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixincl
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/mkheaders
-%{_mandir}/man1/cpp.1*
-%{_mandir}/man1/gcc.1*
-%{_mandir}/man1/gcov.1*
-%{_mandir}/man7/fsf-funding.7*
-%{_mandir}/man7/gfdl.7*
-%{_mandir}/man7/gpl.7*
+%doc %{_mandir}/man1/cpp.1*
+%doc %{_mandir}/man1/gcc.1*
+%doc %{_mandir}/man1/gcov.1*
+%doc %{_mandir}/man7/fsf-funding.7*
+%doc %{_mandir}/man7/gfdl.7*
+%doc %{_mandir}/man7/gpl.7*
 %{_datadir}/locale/*/*/cpplib.mo
 
 %files g++
@@ -188,7 +186,7 @@ update-info-dir
 %doc README* *.html
 %{_bindir}/*?++
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/cc1plus
-%{_mandir}/man1/g++.1*
+%doc %{_mandir}/man1/g++.1*
 
 %files -n libstdc++ -f libstdc++.lang
 %defattr(-, root, root)
