@@ -9,8 +9,8 @@ Vendor: GNyU-Linux
 Source: ftp://xcb.freedesktop.org/dist/libxcb-%{version}.tar.bz2
 Patch: %{name}-1.0-sloppy_lock-1.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, xcb-proto >= 1.1, libXdmcp, libXau
-BuildRequires: pkg-config, libxslt, doxygen, libpthread-stubs
+BuildRequires: coreutils, grep, sed, make, gcc, pkg-config, libxslt, doxygen
+BuildRequires: xcb-proto >= 1.1, libXdmcp, libXau, libpthread-stubs
 
 %description
 The libxcb package provides an interface to the X Window System protocol,
