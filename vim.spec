@@ -1,128 +1,333 @@
-# used for CVS snapshots:
-%define CVSDATE %{nil}
-%define WITH_SELINUX 0
-%define desktop_file 0
-%if %{desktop_file}
-%define desktop_file_utils_version 0.2.93
-%endif
-
-# Set this to 1 if you're building the enterprise version
-%define enterprise 0
-%define withruby 0
-
-%if %{enterprise}
-# don't include ruby interpreter
-%define withnetbeans 0
-%else
-%define withnetbeans 1
-%endif
-
-%define withcvim 0
-
-
-%define baseversion 7.0
-#used for pre-releases:
-%define beta %{nil}
-%define vimdir vim70%{?beta}
-%define patchlevel 042
-
-Summary: The VIM editor.
 Name: vim
-Version: %{baseversion}.%{beta}%{patchlevel}
-Release: 1ev
-License: freeware
+Version: 7.1
+Release: 314.1ev
+Summary: The VIM (VIsual editor iMproved)
+URL: http://www.vim.org/
 Group: Applications/Editors
-Source0: ftp://ftp.vim.org/pub/vim/unix/vim-%{baseversion}%{?beta}%{?CVSDATE}.tar.bz2
-Source1: ftp://ftp.vim.org/pub/vim/extra/vim-%{baseversion}%{?beta}-lang%{?CVSDATE}.tar.gz
-Source2: ftp://ftp.vim.org/pub/vim/extra/vim-%{baseversion}%{?beta}-extra%{?CVSDATE}.tar.gz
-Source3: gvim.desktop
-Source4: vimrc
-#Source5: ftp://ftp.vim.org/pub/vim/patches/README.patches
-Source6: spec.vim
-Source7: gvim16.png
-Source8: gvim32.png
-Source9: gvim48.png
-Source10: gvim64.png
-Source11: Changelog.rpm
-#Source12: vi-help.txt
-# Source at http://www.vim.org/scripts/script.php?script_id=213 :
-#Source12: cvim.zip
-Patch2002: vim-7.0-fixkeys.patch
-Patch2003: vim-6.2-specsyntax.patch
-Patch2004: vim-7.0-crv.patch
-Patch2010: xxd-locale.patch
-# Patches 001 < 999 are patches from the base maintainer.
-# If you're as lazy as me, generate the list using
-# for i in `seq 1 14`; do printf "Patch%03d: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.%03d\n" $i $i; done
-Patch001: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.001
-Patch002: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.002
-Patch003: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.003
-Patch004: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.004
-Patch005: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.005
-Patch006: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.006
-Patch007: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.007
-Patch008: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.008
-Patch009: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.009
-Patch010: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.010
-Patch011: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.011
-Patch012: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.012
-Patch013: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.013
-Patch014: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.014
-Patch015: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.015
-Patch016: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.016
-Patch017: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.017
-Patch018: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.018
-Patch019: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.019
-Patch020: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.020
-Patch021: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.021
-Patch022: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.022
-Patch023: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.023
-Patch024: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.024
-Patch025: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.025
-Patch026: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.026
-Patch027: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.027
-Patch028: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.028
-Patch029: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.029
-Patch030: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.030
-Patch031: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.031
-Patch032: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.032
-Patch033: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.033
-Patch034: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.034
-Patch035: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.035
-Patch036: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.036
-Patch037: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.037
-Patch038: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.038
-Patch039: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.039
-Patch040: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.040
-Patch041: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.041
-Patch042: ftp://ftp.vim.org/pub/vim/patches/7.0/7.0.042
-Patch3000: vim-7.0-syntax.patch
-Patch3001: vim-6.2-rh1.patch
-Patch3002: vim-6.1-rh2.patch
-Patch3003: vim-6.1-rh3.patch
-Patch3004: vim-7.0-rclocation.patch
-Patch3005: vim-6.2-rh4.patch
-#Patch3006: vim-6.2-rh5.patch
-Patch3008: vim-6.4-cvim.patch
-Patch3009: vim-6.4-checkhl.patch
-Patch3010: vim-7.0-fstabsyntax.patch
-Patch3011: vim-6.4-lib64.patch
-Patch3012: vim-7.0-warning.patch
-Patch3100: vim-selinux.patch
-Patch3101: vim-selinux2.patch
-Buildroot: %{_tmppath}/%{name}-%{version}-root
-Buildrequires: python perl libtermcap gettext
-Buildrequires: libacl gpm autoconf
-%if "%{withruby}" == "1"
-Buildrequires: ruby 
-%endif
-%if %{WITH_SELINUX}
-Buildrequires: libselinux
-%endif
-%if %{desktop_file}
-Requires: /usr/bin/desktop-file-install
-BuildPrereq: desktop-file-utils >= %{desktop_file_utils_version}
-%endif
+License: Charityware
+Vendor: GNyU-Linux
+Source0: ftp://ftp.vim.org/pub/vim/unix/vim-%{version}.tar.bz2
+Source1: ftp://ftp.vim.org/pub/vim/extra/vim-%{version}-lang.tar.gz
+Patch0: vim-7.1.001
+Patch1: vim-7.1.002
+Patch2: vim-7.1.003
+Patch3: vim-7.1.004
+Patch4: vim-7.1.005
+Patch5: vim-7.1.006
+Patch6: vim-7.1.007
+Patch7: vim-7.1.008
+Patch8: vim-7.1.009
+Patch9: vim-7.1.010
+Patch10: vim-7.1.011
+Patch11: vim-7.1.012
+Patch12: vim-7.1.013
+Patch13: vim-7.1.014
+Patch14: vim-7.1.015
+Patch15: vim-7.1.016
+Patch16: vim-7.1.017
+Patch17: vim-7.1.018
+Patch18: vim-7.1.019
+Patch19: vim-7.1.020
+Patch20: vim-7.1.021
+Patch21: vim-7.1.022
+Patch22: vim-7.1.023
+Patch23: vim-7.1.024
+Patch24: vim-7.1.025
+Patch25: vim-7.1.026
+Patch26: vim-7.1.027
+Patch27: vim-7.1.028
+Patch28: vim-7.1.029
+Patch29: vim-7.1.030
+Patch30: vim-7.1.031
+Patch31: vim-7.1.032
+Patch32: vim-7.1.033
+Patch33: vim-7.1.034
+Patch34: vim-7.1.035
+Patch35: vim-7.1.036
+Patch36: vim-7.1.037
+Patch37: vim-7.1.038
+Patch38: vim-7.1.039
+Patch39: vim-7.1.040
+Patch40: vim-7.1.041
+Patch41: vim-7.1.042
+Patch42: vim-7.1.043
+Patch43: vim-7.1.044
+Patch44: vim-7.1.045
+Patch45: vim-7.1.046
+Patch46: vim-7.1.047
+Patch47: vim-7.1.048
+Patch48: vim-7.1.049
+Patch49: vim-7.1.050
+Patch50: vim-7.1.051
+Patch51: vim-7.1.052
+Patch52: vim-7.1.053
+Patch53: vim-7.1.054
+Patch54: vim-7.1.055
+Patch55: vim-7.1.056
+Patch56: vim-7.1.057
+Patch57: vim-7.1.058
+Patch58: vim-7.1.059
+Patch59: vim-7.1.060
+Patch60: vim-7.1.061
+Patch61: vim-7.1.062
+Patch62: vim-7.1.063
+Patch63: vim-7.1.064
+Patch64: vim-7.1.065
+Patch65: vim-7.1.066
+Patch66: vim-7.1.067
+Patch67: vim-7.1.068
+Patch68: vim-7.1.069
+Patch69: vim-7.1.070
+Patch70: vim-7.1.071
+Patch71: vim-7.1.072
+Patch72: vim-7.1.073
+Patch73: vim-7.1.074
+Patch74: vim-7.1.075
+Patch75: vim-7.1.076
+Patch76: vim-7.1.077
+Patch77: vim-7.1.078
+Patch78: vim-7.1.079
+Patch79: vim-7.1.080
+Patch80: vim-7.1.081
+Patch81: vim-7.1.082
+Patch82: vim-7.1.083
+Patch83: vim-7.1.084
+Patch84: vim-7.1.085
+Patch85: vim-7.1.086
+Patch86: vim-7.1.087
+Patch87: vim-7.1.088
+Patch88: vim-7.1.089
+Patch89: vim-7.1.090
+Patch90: vim-7.1.091
+Patch91: vim-7.1.092
+Patch92: vim-7.1.093
+Patch93: vim-7.1.094
+Patch94: vim-7.1.095
+Patch95: vim-7.1.096
+Patch96: vim-7.1.097
+Patch97: vim-7.1.098
+Patch98: vim-7.1.099
+Patch99: vim-7.1.100
+Patch100: vim-7.1.101
+Patch101: vim-7.1.102
+Patch102: vim-7.1.103
+Patch103: vim-7.1.104
+Patch104: vim-7.1.105
+Patch105: vim-7.1.106
+Patch106: vim-7.1.107
+Patch107: vim-7.1.108
+Patch108: vim-7.1.109
+Patch109: vim-7.1.110
+Patch110: vim-7.1.111
+Patch111: vim-7.1.112
+Patch112: vim-7.1.113
+Patch113: vim-7.1.114
+Patch114: vim-7.1.115
+Patch115: vim-7.1.116
+Patch116: vim-7.1.117
+Patch117: vim-7.1.118
+Patch118: vim-7.1.119
+Patch119: vim-7.1.120
+Patch120: vim-7.1.121
+Patch121: vim-7.1.122
+Patch122: vim-7.1.123
+Patch123: vim-7.1.124
+Patch124: vim-7.1.125
+Patch125: vim-7.1.126
+Patch126: vim-7.1.127
+Patch127: vim-7.1.128
+Patch128: vim-7.1.129
+Patch129: vim-7.1.130
+Patch130: vim-7.1.131
+Patch131: vim-7.1.132
+Patch132: vim-7.1.133
+Patch133: vim-7.1.134
+Patch134: vim-7.1.135
+Patch135: vim-7.1.136
+Patch136: vim-7.1.137
+Patch137: vim-7.1.138
+Patch138: vim-7.1.139
+Patch139: vim-7.1.140
+Patch140: vim-7.1.141
+Patch141: vim-7.1.142
+Patch142: vim-7.1.143
+Patch143: vim-7.1.144
+Patch144: vim-7.1.145
+Patch145: vim-7.1.146
+Patch146: vim-7.1.147
+Patch147: vim-7.1.148
+Patch148: vim-7.1.149
+Patch149: vim-7.1.150
+Patch150: vim-7.1.151
+Patch151: vim-7.1.152
+Patch152: vim-7.1.153
+Patch153: vim-7.1.154
+Patch154: vim-7.1.155
+Patch155: vim-7.1.156
+Patch156: vim-7.1.157
+Patch157: vim-7.1.158
+Patch158: vim-7.1.159
+Patch159: vim-7.1.160
+Patch160: vim-7.1.161
+Patch161: vim-7.1.162
+Patch162: vim-7.1.163
+Patch163: vim-7.1.164
+Patch164: vim-7.1.165
+Patch165: vim-7.1.166
+Patch166: vim-7.1.167
+Patch167: vim-7.1.168
+Patch168: vim-7.1.169
+Patch169: vim-7.1.170
+Patch170: vim-7.1.171
+Patch171: vim-7.1.172
+Patch172: vim-7.1.173
+Patch173: vim-7.1.174
+Patch174: vim-7.1.175
+Patch175: vim-7.1.176
+Patch176: vim-7.1.177
+Patch177: vim-7.1.178
+Patch178: vim-7.1.179
+Patch179: vim-7.1.180
+Patch180: vim-7.1.181
+Patch181: vim-7.1.182
+Patch182: vim-7.1.183
+Patch183: vim-7.1.184
+Patch184: vim-7.1.185
+Patch185: vim-7.1.186
+Patch186: vim-7.1.187
+Patch187: vim-7.1.188
+Patch188: vim-7.1.189
+Patch189: vim-7.1.190
+Patch190: vim-7.1.191
+Patch191: vim-7.1.192
+Patch192: vim-7.1.193
+Patch193: vim-7.1.194
+Patch194: vim-7.1.195
+Patch195: vim-7.1.196
+Patch196: vim-7.1.197
+Patch197: vim-7.1.198
+Patch198: vim-7.1.199
+Patch199: vim-7.1.200
+Patch200: vim-7.1.201
+Patch201: vim-7.1.202
+Patch202: vim-7.1.203
+Patch203: vim-7.1.204
+Patch204: vim-7.1.205
+Patch205: vim-7.1.206
+Patch206: vim-7.1.207
+Patch207: vim-7.1.208
+Patch208: vim-7.1.209
+Patch209: vim-7.1.210
+Patch210: vim-7.1.211
+Patch211: vim-7.1.212
+Patch212: vim-7.1.213
+Patch213: vim-7.1.214
+Patch214: vim-7.1.215
+Patch215: vim-7.1.216
+Patch216: vim-7.1.217
+Patch217: vim-7.1.218
+Patch218: vim-7.1.219
+Patch219: vim-7.1.220
+Patch220: vim-7.1.221
+Patch221: vim-7.1.222
+Patch222: vim-7.1.223
+Patch223: vim-7.1.224
+Patch224: vim-7.1.225
+Patch225: vim-7.1.226
+Patch226: vim-7.1.227
+Patch227: vim-7.1.228
+Patch228: vim-7.1.229
+Patch229: vim-7.1.230
+Patch230: vim-7.1.231
+Patch231: vim-7.1.232
+Patch232: vim-7.1.233
+Patch233: vim-7.1.234
+Patch234: vim-7.1.235
+Patch235: vim-7.1.236
+Patch236: vim-7.1.237
+Patch237: vim-7.1.238
+Patch238: vim-7.1.239
+Patch239: vim-7.1.240
+Patch240: vim-7.1.241
+Patch241: vim-7.1.242
+Patch242: vim-7.1.243
+Patch243: vim-7.1.244
+Patch244: vim-7.1.245
+Patch245: vim-7.1.246
+Patch246: vim-7.1.247
+Patch247: vim-7.1.248
+Patch248: vim-7.1.249
+Patch249: vim-7.1.250
+Patch250: vim-7.1.251
+Patch251: vim-7.1.252
+Patch252: vim-7.1.253
+Patch253: vim-7.1.254
+Patch254: vim-7.1.255
+Patch255: vim-7.1.256
+Patch256: vim-7.1.257
+Patch257: vim-7.1.258
+Patch258: vim-7.1.259
+Patch259: vim-7.1.260
+Patch260: vim-7.1.261
+Patch261: vim-7.1.262
+Patch262: vim-7.1.263
+Patch263: vim-7.1.264
+Patch264: vim-7.1.265
+Patch265: vim-7.1.266
+Patch266: vim-7.1.267
+Patch267: vim-7.1.268
+Patch268: vim-7.1.269
+Patch269: vim-7.1.270
+Patch270: vim-7.1.271
+Patch271: vim-7.1.272
+Patch272: vim-7.1.273
+Patch273: vim-7.1.274
+Patch274: vim-7.1.275
+Patch275: vim-7.1.276
+Patch276: vim-7.1.277
+Patch277: vim-7.1.278
+Patch278: vim-7.1.279
+Patch279: vim-7.1.280
+Patch280: vim-7.1.281
+Patch281: vim-7.1.282
+Patch282: vim-7.1.283
+Patch283: vim-7.1.284
+Patch284: vim-7.1.285
+Patch285: vim-7.1.286
+Patch286: vim-7.1.287
+Patch287: vim-7.1.288
+Patch288: vim-7.1.289
+Patch289: vim-7.1.290
+Patch290: vim-7.1.291
+Patch291: vim-7.1.292
+Patch292: vim-7.1.293
+Patch293: vim-7.1.294
+Patch294: vim-7.1.295
+Patch295: vim-7.1.296
+Patch296: vim-7.1.297
+Patch297: vim-7.1.298
+Patch298: vim-7.1.299
+Patch299: vim-7.1.300
+Patch300: vim-7.1.301
+Patch301: vim-7.1.302
+Patch302: vim-7.1.303
+Patch303: vim-7.1.304
+Patch304: vim-7.1.305
+Patch305: vim-7.1.306
+Patch306: vim-7.1.307
+Patch307: vim-7.1.308
+Patch308: vim-7.1.309
+Patch309: vim-7.1.310
+Patch310: vim-7.1.311
+Patch311: vim-7.1.312
+Patch312: vim-7.1.313
+Patch313: vim-7.1.314
+Buildroot: %{_tmppath}/%{name}-buildroot
+BuildRequires: coreutils, grep, sed, make, gcc, gettext, gtk2
+BuildRequires: perl, python, ruby, ncurses, libattr, libacl
+BuildRequires: libX11, libSM, libICE, libXt
+Requires: %{name}-common = %{version}-%{release}
+Obsoletes: vim-minimal, vim-enhanced
 
 %description
 VIM (VIsual editor iMproved) is an updated and improved version of the
@@ -134,7 +339,6 @@ multiple windows, multi-level undo, block highlighting and more.
 %package common
 Summary: The common files needed by any version of the VIM editor.
 Group: Applications/Editors
-Obsoletes: vim7-common
 
 %description common
 VIM (VIsual editor iMproved) is an updated and improved version of the
@@ -143,56 +347,14 @@ still very popular.  VIM improves on vi by adding new features:
 multiple windows, multi-level undo, block highlighting and more.  The
 vim-common package contains files which every VIM binary will need in
 order to run.
-
 If you are installing vim-enhanced or vim-X11, you'll also need
 to install the vim-common package.
-
-
-%package minimal
-Summary: A minimal version of the VIM editor.
-Group: Applications/Editors
-Obsoletes: vim
-Obsoletes: vim7-minimal
-
-%description minimal
-VIM (VIsual editor iMproved) is an updated and improved version of the
-vi editor.  Vi was the first real screen-based editor for UNIX, and is
-still very popular.  VIM improves on vi by adding new features:
-multiple windows, multi-level undo, block highlighting and more. The
-vim-minimal package includes a minimal version of VIM, which is
-installed into /bin/vi for use when only the root partition is
-present. NOTE: The online help is only available when the vim-common
-package is installed.
-
-
-%package enhanced
-Summary: A version of the VIM editor which includes recent enhancements.
-Group: Applications/Editors
-Requires: vim-common = %{version}-%{release}
-Obsoletes: vim-color
-Obsoletes: vim7-enhanced
-
-%description enhanced
-VIM (VIsual editor iMproved) is an updated and improved version of the
-vi editor.  Vi was the first real screen-based editor for UNIX, and is
-still very popular.  VIM improves on vi by adding new features:
-multiple windows, multi-level undo, block highlighting and more.  The
-vim-enhanced package contains a version of VIM with extra, recently
-introduced features like Python and Perl interpreters.
-
-Install the vim-enhanced package if you'd like to use a version of the
-VIM editor which includes recently added enhancements like
-interpreters for the Python and Perl scripting languages.  You'll also
-need to install the vim-common package.
 
 
 %package X11
 Summary: The VIM version of the vi editor for the X Window System.
 Group: Applications/Editors
-Requires: vim-common = %{version}-%{release} libattr
-BuildRequires: gtk2 libSM libXt
-Prereq: gtk2 >= 2.6
-Obsoletes: vim7-X11
+Requires: vim-common = %{version}-%{release}
 
 %description X11
 VIM (VIsual editor iMproved) is an updated and improved version of the
@@ -208,510 +370,441 @@ with graphics and mouse capabilities.  You'll also need to install the
 vim-common package.
 
 
+
 %prep
-%setup -q -b 1 -n %{vimdir}
-cp -f %{SOURCE6} runtime/ftplugin/spec.vim
-# fix rogue dependencies from sample code
-chmod -x runtime/tools/mve.awk
-%patch2002 -p1
-%patch2003 -p1
-%patch2004 -p1
-%patch2010 -p1
-perl -pi -e "s,bin/nawk,bin/awk,g" runtime/tools/mve.awk
+%setup -q -c -a1
+pushd vim??
+%patch0 -p0
+%patch1 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p0
+%patch7 -p0
+%patch8 -p0
+%patch9 -p0
+%patch10 -p0
+%patch11 -p0
+%patch12 -p0
+%patch13 -p0
+%patch14 -p0
+%patch15 -p0
+%patch16 -p0
+%patch17 -p0
+%patch18 -p0
+%patch19 -p0
+%patch20 -p0
+%patch21 -p0
+%patch22 -p0
+%patch23 -p0
+%patch24 -p0
+%patch25 -p0
+%patch26 -p0
+%patch27 -p0
+%patch28 -p0
+%patch29 -p0
+%patch30 -p0
+%patch31 -p0
+%patch32 -p0
+%patch33 -p0
+%patch34 -p0
+%patch35 -p0
+%patch36 -p0
+%patch37 -p0
+%patch38 -p0
+%patch39 -p0
+%patch41 -p0
+%patch42 -p0
+%patch43 -p0
+%patch44 -p0
+%patch45 -p0
+%patch46 -p0
+%patch47 -p0
+%patch48 -p0
+%patch49 -p0
+%patch50 -p0
+%patch51 -p0
+%patch52 -p0
+%patch53 -p0
+%patch54 -p0
+%patch55 -p0
+%patch56 -p0
+%patch57 -p0
+%patch58 -p0
+%patch59 -p0
+%patch60 -p0
+%patch61 -p0
+%patch62 -p0
+%patch63 -p0
+%patch65 -p0
+%patch66 -p0
+%patch67 -p0
+%patch68 -p0
+%patch70 -p0
+%patch72 -p0
+%patch73 -p0
+%patch74 -p0
+%patch75 -p0
+%patch76 -p0
+%patch77 -p0
+%patch78 -p0
+%patch80 -p0
+%patch81 -p0
+%patch82 -p0
+%patch83 -p0
+%patch84 -p0
+%patch85 -p0
+%patch86 -p0
+%patch88 -p0
+%patch89 -p0
+%patch92 -p0
+%patch93 -p0
+%patch94 -p0
+%patch95 -p0
+%patch96 -p0
+%patch97 -p0
+%patch98 -p0
+%patch99 -p0
+%patch100 -p0
+%patch101 -p0
+%patch102 -p0
+%patch103 -p0
+%patch104 -p0
+%patch105 -p0
+%patch106 -p0
+%patch107 -p0
+%patch108 -p0
+%patch109 -p0
+%patch110 -p0
+%patch111 -p0
+%patch112 -p0
+%patch113 -p0
+%patch114 -p0
+%patch115 -p0
+%patch116 -p0
+%patch117 -p0
+%patch118 -p0
+%patch119 -p0
+%patch120 -p0
+%patch121 -p0
+%patch122 -p0
+%patch124 -p0
+%patch129 -p0
+%patch130 -p0
+%patch131 -p0
+%patch132 -p0
+%patch134 -p0
+%patch135 -p0
+%patch136 -p0
+%patch137 -p0
+%patch138 -p0
+%patch139 -p0
+%patch140 -p0
+%patch141 -p0
+%patch142 -p0
+%patch143 -p0
+%patch144 -p0
+%patch147 -p0
+%patch148 -p0
+%patch149 -p0
+%patch150 -p0
+%patch151 -p0
+%patch152 -p0
+%patch153 -p0
+%patch154 -p0
+%patch155 -p0
+%patch156 -p0
+%patch158 -p0
+%patch159 -p0
+%patch160 -p0
+%patch161 -p0
+%patch162 -p0
+%patch163 -p0
+%patch164 -p0
+%patch165 -p0
+%patch166 -p0
+%patch168 -p0
+%patch169 -p0
+%patch170 -p0
+%patch171 -p0
+%patch172 -p0
+%patch173 -p0
+%patch174 -p0
+%patch175 -p0
+%patch176 -p0
+%patch177 -p0
+%patch178 -p0
+%patch179 -p0
+%patch180 -p0
+%patch181 -p0
+%patch182 -p0
+%patch183 -p0
+%patch184 -p0
+%patch186 -p0
+%patch187 -p0
+%patch188 -p0
+%patch189 -p0
+%patch190 -p0
+%patch191 -p0
+%patch192 -p0
+%patch193 -p0
+%patch194 -p0
+%patch196 -p0
+%patch197 -p0
+%patch198 -p0
+%patch199 -p0
+%patch200 -p0
+%patch201 -p0
+%patch202 -p0
+%patch204 -p0
+%patch205 -p0
+%patch206 -p0
+%patch207 -p0
+%patch208 -p0
+%patch209 -p0
+%patch210 -p0
+%patch211 -p0
+%patch212 -p0
+%patch213 -p0
+%patch214 -p0
+%patch215 -p0
+%patch216 -p0
+%patch217 -p0
+%patch218 -p0
+%patch219 -p0
+%patch220 -p0
+%patch221 -p0
+%patch222 -p0
+%patch223 -p0
+%patch224 -p0
+%patch225 -p0
+%patch226 -p0
+%patch227 -p0
+%patch228 -p0
+%patch229 -p0
+%patch230 -p0
+%patch231 -p0
+%patch232 -p0
+%patch233 -p0
+%patch234 -p0
+%patch235 -p0
+%patch236 -p0
+%patch237 -p0
+%patch238 -p0
+%patch239 -p0
+%patch240 -p0
+%patch241 -p0
+%patch242 -p0
+%patch243 -p0
+%patch244 -p0
+%patch245 -p0
+%patch246 -p0
+%patch247 -p0
+%patch248 -p0
+%patch249 -p0
+%patch250 -p0
+%patch251 -p0
+%patch252 -p0
+%patch253 -p0
+%patch254 -p0
+%patch255 -p0
+%patch256 -p0
+%patch257 -p0
+%patch258 -p0
+%patch259 -p0
+%patch260 -p0
+%patch261 -p0
+%patch262 -p0
+%patch263 -p0
+%patch264 -p0
+%patch265 -p0
+%patch266 -p0
+%patch267 -p0
+%patch268 -p0
+%patch269 -p0
+%patch270 -p0
+%patch271 -p0
+%patch272 -p0
+%patch273 -p0
+%patch275 -p0
+%patch276 -p0
+%patch278 -p0
+%patch280 -p0
+%patch283 -p0
+%patch285 -p0
+%patch286 -p0
+%patch287 -p0
+%patch288 -p0
+%patch289 -p0
+%patch290 -p0
+%patch291 -p0
+%patch292 -p0
+%patch293 -p0
+%patch294 -p0
+%patch295 -p0
+%patch296 -p0
+%patch297 -p0
+%patch298 -p0
+%patch299 -p0
+%patch300 -p0
+%patch301 -p0
+%patch302 -p0
+%patch303 -p0
+%patch304 -p0
+%patch305 -p0
+%patch306 -p0
+%patch307 -p0
+%patch308 -p0
+%patch309 -p0
+%patch310 -p0
+%patch311 -p0
+%patch312 -p0
+%patch313 -p0
+popd
 
-# Base patches...
-# for i in `seq 1 14`; do printf "%%patch%03d -p0 \n" $i; done
-%patch001 -p0
-%patch002 -p0
-%patch003 -p0
-%patch004 -p0
-# Win32:
-#patch005 -p0
-# MAC:
-#patch006 -p0
-%patch007 -p0
-%patch008 -p0
-%patch009 -p0
-%patch010 -p0
-%patch011 -p0
-%patch012 -p0
-%patch013 -p0
-%patch014 -p0
-%patch015 -p0
-%patch016 -p0
-%patch017 -p0
-# VMS:
-#patch018 -p0
-%patch019 -p0
-%patch020 -p0
-%patch021 -p0
-%patch022 -p0
-%patch023 -p0
-%patch024 -p0
-%patch025 -p0
-%patch026 -p0
-# Win32
-#patch027 -p0
-# OS/2
-#patch028 -p0
-%patch029 -p0
-%patch030 -p0
-%patch031 -p0
-# Win32
-#patch032 -p0
-%patch033 -p0
-%patch034 -p0
-%patch035 -p0
-%patch036 -p0
-%patch037 -p0
-%patch038 -p0
-%patch039 -p0
-%patch040 -p0
-%patch041 -p0
-%patch042 -p0
 
-%patch3000 -p1
-%patch3001 -p1
-%patch3002 -p1
-%patch3003 -p1
-%patch3004 -p1
-#patch3005 -p1
-#patch3006 -p1
-
-%patch3009 -p1
-%patch3010 -p1
-%patch3011 -p1
-%patch3012 -p1
-
-%if %{WITH_SELINUX}
-%patch3100 -p1
-%patch3101 -p1
-%endif
-
-%if "%{withcvim}" == "1"
-mkdir cvim
-( cd cvim; unzip %{SOURCE12}; )
-patch -p1 < %{PATCH3008}
-%endif
-
-
+%define vimdir vim%(echo %{version} | %{__sed} 's,\\.,,')
 %build
-cd src
-autoconf
-#perl -pi -e "s,\\\$VIMRUNTIME,/usr/share/vim/%{vimdir},g" os_unix.h
-#perl -pi -e "s,\\\$VIM,/usr/share/vim/%{vimdir}/macros,g" os_unix.h
+pushd '%{vimdir}'
 
-export CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_FORTIFY_SOURCE=2"
-export CXXFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_FORTIFY_SOURCE=2"
-%if "%{withruby}" == "1"
-export  RUBY_CFLAGS=-I$(ruby -r rbconfig -e 'p Config::CONFIG["archdir"]')
-%endif
+# First build the X-enabled version, and save it
+%configure \
+	--with-features=huge \
+	--with-x \
+	--enable-xim \
+	--enable-multibyte \
+	--enable-gtk2-check \
+	--enable-gui=gtk2 \
+	--with-compiledby='<bugzilla@veith-m.de>' \
+	--enable-rubyinterp \
+	--enable-perlinterp \
+	--enable-pythoninterp \
+	--disable-tclinterp
+%{__make} %{?_smp_mflags}
+cd src && %{__mv} -v vim gvim && cd ..
 
-%configure --with-features=huge --enable-pythoninterp --enable-perlinterp \
-  --disable-tclinterp --with-x=yes \
-  --enable-xim --enable-multibyte \
-  --enable-gtk2-check --enable-gui=gtk2 \
-  --with-compiledby="<bugzilla@redhat.com>" --enable-cscope \
-  --with-modified-by="<bugzilla@redhat.com>" \
-%if "%{withnetbeans}" == "1"
-  --enable-netbeans \
-%else
-  --disable-netbeans \
-%endif
-%if "%{withruby}" == "1"
-  --enable-rubyinterp
-%endif
+# Clean up for the next build
+%{__make} clean
 
-make
-cp vim gvim
-make clean
+# This is vim-enhanced, but without X
+%configure \
+	--with-features=huge \
+	--without-x \
+	--disable-gui \
+	--disable-xim \
+	--enable-multibyte \
+	--with-compiledby='<bugzilla@veith-m.de>' \
+	--enable-rubyinterp \
+	--enable-perlinterp \
+	--enable-pythoninterp \
+	--disable-tclinterp
+%{__make} %{?_smp_mflags}
 
-%configure --prefix=/usr --with-features=huge --enable-pythoninterp \
- --enable-perlinterp --disable-tclinterp --with-x=no \
- --enable-gui=no --exec-prefix=/usr --enable-multibyte \
- --enable-cscope --with-modified-by="<bugzilla@redhat.com>" \
- --with-compiledby="<bugzilla@redhat.com>" \
-%if "%{withnetbeans}" == "1"
-  --enable-netbeans \
-%else
-  --disable-netbeans \
-%endif
-%if "%{withruby}" == "1"
-  --enable-rubyinterp
-%endif
-
-make
-cp vim enhanced-vim
-make clean
-
-#perl -pi -e "s/help.txt/vi-help.txt/"  os_unix.h ex_cmds.c
-perl -pi -e "s/\/etc\/vimrc/\/etc\/virc/"  os_unix.h
-%configure --prefix='${DEST}'/usr --with-features=tiny --with-x=no \
-  --enable-multibyte \
-  --disable-netbeans \
-  --disable-pythoninterp --disable-perlinterp --disable-tclinterp \
-  --with-tlib=termcap --enable-gui=no --disable-gpm --exec-prefix=/ --with-compiledby="<bugzilla@redhat.com>"
-
-make
+popd
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/bin
-mkdir -p $RPM_BUILD_ROOT/usr/{bin,share/vim}
-#cp -f %{SOURCE5} .
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
-%if "%{withcvim}" == "1"
-# cvim plugin stuff:
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/codesnippets-c
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/plugin/templates
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/wordlists
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/rc
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/ftplugin
-   install -m644 cvim/codesnippets-c/*  $RPM_BUILD_ROOT%{_datadir}/vim/%{vimdir}/codesnippets-c/
-   install -m644 cvim/plugin/templates/*  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/plugin/templates/
-   install -m644 cvim/plugin/wrapper.sh  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/plugin/
-   install -m644 cvim/plugin/c.vim  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/plugin/
-   install -m644 cvim/plugin/templates/*  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/plugin/templates/
-   install -m644 cvim/rc/*  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/rc/
-   install -m644 cvim/wordlists/*  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/wordlists/
-   install -m644 cvim/ftplugin/*  $RPM_BUILD_ROOT/%{_datadir}/vim/%{vimdir}/ftplugin/
-   cp cvim/doc/* runtime/doc
-   cp cvim/README.csupport .
-%endif
+pushd "%{vimdir}"
 
-cd src
-%makeinstall BINDIR=/bin DESTDIR=$RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT/bin/xxd $RPM_BUILD_ROOT/usr/bin/xxd
-make installmacros DESTDIR=$RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/{16x16,32x32,48x48,64x64}/apps
-install -m755 gvim $RPM_BUILD_ROOT/usr/bin/gvim
-install -m644 %{SOURCE7} \
-   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/16x16/apps/gvim.png
-install -m644 %{SOURCE8} \
-   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/32x32/apps/gvim.png
-install -m644 %{SOURCE9} \
-   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/48x48/apps/gvim.png
-install -m644 %{SOURCE10} \
-   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/64x64/apps/gvim.png
-install -m755 enhanced-vim $RPM_BUILD_ROOT/usr/bin/vim
+%{__make_install} -C src DESTDIR='%{buildroot}'
 
-( cd $RPM_BUILD_ROOT
-  mv ./bin/vimtutor ./usr/bin/vimtutor
-  mv ./bin/vim ./bin/vi
-  rm -f ./bin/rvim
-  ln -sf vi ./bin/ex
-  ln -sf vi ./bin/rvi
-  ln -sf vi ./bin/rview
-  ln -sf vi ./bin/view
-  ln -sf vim ./usr/bin/ex
-  ln -sf vim ./usr/bin/rvim
-  ln -sf vim ./usr/bin/vimdiff
-  perl -pi -e "s,$RPM_BUILD_ROOT,," .%{_mandir}/man1/vim.1 .%{_mandir}/man1/vimtutor.1
-  rm -f .%{_mandir}/man1/rvim.1
-  ln -sf vim.1.gz .%{_mandir}/man1/vi.1.gz
-  ln -sf vim.1.gz .%{_mandir}/man1/rvi.1.gz
-  ln -sf vim.1.gz .%{_mandir}/man1/rvim.1.gz
-  ln -sf vim.1.gz .%{_mandir}/man1/vimdiff.1.gz
-  ln -sf gvim ./usr/bin/gview
-  ln -sf gvim ./usr/bin/gex
-  ln -sf gvim ./usr/bin/evim
-  ln -sf gvim ./usr/bin/gvimdiff
-  ln -sf vim.1.gz .%{_mandir}/man1/gvim.1.gz
-  ln -sf vim.1.gz .%{_mandir}/man1/gvimdiff.1.gz
-  ln -sf gvim ./usr/bin/vimx
-  %if "%{desktop_file}" == "1"
-    mkdir -p $RPM_BUILD_ROOT/usr/share/applications
-    desktop-file-install --vendor net \
-        --dir $RPM_BUILD_ROOT/usr/share/applications \
-        --add-category "Application;Development;X-Red-Hat-Base" \
-        %{SOURCE3}
-  %else
-    mkdir -p ./etc/X11/applnk/Applications
-    cp %{SOURCE3} ./etc/X11/applnk/Applications/gvim.desktop
-  %endif
-  # ja_JP.ujis is obsolete, ja_JP.eucJP is recommended.
-  ( cd ./usr/share/vim/%{vimdir}/lang; \
-    ln -sf menu_ja_jp.ujis.vim menu_ja_jp.eucjp.vim )
-)
+# Install previously created X11-enabled vim binary
+%{__install} -m 0755 src/gvim '%{buildroot}/%{_bindir}/gvim'
 
-pushd $RPM_BUILD_ROOT/usr/share/vim/%{vimdir}/tutor
-mkdir conv
-   iconv -f CP1252 -t UTF8 tutor.ca > conv/tutor.ca
-   iconv -f CP1252 -t UTF8 tutor.it > conv/tutor.it
-   iconv -f CP1253 -t UTF8 tutor.gr > conv/tutor.gr
-   iconv -f CP1252 -t UTF8 tutor.fr > conv/tutor.fr
-   iconv -f CP1252 -t UTF8 tutor.es > conv/tutor.es
-   iconv -f CP1252 -t UTF8 tutor.de > conv/tutor.de
-   #iconv -f CP737 -t UTF8 tutor.gr.cp737 > conv/tutor.gr.cp737
-   #iconv -f EUC-JP -t UTF8 tutor.ja.euc > conv/tutor.ja.euc
-   #iconv -f SJIS -t UTF8 tutor.ja.sjis > conv/tutor.ja.sjis
-   iconv -f UTF8 -t UTF8 tutor.ja.utf-8 > conv/tutor.ja.utf-8
-   iconv -f UTF8 -t UTF8 tutor.ko.utf-8 > conv/tutor.ko.utf-8
-   iconv -f CP1252 -t UTF8 tutor.no > conv/tutor.no
-   iconv -f ISO-8859-2 -t UTF8 tutor.pl > conv/tutor.pl
-   iconv -f ISO-8859-2 -t UTF8 tutor.sk > conv/tutor.sk
-   iconv -f KOI8R -t UTF8 tutor.ru > conv/tutor.ru
-   iconv -f CP1252 -t UTF8 tutor.sv > conv/tutor.sv
-   mv -f tutor.gr.cp737 tutor.ja.euc tutor.ja.sjis tutor.ko.euc tutor.pl.cp1250 tutor.zh.big5 tutor.ru.cp1251 tutor.zh.euc conv/
-   rm -f tutor.ca tutor.de tutor.es tutor.fr tutor.gr tutor.it tutor.ja.utf-8 tutor.ko.utf-8 tutor.no tutor.pl tutor.sk tutor.ru tutor.sv
-mv -f conv/* .
-rmdir conv
+# Create links for X11-enabled vim
+pushd '%{buildroot}/%{_bindir}'
+for link in evim gex gview gvimdiff vimx
+do
+	%{__ln_s} gvim "${link}"
+done
 popd
 
-# Dependency cleanups
-chmod 644 $RPM_BUILD_ROOT/usr/share/vim/%{vimdir}/doc/vim2html.pl \
- $RPM_BUILD_ROOT/usr/share/vim/%{vimdir}/tools/*.pl \
- $RPM_BUILD_ROOT/usr/share/vim/%{vimdir}/tools/vim132
-chmod 644 ../runtime/doc/vim2html.pl
+# Icons for gvim
+%{__mkdir_p} '%{buildroot}/%{_datadir}/icons/hicolor'/{16x16,32x32,48x48}/apps
+for size in 16x16 32x32 48x48
+do
+	%{__install} -m 0644 "runtime/vim${size}.png" \
+	"%{buildroot}/%{_datadir}/icons/hicolor/${size}/apps/vim.png"
+done
 
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
-cat >$RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/vim.sh <<EOF
-if [ -n "\$BASH_VERSION" -o -n "\$KSH_VERSION" -o -n "\$ZSH_VERSION" ]; then
-  [ -x /usr/bin/id ] || return
-  [ \`/usr/bin/id -u\` -le 100 ] && return
-  # for bash and zsh, only if no alias is already set
-  alias vi >/dev/null 2>&1 || alias vi=vim
-fi
-EOF
-cat >$RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/vim.csh <<EOF
-[ -x /usr/bin/id ] || exit
-[ \`/usr/bin/id -u\` -gt 100 ] && alias vi vim
-EOF
-chmod 0755 $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/*
-install -m644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/vimrc
-install -m644 %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/virc
-(cd $RPM_BUILD_ROOT/usr/share/vim/%{vimdir}/doc;
- gzip -9 *.txt
- gzip -d help.txt.gz
- cat tags | sed -e 's/\t\(.*.txt\)\t/\t\1.gz\t/;s/\thelp.txt.gz\t/\thelp.txt\t/' > tags.new; mv -f tags.new tags
-# cp %{SOURCE12} . 
- )
-(cd ../runtime; rm -rf doc; ln -svf ../../vim/%{vimdir}/doc docs;) 
+# Make sure the manpages are set up correctly
+pushd '%{buildroot}/%{_mandir}'
+for path in $(find . -name vim.1\* -or -name vimdiff.1\*)
+do
+	basename="${path##*/}"
+	dir="${path%/*}"
+	pushd "${dir}"
+	%{__ln_s} "${basename}" "g${basename}"
+	popd
+done
+popd
 
-# Remove some man pages which are provided by man-pages-{fr,it,pl}:
-rm -f $RPM_BUILD_ROOT/%{_mandir}/pl/man1/{evim,ex,rview,rvim,view,vim,vimdiff,vimtutor}.1*
-rm -f $RPM_BUILD_ROOT/%{_mandir}/fr/man1/{rview,view,vim,vimdiff,vimtutor}.1*
-rm -f $RPM_BUILD_ROOT/%{_mandir}/it/man1/vim.1*
+[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
+    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
+
+popd
 
 
-%post X11
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-  gtk-update-icon-cache --ignore-theme-index -q %{_datadir}/icons/hicolor
-fi
+%post
 
-%postun X11
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-  gtk-update-icon-cache --ignore-theme-index -q %{_datadir}/icons/hicolor
-fi
+%postun
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
-%files common
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/vimrc
-%doc README*
-%doc runtime/docs
-%doc $RPM_SOURCE_DIR/Changelog.rpm
-%dir /usr/share/vim
-%dir /usr/share/vim/%{vimdir}
-/usr/share/vim/%{vimdir}/autoload
-/usr/share/vim/%{vimdir}/colors
-/usr/share/vim/%{vimdir}/compiler
-/usr/share/vim/%{vimdir}/doc
-#exclude /usr/share/vim/%{vimdir}/doc/vi-help.txt
-/usr/share/vim/%{vimdir}/*.vim
-/usr/share/vim/%{vimdir}/ftplugin
-/usr/share/vim/%{vimdir}/indent
-/usr/share/vim/%{vimdir}/keymap
-/usr/share/vim/%{vimdir}/lang/*.vim
-/usr/share/vim/%{vimdir}/lang/*.txt
-%dir /usr/share/vim/%{vimdir}/lang
-/usr/share/vim/%{vimdir}/macros
-/usr/share/vim/%{vimdir}/plugin
-/usr/share/vim/%{vimdir}/print
-/usr/share/vim/%{vimdir}/spell
-/usr/share/vim/%{vimdir}/syntax
-/usr/share/vim/%{vimdir}/tools
-/usr/share/vim/%{vimdir}/tutor
-%lang(af) /usr/share/vim/%{vimdir}/lang/af
-%lang(ca) /usr/share/vim/%{vimdir}/lang/ca
-%lang(cs) /usr/share/vim/%{vimdir}/lang/cs
-%lang(de) /usr/share/vim/%{vimdir}/lang/de
-%lang(en_GB) /usr/share/vim/%{vimdir}/lang/en_GB
-%lang(es) /usr/share/vim/%{vimdir}/lang/es
-%lang(fr) /usr/share/vim/%{vimdir}/lang/fr
-%lang(ga) /usr/share/vim/%{vimdir}/lang/ga
-%lang(it) /usr/share/vim/%{vimdir}/lang/it
-%lang(ja) /usr/share/vim/%{vimdir}/lang/ja
-%lang(ko) /usr/share/vim/%{vimdir}/lang/ko
-%lang(no) /usr/share/vim/%{vimdir}/lang/no
-%lang(pl) /usr/share/vim/%{vimdir}/lang/pl
-%lang(ru) /usr/share/vim/%{vimdir}/lang/ru
-%lang(sk) /usr/share/vim/%{vimdir}/lang/sk
-%lang(sv) /usr/share/vim/%{vimdir}/lang/sv
-%lang(uk) /usr/share/vim/%{vimdir}/lang/uk
-%lang(vi) /usr/share/vim/%{vimdir}/lang/vi
-%lang(zh_CN) /usr/share/vim/%{vimdir}/lang/zh_CN
-%lang(zh_TW) /usr/share/vim/%{vimdir}/lang/zh_TW
-%lang(zh_CN.UTF-8) /usr/share/vim/%{vimdir}/lang/zh_CN.UTF-8
-%lang(zh_TW.UTF-8) /usr/share/vim/%{vimdir}/lang/zh_TW.UTF-8
-/usr/bin/xxd
-%{_mandir}/man1/vim.*
-%{_mandir}/man1/ex.*
-%{_mandir}/man1/vi.*
-%{_mandir}/man1/view.*
-%{_mandir}/man1/rvi.*
-%{_mandir}/man1/rview.*
-%{_mandir}/man1/xxd.*
-%lang(fr) %{_mandir}/fr*
-%lang(it) %{_mandir}/it*
-%lang(ru) %{_mandir}/ru*
-%lang(pl) %{_mandir}/pl*
-
-%files minimal
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/virc
-/bin/ex
-/bin/vi
-/bin/view
-/bin/rvi
-/bin/rview
-#/usr/share/vim/%{vimdir}/doc/vi-help.txt
-
-%files enhanced
-%defattr(-,root,root)
-/usr/bin/vim
-/usr/bin/rvim
-/usr/bin/vimdiff
-/usr/bin/ex
-/usr/bin/vimtutor
-%config %{_sysconfdir}/profile.d/vim.*
-%{_mandir}/man1/rvim.*
-%{_mandir}/man1/vimdiff.*
-%{_mandir}/man1/vimtutor.*
+%files
+%defattr(-, root, root)
+%doc vim??/README*
+%{_bindir}/ex
+%{_bindir}/rview
+%{_bindir}/rvim
+%{_bindir}/view
+%{_bindir}/vim
+%{_bindir}/vimdiff
+%{_bindir}/vimtutor
+%{_bindir}/xxd
+%doc %{_mandir}/man1/ex.1*
+%doc %{_mandir}/man1/gvim.1*
+%doc %{_mandir}/man1/gvimdiff.1*
+%doc %{_mandir}/man1/rview.1*
+%doc %{_mandir}/man1/rvim.1*
+%doc %{_mandir}/man1/view.1*
+%doc %{_mandir}/man1/vim.1*
+%doc %{_mandir}/man1/vimdiff.1*
+%doc %{_mandir}/man1/vimtutor.1*
+%doc %{_mandir}/man1/xxd.1*
+%doc %{_mandir}/*/man1/ex.1*
+%doc %{_mandir}/*/man1/gvim.1*
+%doc %{_mandir}/*/man1/gvimdiff.1*
+%doc %{_mandir}/*/man1/rview.1*
+%doc %{_mandir}/*/man1/rvim.1*
+%doc %{_mandir}/*/man1/view.1*
+%doc %{_mandir}/*/man1/vim.1*
+%doc %{_mandir}/*/man1/vimdiff.1*
+%doc %{_mandir}/*/man1/vimtutor.1*
+%doc %{_mandir}/*/man1/xxd.1*
 
 %files X11
-%defattr(-,root,root)
-%if "%{desktop_file}" == "1"
-/usr/share/applications/*
-%else
-/etc/X11/applnk/*/gvim.desktop
-%endif
-/usr/bin/gvim
-/usr/bin/gvimdiff
-/usr/bin/gview
-/usr/bin/gex
-/usr/bin/vimx
-/usr/bin/evim
-%{_mandir}/man1/evim.*
-%{_mandir}/man1/gvim*
-%{_datadir}/icons/hicolor/*/apps/*
+%defattr(-, root, root)
+%doc vim??/README*
+%{_bindir}/evim
+%{_bindir}/gex
+%{_bindir}/gview
+%{_bindir}/gvim
+%{_bindir}/gvimdiff
+%{_bindir}/gvimtutor
+%{_bindir}/vimx
+%{_datadir}/icons/hicolor/*/apps/vim.png
+%doc %{_mandir}/man1/evim.1*
+%doc %{_mandir}/man1/gvim.1*
+%doc %{_mandir}/man1/gvimdiff.1*
+%doc %{_mandir}/*/man1/evim.1*
+%doc %{_mandir}/*/man1/gvim.1*
+%doc %{_mandir}/*/man1/gvimdiff.1*
 
-%changelog
-* Tue Jul 25 2006 Karsten Hopp <karsten@redhat.de> 7.0.042-0.fc5
-- patchlevel 42
-- allow usage of VIM environment variable
-
-* Wed Jul 12 2006 Karsten Hopp <karsten@redhat.de> 7.0.035-0.fc5.1
-- fix a typo in http.conf syntax file
-
-* Mon Jun 26 2006 Karsten Hopp <karsten@redhat.de> 7.0.035-0.fc5
-- patchlevel 35
-- remove conflicts with some man-page packages
-
-* Wed Jun 21 2006 Karsten Hopp <karsten@redhat.de> 7.0.022-2
-- add binfmt_misc rpc_pipefs to fstypes for better mtab highlighting
-
-* Tue Jun 20 2006 Karsten Hopp <karsten@redhat.de> 7.0.022-1
-- patchlevel 22
-
-* Tue Jun 20 2006 Karsten Hopp <karsten@redhat.de> 7.0.020-1
-- patchlevel 20
-
-* Tue Jun 20 2006 Karsten Hopp <karsten@redhat.de> 7.0.019-1
-- patchlevel 19
-- buildrequire autoconf
-
-* Tue May 30 2006 Karsten Hopp <karsten@redhat.de> 7.0.017-1
-- patchlevel 17, although it affects just the Motif version
-- own some directories (#192787)
-
-* Sat May 13 2006 Karsten Hopp <karsten@redhat.de> 7.0.016-1
-- patchlevel 016
-
-* Fri May 12 2006 Karsten Hopp <karsten@redhat.de> 7.0.012-1
-- patchlevel 012
-
-* Thu May 11 2006 Karsten Hopp <karsten@redhat.de> 7.0.010-1
-- patchlevel 010
-
-* Wed May 10 2006 Karsten Hopp <karsten@redhat.de> 7.0.005-2
-- patchlevel 005
-- move older changelogs (<7.0) into a file, no need to keep them 
-  in the rpm database
-
-* Tue May 09 2006 Karsten Hopp <karsten@redhat.de> 7.0.000-2
-- bump epoch, the buildsystem thinks 7.0.000-2 is older than 7.0.g001-1
-  although rpm is quite happy with it.
-
-* Mon May 08 2006 Karsten Hopp <karsten@redhat.de> 7.0.000-1
-- vim-7.0 
-- Spell checking support for about 50 languages
-- Intelligent completion for C, HTML, Ruby, Python, PHP, etc.
-- Tab pages, each containing multiple windows
-- Undo branches: never accidentally lose text again
-- Vim script supports Lists and Dictionaries (similar to Python)
-- Vim script profiling
-- Improved Unicode support
-- Highlighting of cursor line, cursor column and matching braces
-- Translated manual pages support.
-- Internal grep; works on all platforms, searches compressed files
-- Browsing remote directories, zip and tar archives
-- Printing multi-byte text
-- find details about the changes since vim-6.4 with :help version7
-
-- fix SE Linux context of temporary (.swp) files (#189968)
-- /bin/vi /vim-minimal is now using /etc/virc to avoid .rpmnew files
-  when updating
-
-* Tue May 02 2006 Karsten Hopp <karsten@redhat.de> 7.0.g001-1
-- vim-7.0g BETA
-
-* Fri Apr 28 2006 Karsten Hopp <karsten@redhat.de> 7.0.f001-1
-- vim-7.0f3 BETA
-
-* Thu Apr 20 2006 Karsten Hopp <karsten@redhat.de> 7.0.e001-1
-- vim-7.0e BETA
-
-* Tue Apr 11 2006 Karsten Hopp <karsten@redhat.de> 7.0.d001-1
-- vim-7.0d BETA
-
-* Fri Apr 07 2006 Karsten Hopp <karsten@redhat.de> 7.0c.000-3
-- fix vimrc filename
-
-* Thu Apr 06 2006 Karsten Hopp <karsten@redhat.de> 7.0c.000-2
-- new snapshot
-
-* Tue Apr 04 2006 Karsten Hopp <karsten@redhat.de> 7.0c.000-1
-- vim-7.0c BETA
-
-* Wed Mar 22 2006 Karsten Hopp <karsten@redhat.de> 7.0aa.000-3
-- Rawhide build as vim, opposed to vim7 (prerelease)
-- conflict with older man-pages-{it,fr} packages
-- cleanup lang stuff
-
-* Thu Mar 16 2006 Karsten Hopp <karsten@redhat.de> 7.0aa.000-2
-- make it coexist with vim-6 (temporarily)
-- new CVS snapshot
-
-* Tue Mar 14 2006 Karsten Hopp <karsten@redhat.de> 7.0aa.000-1
-- vim7 pre Release
-- older changelogs available in Changelog.rpm
-
-# vim:nrformats-=octal
+%files common
+%defattr(-, root, root)
+%{_datadir}/vim/
