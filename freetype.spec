@@ -1,19 +1,18 @@
 Name: freetype
-Version: 2.3.5
-Release: 1ev
+Version: 2.3.6
+Release: 2ev
 Summary: An open-source font renderer
 URL: http://www.freetype.org/
 Group: System Environment/Libraries
 License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: http://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
+Vendor: GNyU-Linux
+Source: http://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.bz2
 Patch0: freetype-2.1.10-enable-ft2-bci.patch
 Patch1: freetype-2.2.1-memcpy-fix.patch
 Patch2: freetype-2.3.0-enable-spr.patch
 Patch3: freetype-multilib.patch
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, zlib
+BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, zlib, pkg-config
 
 %description
 FreeType 2 is a software font engine that is designed to be small, efficient,
@@ -25,20 +24,16 @@ well.
 
 %prep
 %setup -q
-# %patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
 
 
 %build
 %configure
-%__make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && %__rm -rf "$RPM_BUILD_ROOT"
-%__make_install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -49,7 +44,7 @@ well.
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != '/' ] && %__rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
