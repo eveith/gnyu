@@ -1,6 +1,6 @@
 Name: libXdamage
-Version: 1.0.4
-Release: 1ev
+Version: 1.1.1
+Release: 2ev
 Summary: Allows to compute which parts of a X11 window must be redrawn
 URL: http://www.x.org/
 Group: User Interface/X
@@ -8,7 +8,8 @@ License: MIT
 Vendor: MSP Slackware
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pkg-config, x11-proto, libX11, libXfixes
+BuildRequires: coreutils, grep, sed, make, gcc, pkg-config
+BuildRequires: x11-proto, libX11, libXfixes
 
 %description
 This library allows to compute when a certain widget on a screen is afected by
@@ -23,12 +24,12 @@ correctly in real-time.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -39,7 +40,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
