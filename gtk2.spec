@@ -1,6 +1,6 @@
 Name: gtk2
-Version: 2.12.9
-Release: 3ev
+Version: 2.12.10
+Release: 4ev
 Summary: The GIMP Toolkit
 URL: http://www.gtk.org/
 Group: System Environment/Libraries
