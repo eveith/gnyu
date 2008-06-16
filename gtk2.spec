@@ -1,12 +1,13 @@
 Name: gtk2
 Version: 2.12.10
-Release: 4ev
+Release: 5ev
 Summary: The GIMP Toolkit
 URL: http://www.gtk.org/
 Group: System Environment/Libraries
 License: LGPL-2.1
 Vendor: GNyU-Linux
 Source: ftp://ftp.gtk.org/pub/gtk/v2.12/gtk+-%{version}.tar.bz2
+Patch: %{name}-clipboard-check-display.patch
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: make >= 3.79.1, gcc, glib2 >= 2.13.5, pango >= 1.17.3, atk >= 1.9
 BuildRequires: cairo >= 1.2, pkg-config >= 0.9.0, libjpeg, libpng, zlib
@@ -22,6 +23,7 @@ small one-off projects to complete application suites.
 
 %prep
 %setup -q -n gtk+-%{version}
+%patch0 -p1
 
 
 %build
