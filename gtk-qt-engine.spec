@@ -1,15 +1,16 @@
 Name: gtk-qt-engine
 Version: 0.8
-Release: 2ev
+Release: 3ev
 Summary: A theme engine for GTK+ that makes applications use Qt styles
 URL: http://gtk-qt.ecs.soton.ac.uk
 Group: User Interface/Desktops
 License: GPL
 Vendor: GNyU-Linux
 Source: http://gtk-qt.ecs.soton.ac.uk/files/0.7/gtk-qt-engine-%{version}.tar.bz2
+Patch: %{name}-flashplugin.patch
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: gcc, gcc-g++, make >= 3.79.1, qt3, gtk2, cmake >= 2.4, gettext
-BuildRequires: libX11, libICE, libXext, libSM
+BuildRequires: libX11, libICE, libXext, libSM, coreutils, grep, sed
 
 %description
 Gtk-Qt Theme Engine is a GTK+ theme engine meant for GTK applications running
@@ -19,6 +20,7 @@ plugins directly.
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1
 
 
 %build
