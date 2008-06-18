@@ -62,7 +62,7 @@ is not affiliated with any of these authors; it is now an independent project.
 %{_bindir}/pitchplay
 %{_bindir}/readmult
 %{_bindir}/readom
-%{_bindir}/wodim
+%attr(4711, root, root) %{_bindir}/wodim
 %{_sbindir}/netscsid
 %doc %{_mandir}/man1/cdda2ogg.1*
 %doc %{_mandir}/man1/devdump.1*
