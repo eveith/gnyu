@@ -1,15 +1,15 @@
 Name: libsdl
-Version: 1.2.12
+Version: 1.2.13
 Release: 1ev
-Summary: A library that gives portable low-level access for multimedia applications
+Summary: A library that gives portable low-level access for multimedia apps
 URL: http://www.libsdl.org/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: LGPL-2
+Vendor: GNyU-Linux
 Source: http://www.libsdl.org/release/SDL-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, alsa-lib, pth, svgalib
-Requires: alsa-libs, pth
+BuildRequires: coreutils, grep, sed, make, gcc, alsa-lib, pth, svgalib
+BuildRequires: pkg-config
 
 %description
 SDL is a library that allows you portable low-level access to a video
@@ -18,7 +18,7 @@ portable games which run on many different platforms.
 
 
 %prep
-%setup -q -n SDL-%{version}
+%setup -q -n 'SDL-%{version}'
 
 
 %build
@@ -58,16 +58,12 @@ portable games which run on many different platforms.
 	--enable-pthreads \
 	--enable-sdl-dlopen \
 	--disable-atari-ldg
-make %{_smp_mflags}	
+%{__make} %{?_smp_mflags}	
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -78,7 +74,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -88,5 +84,5 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_libdir}/libSDL*.*
 %{_libdir}/pkgconfig/sdl.pc
 %{_includedir}/SDL/
-%{_mandir}/*/*.*
+%doc %{_mandir}/*/*.*
 %{_datadir}/aclocal/sdl.m4
