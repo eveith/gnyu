@@ -1,19 +1,14 @@
 Name: alsa-lib
-Version: 1.0.14a
-Release: 1ev
+Version: 1.0.16
+Release: 2ev
 Summary: Library for userspace access to the Advanced Linux Sound System
 URL: http://www.alsa-project.org/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: LGPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.alsa-project.org/pub/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, doxygen
-Provides: libtool(%{_libdir}/libasound.la)
-Provides: libtool(%{_libdir}/alsa-lib/smixer/smixer-ac97.la)
-Provides: libtool(%{_libdir}/alsa-lib/smixer/smixer-hda.la)
-Provides: libtool(%{_libdir}/alsa-lib/smixer/smixer-sbase.la)
+BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, doxygen, pkg-config
 
 %description
 The Advanced Linux Sound Architecture (ALSA) provides audio and MIDI
@@ -27,14 +22,13 @@ simplifies programing and provides higher level functionality.
 
 %build
 %configure
-make %{_smp_mflags}
-make doc
+%{__make} %{?_smp_mflags}
+%{__make} doc
 
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -45,7 +39,7 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
