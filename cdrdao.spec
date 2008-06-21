@@ -38,7 +38,7 @@ a textual description of the CD contents (toc-file).
 %files
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING CREDITS README* NEWS
-%{_bindir}/cdrdao
+%attr(0711, root, root) %{_bindir}/cdrdao
 %{_bindir}/cue2toc
 %{_bindir}/toc2cddb
 %{_bindir}/toc2cue
