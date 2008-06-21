@@ -1,15 +1,15 @@
 Name: ruby
-Version: 1.8.6
-Release: 1ev
-Summary: The Ruby Programing Language
+Version: 1.8.7
+Release: 2ev
+Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, groff, openssl, libtermcap, ncurses, zlib, db
-BuildRequires: libX11
+BuildRequires: coreutils, grep, sed, make, gcc, groff, openssl
+BuildRequires: libtermcap, ncurses, zlib, db, libX11, readline, zlib, zlib
 
 %description
 Ruby is the interpreted scripting language for quick and
@@ -38,15 +38,12 @@ Features of Ruby:
 %configure \
 	--enable-shared \
 	--enable-install-doc
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -57,7 +54,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -72,6 +69,6 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_libdir}/*ruby*.*
 %dir %{_libdir}/ruby
 %{_libdir}/ruby/1.8/
-%{_mandir}/man1/ruby.1*
+%doc %{_mandir}/man1/ruby.1*
 %dir %{_datadir}/ri
 %{_datadir}/ri/1.8/
