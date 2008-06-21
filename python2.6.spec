@@ -1,19 +1,18 @@
 Name: python
-Version: 2.4.3
+Version: 2.4.5
 Release: 1ev
 Summary: A high-level scripting language
 URL: http://www.python.org/
 Group: Development/Languages
 License: Modified CNRI Open Source License
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: http://www.python.org/ftp/python/2.4.3/Python-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc-core, make >= 3.79.1, sed, findutils
+BuildRequires: gcc, gcc-g++, make >= 3.79.1, sed, findutils, openssl, libX11
+BuildRequires: zlib, ncurses, coreutils, grep, libstdc++, readline
 Provides: python = %{version}
 Provides: python(abi) = 2.4, python-abi = 2.4
-AutoReq: 0
-AutoProv: 0
+%define __python_requires %nil
 
 %description
 Python is an interpreted, interactive, object-oriented programming
@@ -32,34 +31,40 @@ Mac.
 
 
 %build
-%configure --enable-shared --enable-ipv6
-make BASECFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+%configure \
+	--enable-shared \
+	--enable-ipv6 \
+	--with-threads \
+	--with-fpectl \
+	--with-signal-module \
+	--with-cxx=%{_target_platform}-g++
+%{__make} %{?_smp_mflags} BASECFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 
 
 %install
-%makeinstall
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 #  fix the #! line in installed files
-find "$RPM_BUILD_ROOT" -type f -print0 |
-      xargs -0 grep -l /usr/local/bin/python | while read file
+find '%{buildroot}' -type f -print0 |
+      xargs -0 %{__grep} -l '/usr/local/bin/python' | while read file
 do
-   sed -i 's|^#!.*python|#!/bin/env python|' "$file"
+   %{__sed} -i 's|^#!.*python|#!/usr/bin/env python|' "${file}"
 done
-find "$RPM_BUILD_ROOT" -type f -print0 |
-      xargs -0 grep -l /usr/bin/env | while read file
+find '%{buildroot}' -type f -print0 |
+      xargs -0 %{__grep} -l '/usr/bin/env' | while read file
 do
-   sed -i 's|^#!.*python|#!/bin/env python|' "$file"
+   %{__sed} -i 's|^#!.*python|#!/usr/bin/env python|' "${file}"
 done
 
 # Clean up the testsuite - we don't need compiled files for it
-find ${RPM_BUILD_ROOT}/%{_libdir}/python*/test \
-    -name "*.pyc" -o -name "*.pyo" | xargs rm -f
+find '%{buildroot}/%{_libdir}/python*/test' \
+    -name '*.pyc' -o -name '*.pyo' | xargs %{__rm} -f
 
-find ${RPM_BUILD_ROOT}/%{_libdir}/python* -type d | \
-	sed "s|$RPM_BUILD_ROOT|%dir |" >> dynfiles
-find ${RPM_BUILD_ROOT}/%{_libdir}/python* -type f | \
-	sed "s|$RPM_BUILD_ROOT||" >> dynfiles
+find '%{buildroot}/%{_libdir}'/python* -type d | \
+	sed 's|%{buildroot}|%dir |' >> dynfiles
+find '%{buildroot}/%{_libdir}'/python* -type f | \
+	sed 's|%{buildroot}||' >> dynfiles
 
 %post
 /sbin/ldconfig
@@ -69,7 +74,7 @@ find ${RPM_BUILD_ROOT}/%{_libdir}/python* -type f | \
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f dynfiles
@@ -82,4 +87,4 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_bindir}/python
 %{_libdir}/libpython2.4.*
 %{_includedir}/python2.4/
-%dir %{_libdir}/python2.4
+%doc %{_mandir}/man1/python.1*
