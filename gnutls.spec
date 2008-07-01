@@ -1,6 +1,6 @@
 Name: gnutls
-Version: 2.2.2
-Release: 1ev
+Version: 2.4.1
+Release: 2ev
 Summary: An Open Source implementation of TLS 1.0 Internet protocol (RFC 2246)
 URL: http://www.gnu.org/software/gnutls/
 Group: System Environment/Libraries
@@ -67,16 +67,16 @@ designed to prevent eavesdropping, tampering, or message forgery."
 %{_bindir}/libgnutls-extra-config
 %{_bindir}/[ps][sr][kp]tool
 %{_includedir}/gnutls/
-%{_infodir}/gnutls*
+%doc %{_infodir}/gnutls*
 %{_libdir}/libgnutls-extra.*
 %{_libdir}/libgnutls-openssl.*
 %{_libdir}/libgnutls.*
 %{_libdir}/libgnutlsxx.*
 %{_libdir}/pkgconfig/gnutls.pc
 %{_libdir}/pkgconfig/gnutls-extra.pc
-%{_mandir}/man1/gnutls-cli*.1*
-%{_mandir}/man1/gnutls-serv.1*
-%{_mandir}/man1/*tool.1*
-%{_mandir}/man3/gnutls_*.3*
+%doc %{_mandir}/man1/gnutls-cli*.1*
+%doc %{_mandir}/man1/gnutls-serv.1*
+%doc %{_mandir}/man1/*tool.1*
+%doc %{_mandir}/man3/gnutls_*.3*
 %{_datadir}/aclocal/libgnutls.m4
 %{_datadir}/aclocal/libgnutls-extra.m4
