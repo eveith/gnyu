@@ -1,16 +1,18 @@
 Name: gnupg2
-Version: 2.0.3
-Release: 1ev
+Version: 2.0.9
+Release: 2ev
 Summary: The version of GnuPG supporting OpenPGP and S/MIME
 URL: http://www.gnupg.org/
 Group: Applications/Text
-License: GPL
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libgpg-error, libassuan, libksba, libgcrypt
-BuildRequires: zlib, bzip2, openldap-libs
-Requires: libgpg-error, libksba, libgcrypt, zlib, bzip2, openldap-libs
+BuildRequires(prep,build,install): coreutils, grep, sed
+BuildRequires(build,install): make, gettext
+BuildRequires(build): gcc, libgpg-error >= 1.4, libassuan >= 1.0.4
+BuildRequires(build): libksba >= 1.0.2, libgcrypt >= 1.2.2
+BuildRequires(build): zlib, bzip2, openldap-libs, pth >= 1.3.7
 
 %description
 GnuPG is GNU's tool for secure communication and data storage.  It can
@@ -29,15 +31,13 @@ OpenPGP-only version.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 %find_lang gnupg2
-
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
@@ -45,15 +45,15 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 %post
 /sbin/ldconfig
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/gnupg.info.gz
+update-info-dir
 
 %postun
 /sbin/ldconfig
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/gnupg.info.gz
+update-info-dir
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f gnupg2.lang
@@ -62,6 +62,19 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_bindir}/*
 %{_sbindir}/*
 %{_datadir}/gnupg/
-%{_mandir}/*/*.?*
+%doc %{_mandir}/man1/gpg-agent.1*
+%doc %{_mandir}/man1/gpg-connect-agent.1*
+%doc %{_mandir}/man1/gpg-preset-passphrase.1*
+%doc %{_mandir}/man1/gpg2.1*
+%doc %{_mandir}/man1/gpgconf.1*
+%doc %{_mandir}/man1/gpgparsemail.1*
+%doc %{_mandir}/man1/gpgsm-gencert.sh.1*
+%doc %{_mandir}/man1/gpgsm.1*
+%doc %{_mandir}/man1/gpgv2.1*
+%doc %{_mandir}/man1/scdaemon.1*
+%doc %{_mandir}/man1/symcryptrun.1*
+%doc %{_mandir}/man1/watchgnupg.1*
+%doc %{_mandir}/man8/applygnupgdefaults.8*
+%doc %{_mandir}/man8/addgnupghome.8*
 %{_libexecdir}/*
-%{_infodir}/gnupg.info*
+%doc %{_infodir}/gnupg.info*
