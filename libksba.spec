@@ -1,16 +1,16 @@
 Name: libksba
-Version: 1.0.1
-Release: 1ev
+Version: 1.0.3
+Release: 2ev
 Summary: Provides an API to create and parse X.509 and CMS related objects
 URL: http://www.gnupg.org/related_software/libksba/
 Group: System Environment/Libraries
-License: GPL
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/%{name}/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libgpg-error
-Requires: libgpg-error
-Provides: libtool(%{_libdir}/libksba.la)
+BuildRequires(prep,build,install): coreutils
+BuildRequires(build,install): make
+BuildRequires(build): gcc, libgpg-error
 
 %description
 Libksba is a library to make the tasks of working with X.509 certificates, CMS
@@ -31,13 +31,12 @@ will be added as needed.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
@@ -45,15 +44,15 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 %post
 /sbin/ldconfig
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/ksba.info*
+update-info-dir
 
 %postun
 /sbin/ldconfig
-/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/ksba.info*
+update-info-dir
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -62,5 +61,5 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_bindir}/ksba-config
 %{_libdir}/libksba.*
 %{_includedir}/ksba.h
-%{_infodir}/ksba.info*
+%doc %{_infodir}/ksba.info*
 %{_datadir}/aclocal/ksba.m4
