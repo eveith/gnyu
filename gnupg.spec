@@ -1,15 +1,17 @@
 Name: gnupg
-Version: 1.4.7
-Release: 1ev
+Version: 1.4.9
+Release: 2ev
 Summary: GNU Utility for data encryption and digital signatures
 URL: http://www.gnupg.org/
 Group: Applications/Text
-License: GPL
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, gettext, zlib, openldap-libs, zlib, libusb
-Requires: zlib, libusb
+BuildRequires(prep,build,install): coreutils
+BuildRequires(build,install): make, gettext
+BuildRequires(build): gcc, zlib, libusb, openldap-libs
+BuildRequires(build): readline, curl, libtermcap
 
 %description
 GnuPG (GNU Privacy Guard) is a GNU utility for encrypting data and
@@ -30,36 +32,32 @@ these versions of PGP 2.
 %build
 %configure \
 	--enable-noexecstack
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 %find_lang %{name}
+
+pushd '%{buildroot}/%{_datadir}/gnupg'
+%{__mv} FAQ FAQ-%{version}
+%{__mv} faq.html faq-%{version}.html
+popd
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-rm -f "${RPM_BUILD_ROOT}/%{_datadir}/gnupg/FAQ"
-rm -f "${RPM_BUILD_ROOT}/%{_datadir}/gnupg/faq.html"
 
 
 %post
-/sbin/install-info %{_infodir}/gpg.info %{_infodir}/dir 2>/dev/null || :
-/sbin/install-info %{_infodir}/gpgv.info %{_infodir}/dir 2>/dev/null || :
+update-info-dir
 
 %preun
-if [ $1 = 0 ]; then
-   /sbin/install-info --delete %{_infodir}/gpg.info \
-        %{_infodir}/dir 2>/dev/null || :
-   /sbin/install-info --delete %{_infodir}/gpgv.info \
-        %{_infodir}/dir 2>/dev/null || :
-fi
-
+update-info-dir
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
-rm -f gnupg.lang
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__rm} -f gnupg.lang
 
 
 %files -f gnupg.lang
@@ -69,9 +67,11 @@ rm -f gnupg.lang
 %doc %attr (0755,root,root) tools/convert-from-106
 %dir %{_datadir}/gnupg
 %config %{_datadir}/gnupg/options.skel
-%{_mandir}/man1/*
-%{_mandir}/man7/*
-%{_infodir}/gnupg1.info*
+%doc %{_datadir}/gnupg/FAQ-%{version}
+%doc %{_datadir}/gnupg/faq-%{version}.html
+%doc %{_mandir}/man1/*
+%doc %{_mandir}/man7/*
+%doc %{_infodir}/gnupg1.info*
 %attr (4755,root,root) %{_bindir}/gpg
 %{_bindir}/gpgv
 %{_bindir}/gpgsplit
