@@ -1,14 +1,16 @@
 Name: libassuan
-Version: 1.0.1
-Release: 1ev
+Version: 1.0.5
+Release: 2ev
 Summary: The IPC library used by GnuPG and related projects
 URL: http://www.gnupg.org/related_software/assuan/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/%{name}/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pth
+BuildRequires(prep,build,install): coreutils
+BuildRequires(build,install): make
+BuildRequires(build): gcc, pth
 
 %description
 Libassuan is a small library implementing the so-called Assuan protocol. This
@@ -22,27 +24,28 @@ client side functions are provided.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
 
 
 %post
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/assuan.info*
+/sbin/ldconfig
+update-info-dir
 
 %postun
-/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/assuan.info*
+/sbin/ldconfig
+update-info-dir
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -51,5 +54,5 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_bindir}/libassuan-config
 %{_libdir}/libassuan*.*
 %{_includedir}/assuan.h
-%{_infodir}/assuan.info*
+%doc %{_infodir}/assuan.info*
 %{_datadir}/aclocal/libassuan.m4
