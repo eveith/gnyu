@@ -1,16 +1,20 @@
 Name: libxcb
 Version: 1.1
-Release: 2ev
+Release: 3ev
 Summary: A programmatic interface to the X Window System Protocol
 URL: http://xcb.freedesktop.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: ftp://xcb.freedesktop.org/dist/libxcb-%{version}.tar.bz2
-Patch: %{name}-1.0-sloppy_lock-1.patch
+Patch0: libxcb-1.1-abstract-socket.patch
+Patch1: libxcb-1.1-no-pthread-stubs.patch
+Patch2: libxcb-1.1-sloppy-lock.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, grep, sed, make, gcc, pkg-config, libxslt, doxygen
-BuildRequires: xcb-proto >= 1.1, libXdmcp, libXau, libpthread-stubs
+BuildRequires(prep,build,install): coreutils, pkg-config
+BuildRequires(build,install): make, grep, sed
+BuildRequires(build): gcc, libxslt, doxygen, xcb-proto >= 1.1
+BuildRequires(build): libXdmcp, libXau
 
 %description
 The libxcb package provides an interface to the X Window System protocol,
@@ -21,6 +25,9 @@ both.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 
 %build
