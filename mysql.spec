@@ -11,9 +11,10 @@ Source1: %{name}-my.cnf
 Source2: %{name}-mysqld.ii
 Source3: %{name}-filter-requires.sh
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, gcc-g++, ncurses, openssl, zlib, ncurses, gawk
-BuildRequires: libtool, autoconf, automake-110, perl, readline, procps
-BuildRequires: perl(Socket), libstdc++
+BuildRequires(build,prep,install): coreutils, grep, sed, gawk
+BuildRequires(build,install): make, perl, perl(Socket)
+BuildRequires(build): gcc, gcc-g++, ncurses, openssl, zlib, libstdc++
+BuildRequires(build): libtool, autoconf, automake-110, readline, procps
 Requires: %{name}-libs = %{version}
 %define _mysqld_uid 502
 %define _mysqld_gid 52
@@ -157,17 +158,17 @@ echo '%{_libdir}/mysql' > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}
 /sbin/ldconfig
 
 %pre server
-if [[ $1 -eq 1 ]]
+if [[ "${1}" -eq 1 ]]
 then
 	groupadd -g %{_mysqld_gid} mysql
 	useradd \
-		-u %{_mysqld_uid} \
-		-g %{_mysqld_gid} \
+		-u '%{_mysqld_uid}' \
+		-g '%{_mysqld_gid}' \
 		-c 'MySQL database' \
-		-d %{_localstatedir}/lib/mysql \
+		-d '%{_localstatedir}/lib/mysql' \
 		-s /sbin/nologin \
 		mysqld
-fi > /dev/null 2>&1
+fi
 exit 0
 
 %post server
@@ -175,18 +176,18 @@ ngc -r daemon/mysqld > /dev/null 2>&1
 exit 0
 
 %preun server
-if [[ $1 -eq 0 ]]
+if [[ "${1}" -eq 0 ]]
 then
 	ngc -d daemon/mysqld
 	ng-update delete daemon/mysqld
-fi > /dev/null 2>&1
+fi
 
 %postun server
-if [[ $1 -eq 0 ]]
+if [[ "${1}" -eq 0 ]]
 then
 	userdel mysqld
 	groupdel mysql
-fi > /dev/null 2>&1
+fi
 exit 0
 
 
