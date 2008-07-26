@@ -1,43 +1,20 @@
 Name: gimp
-Version: 2.2.13
-Release: 1ev
+Version: 2.4.6
+Release: 2ev
 Summary: The GNU Image Manipulation Program
 URL: http://www.gimp.org/
 Group: Applications/Productivity
 License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: ftp://ftp.gimp.org/pub/gimp/v2.2/gimp-%{version}.tar.bz2
+Vendor: GNyU-Linux
+Source: ftp://ftp.gimp.org/pub/gimp/v2.4/gimp-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, perl >= 5.8, python >= 2.2.0
-BuildRequires: librsvg >= 2.2, libwmf >= 0.2.8, libjpeg >= 6b, libpng >= 1.2.5
-BuildRequires: libtiff >= 3.5.7, libmng >= 1.0.5, libexif >= 0.5.12
-BuildRequires: gtk2 >= 2.4.4, glib2 >= 2.4.5, pango >= 1.4.0, libart >= 2.0
-BuildRequires: atk >= 1.6.1, freetype >= 2.1.7, fontconfig >= 2.2.2
-Requires: make >= 3.79.1, gcc-core, perl >= 5.8, python >= 2.2.0
-Requires: librsvg >= 2.2, libwmf >= 0.2.8, libjpeg >= 6b, libpng >= 1.2.5
-Requires: libtiff >= 3.5.7, libmng >= 1.0.5, libexif >= 0.5.12
-Requires: gtk2 >= 2.4.4, glib2 >= 2.4.5, pango >= 1.4.0, libart >= 2.0
-Requires: atk >= 1.6.1, freetype >= 2.1.7, fontconfig >= 2.2.2
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcolorsel_cmyk.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcolorsel_triangle.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcolorsel_water.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcdisplay_colorblind.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcdisplay_gamma.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcdisplay_highcontrast.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcdisplay_proof.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcontroller_midi.la)
-Provides: libtool(%{_libdir}/gimp/2.0/modules/libcontroller_linux_input.la)
-Provides: libtool(%{_libdir}/gimp/2.0/python/gimpmodule.la)
-Provides: libtool(%{_libdir}/gimp/2.0/python/gimpprocbrowsermodule.la)
-Provides: libtool(%{_libdir}/libgimpbase-2.0.la)
-Provides: libtool(%{_libdir}/libgimpcolor-2.0.la)
-Provides: libtool(%{_libdir}/libgimpmath-2.0.la)
-Provides: libtool(%{_libdir}/libgimpmodule-2.0.la)
-Provides: libtool(%{_libdir}/libgimpthumb-2.0.la)
-Provides: libtool(%{_libdir}/libgimpwidgets-2.0.la)
-Provides: libtool(%{_libdir}/libgimp-2.0.la)
-Provides: libtool(%{_libdir}/libgimpui-2.0.la)
+BuildRequires(prep,build,install): coreutils, grep, sed
+BuildRequires(build,install): make, gettext, pkg-config
+BuildRequires(build): gcc
+BuildRequires(build): gtk2 >= 2.10.3, pango >= 1.12.2, freetype >= 2.1.7
+BuildRequires(build): fontconfig >= 2.2.0, libart >= 2.0, dbus-glib
+BuildRequires(build): libpng, libjpeg, libtiff, libmng, libwmf, librsvg
+BuildRequires(build): zlib, curl, alsa-lib
 
 %description
 GIMP is an acronym for GNU Image Manipulation Program. It is a freely
@@ -51,26 +28,17 @@ image authoring.
 
 %build
 %configure \
-	--disable-debug --disable-warnings \
-	--enable-mmx --enable-sse \
-	--disable-gimpprinttest --disable-print \
-	--enable-python
-make
+	--disable-debug \
+	--disable-warnings \
+	--disable-python
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
-
-find "${RPM_BUILD_ROOT}" -name "*.mo" -print | \
-	sed "s,${RPM_BUILD_ROOT},," >> gimp.lang
-
-# Correct env path in python scripts
-
-ENV=$(which env)
-find "${RPM_BUILD_ROOT}" -name "*.py" \
-	-exec sed -i "s,^#!.*python,#!${ENV} python," {} \;
-
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
+find '%{buildroot}' -type f -name \*.mo -print | \
+	%{__sed} 's,%{buildroot},,' >> gimp.lang
 
 %post
 /sbin/ldconfig
@@ -80,8 +48,8 @@ find "${RPM_BUILD_ROOT}" -name "*.py" \
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
-rm -vf gimp.lang
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__rm} -f gimp.lang
 
 
 %files -f gimp.lang
@@ -89,24 +57,33 @@ rm -vf gimp.lang
 %doc AUTHORS COPYING ChangeLog* HACKING LICENSE NEWS* README*
 %doc %{_datadir}/gtk-doc/html/libgimpbase/
 %doc %{_datadir}/gtk-doc/html/libgimpcolor/
+%doc %{_datadir}/gtk-doc/html/libgimpconfig/
 %doc %{_datadir}/gtk-doc/html/libgimpmath/
 %doc %{_datadir}/gtk-doc/html/libgimpmodule/
 %doc %{_datadir}/gtk-doc/html/libgimpthumb/
 %doc %{_datadir}/gtk-doc/html/libgimpwidgets/
 %doc %{_datadir}/gtk-doc/html/libgimp/
 %{_datadir}/aclocal/gimp-2.0.m4
+%{_datadir}/applications/gimp.desktop
+%{_datadir}/application-registry/gimp.applications
+%{_datadir}/icons/hicolor/*/apps/gimp.*
 %{_datadir}/gimp/
-%{_mandir}/man1/gimp-2.2.1*
-%{_mandir}/man1/gimp-remote-2.2.1*
-%{_mandir}/man1/gimptool-2.0.1*
-%{_mandir}/man1/gimp.1*
-%{_mandir}/man1/gimp-remote.1*
-%{_mandir}/man5/gimprc-2.2.5*
-%{_mandir}/man5/gimprc.5*
-%{_bindir}/gimp-remote-2.2
-%{_bindir}/gimp-remote
-%{_bindir}/gimp-2.2
+%{_datadir}/mime-info/gimp.keys
+%doc %{_mandir}/man1/gimp.1*
+%doc %{_mandir}/man1/gimp-2.4.1*
+%doc %{_mandir}/man1/gimp-console.1*
+%doc %{_mandir}/man1/gimp-console-2.4.1*
+%doc %{_mandir}/man1/gimp-remote.1*
+%doc %{_mandir}/man1/gimp-remote-2.4.1*
+%doc %{_mandir}/man1/gimptool-2.0.1*
+%doc %{_mandir}/man5/gimprc-2.4.5*
+%doc %{_mandir}/man5/gimprc.5*
 %{_bindir}/gimp
+%{_bindir}/gimp-2.4
+%{_bindir}/gimp-console
+%{_bindir}/gimp-console-2.4
+%{_bindir}/gimp-remote
+%{_bindir}/gimp-remote-2.4
 %{_bindir}/gimptool-2.0
 %{_libdir}/gimp/
 %{_libdir}/libgimp*.*
@@ -114,6 +91,6 @@ rm -vf gimp.lang
 %{_libdir}/pkgconfig/gimpthumb-2.0.pc
 %{_libdir}/pkgconfig/gimpui-2.0.pc
 %{_includedir}/gimp-2.0/
-%dir /etc/gimp
-%dir /etc/gimp/2.0
-%config /etc/gimp/2.0/*rc
+%dir %{_sysconfdir}/gimp
+%dir %{_sysconfdir}/gimp/2.0
+%config %{_sysconfdir}/gimp/2.0/*rc
