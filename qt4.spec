@@ -1,6 +1,6 @@
 Name: qt4
-Version: 4.3.4
-Release: 1ev
+Version: 4.4.0
+Release: 2ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -9,10 +9,13 @@ Vendor: GNyU-Linux
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 Source1: %{name}-profile.sh
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: libtiff, libjpeg, libpng, zlib, libstdc++
-BuildRequires: fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
-BuildRequires: libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
-BuildRequires: make >= 3.79.1, gcc, gcc-g++, sed, findutils
+BuildRequires(prep,build,install): coreutils, grep, sed
+BuildRequires(build,install): make
+BuildRequires(install): findutils
+BuildRequires(build): libtiff, libjpeg, libpng, zlib, libstdc++, glib2
+BuildRequires(build): fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
+BuildRequires(build): libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
+BuildRequires(build): make >= 3.79.1, gcc, gcc-g++, gstreamer, openssl
 
 %description
 Qt is a complete and well-developed object-oriented framework for
@@ -26,7 +29,7 @@ obtain a professional license.
 
 
 %package doc
-Summary: Documentation for the Qt library
+Summary: Documentation, examples and demos for the Qt library
 Group: User Interface/Desktops
 Requires: qt4 = %{version}
 
@@ -41,7 +44,8 @@ http://www.trolltech.com/purchase.html for information on how to
 obtain a professional license.
 
 This package contains all documentation one will need when developing
-Qt based applications. It also includes the Qt Assistant.
+Qt based applications. It also includes the Qt Assistant and some demos and
+examples.
 
 
 %prep
@@ -84,7 +88,10 @@ echo 'yes' | ./configure \
 	-xrender \
 	-no-tablet \
 	-xkb \
-	-qdbus
+	-qdbus \
+	-phonon \
+	-glib \
+	-webkit
 %{__make} %{?_smp_mflags}
 
 
@@ -98,10 +105,6 @@ echo 'yes' | ./configure \
 # Install Qt shell profile script
 %{__mkdir_p} %{buildroot}/etc/profile.d
 %{__install} -m 0755 %{SOURCE1} %{buildroot}/etc/profile.d/qt4.sh
-
-# Remove silly link
-%{__find} %{buildroot}/%{_libdir}/qt/mkspecs/default/ -type l \
-	-exec rm -f '{}' \; ||:
 
 # Now, let's add a fine ldconfig file
 %{__mkdir_p} %{buildroot}/etc/ld.so.conf.d
@@ -121,5 +124,123 @@ echo %{_libdir}/qt4/lib > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}
 %doc GPL_*.TXT LICENSE.* OPENSOURCE-NOTICE.TXT README
 /etc/ld.so.conf.d/%{name}-%{_arch}
 %attr(0755, root, root) /etc/profile.d/qt4.sh
-%{_libdir}/qt4/
-%{_libdir}/pkgconfig/Qt*.pc
+%dir %{_libdir}/qt4/
+%dir %{_libdir}/qt4/bin
+%{_libdir}/qt4/bin/designer
+%{_libdir}/qt4/bin/designer.debug
+%{_libdir}/qt4/bin/linguist
+%{_libdir}/qt4/bin/linguist.debug
+%{_libdir}/qt4/bin/lrelease
+%{_libdir}/qt4/bin/lrelease.debug
+%{_libdir}/qt4/bin/lupdate
+%{_libdir}/qt4/bin/lupdate.debug
+%{_libdir}/qt4/bin/moc
+%{_libdir}/qt4/bin/moc.debug
+%{_libdir}/qt4/bin/pixeltool
+%{_libdir}/qt4/bin/pixeltool.debug
+%{_libdir}/qt4/bin/qdbus
+%{_libdir}/qt4/bin/qdbus.debug
+%{_libdir}/qt4/bin/qdbuscpp2xml
+%{_libdir}/qt4/bin/qdbuscpp2xml.debug
+%{_libdir}/qt4/bin/qdbusviewer
+%{_libdir}/qt4/bin/qdbusviewer.debug
+%{_libdir}/qt4/bin/qdbusxml2cpp
+%{_libdir}/qt4/bin/qdbusxml2cpp.debug
+%{_libdir}/qt4/bin/qhelpconverter
+%{_libdir}/qt4/bin/qhelpconverter.debug
+%{_libdir}/qt4/bin/qmake
+%{_libdir}/qt4/bin/qt3to4
+%{_libdir}/qt4/bin/qt3to4.debug
+%{_libdir}/qt4/bin/qtconfig
+%{_libdir}/qt4/bin/qtconfig.debug
+%{_libdir}/qt4/bin/rcc
+%{_libdir}/qt4/bin/rcc.debug
+%{_libdir}/qt4/bin/uic
+%{_libdir}/qt4/bin/uic.debug
+%{_libdir}/qt4/bin/uic3
+%{_libdir}/qt4/bin/uic3.debug
+%{_libdir}/qt4/include/
+%dir %{_libdir}/qt4/lib
+%{_libdir}/qt4/lib/libQt3Support.*
+%{_libdir}/qt4/lib/libQtCLucene.*
+%{_libdir}/qt4/lib/libQtCore.*
+%{_libdir}/qt4/lib/libQtDBus.*
+%{_libdir}/qt4/lib/libQtDesigner.*
+%{_libdir}/qt4/lib/libQtDesignerComponents.*
+%{_libdir}/qt4/lib/libQtGui.*
+%{_libdir}/qt4/lib/libQtHelp.*
+%{_libdir}/qt4/lib/libQtNetwork.*
+%{_libdir}/qt4/lib/libQtOpenGL.*
+%{_libdir}/qt4/lib/libQtScript.*
+%{_libdir}/qt4/lib/libQtSvg.*
+%{_libdir}/qt4/lib/libQtSql.*
+%{_libdir}/qt4/lib/libQtTest.*
+%{_libdir}/qt4/lib/libQtUiTools.*
+%{_libdir}/qt4/lib/libQtWebKit.*
+%{_libdir}/qt4/lib/libQtXml.*
+%{_libdir}/qt4/lib/libphonon.*
+%dir %{_libdir}/qt4/lib/pkgconfig
+%{_libdir}/qt4/lib/pkgconfig/phonon.pc
+%{_libdir}/qt4/lib/pkgconfig/Qt3Support.pc
+%{_libdir}/qt4/lib/pkgconfig/QtCLucene.pc
+%{_libdir}/qt4/lib/pkgconfig/QtCore.pc
+%{_libdir}/qt4/lib/pkgconfig/QtDBus.pc
+%{_libdir}/qt4/lib/pkgconfig/QtDesigner.pc
+%{_libdir}/qt4/lib/pkgconfig/QtDesignerComponents.pc
+%{_libdir}/qt4/lib/pkgconfig/QtGui.pc
+%{_libdir}/qt4/lib/pkgconfig/QtHelp.pc
+%{_libdir}/qt4/lib/pkgconfig/QtNetwork.pc
+%{_libdir}/qt4/lib/pkgconfig/QtOpenGL.pc
+%{_libdir}/qt4/lib/pkgconfig/QtScript.pc
+%{_libdir}/qt4/lib/pkgconfig/QtSql.pc
+%{_libdir}/qt4/lib/pkgconfig/QtSvg.pc
+%{_libdir}/qt4/lib/pkgconfig/QtTest.pc
+%{_libdir}/qt4/lib/pkgconfig/QtUiTools.pc
+%{_libdir}/qt4/lib/pkgconfig/QtWebKit.pc
+%{_libdir}/qt4/lib/pkgconfig/QtXml.pc
+%dir %{_libdir}/qt4/translations
+%{_libdir}/qt4/translations/designer_*.qm
+%{_libdir}/qt4/translations/linguist_*.qm
+%{_libdir}/qt4/translations/qt_??.qm
+%{_libdir}/qt4/translations/qt_??_??.qm
+%{_libdir}/qt4/translations/qt_help_??.qm
+%{_libdir}/qt4/translations/qt_help_??_??.qm
+%{_libdir}/qt4/translations/qtconfig_*.qm
+%{_libdir}/qt4/translations/qvfb*.qm
+%{_libdir}/qt4/mkspecs/
+%{_libdir}/qt4/plugins/
+%{_libdir}/qt4/phrasebooks/
+%{_libdir}/qt4/q3porting.xml
+%{_libdir}/pkgconfig/phonon.pc
+%{_libdir}/pkgconfig/Qt3Support.pc
+%{_libdir}/pkgconfig/QtCLucene.pc
+%{_libdir}/pkgconfig/QtCore.pc
+%{_libdir}/pkgconfig/QtDBus.pc
+%{_libdir}/pkgconfig/QtDesigner.pc
+%{_libdir}/pkgconfig/QtDesignerComponents.pc
+%{_libdir}/pkgconfig/QtGui.pc
+%{_libdir}/pkgconfig/QtHelp.pc
+%{_libdir}/pkgconfig/QtNetwork.pc
+%{_libdir}/pkgconfig/QtOpenGL.pc
+%{_libdir}/pkgconfig/QtScript.pc
+%{_libdir}/pkgconfig/QtSql.pc
+%{_libdir}/pkgconfig/QtSvg.pc
+%{_libdir}/pkgconfig/QtTest.pc
+%{_libdir}/pkgconfig/QtUiTools.pc
+%{_libdir}/pkgconfig/QtWebKit.pc
+%{_libdir}/pkgconfig/QtXml.pc
+
+
+%files doc
+%defattr(-, root, root)
+%doc doc/html doc/qch
+%doc %{_libdir}/qt4/examples/
+%doc %{_libdir}/qt4/demos/
+%{_libdir}/qt4/bin/assistant*
+%{_libdir}/qt4/bin/qhelpgenerator*
+%{_libdir}/qt4/bin/qcollectiongenerator*
+%{_libdir}/qt4/bin/qtdemo*
+%{_libdir}/qt4/lib/libQtAssistantClient.*
+%{_libdir}/qt4/lib/pkgconfig/QtAssistantClient.pc
+%{_libdir}/pkgconfig/QtAssistantClient.pc
+%{_libdir}/qt4/translations/assistant*.qm
