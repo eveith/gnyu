@@ -59,6 +59,26 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %{__mv} '%{buildroot}/etc/ssl/misc'/* '%{buildroot}/%{_sbindir}'
 %{__rm} -fr '%{buildroot}/etc/ssl/man' '%{buildroot}/etc/ssl/misc'
 
+# Rename manpages to avoid collisions
+pushd '%{buildroot}/%{_mandir}'
+for i in 1 3 5 7
+do
+	cd "man${i}"
+	for f in *.${i}*
+	do
+		basename="${f%.*}"
+		extension="${f##*.}"
+		if [[ "${extension}" =~ ^[0-9]+$ ]]
+		then
+			%{__mv} "${f}" "${basename}.${extension}ssl"
+		else
+			%{__mv} "${f}" "${basename}ssl.${extension}"
+		fi
+	done
+	cd ..
+done
+popd
+
 
 %post
 /sbin/ldconfig
