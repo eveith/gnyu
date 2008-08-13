@@ -1,17 +1,17 @@
 Name: openssl
-Version: 0.9.8g
-Release: 1ev
+Version: 0.9.8h
+Release: 2ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org/
 Group: System Environment/Libraries
 License: BSD
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: http://www.openssl.org/source/%{name}-%{version}.tar.gz
 Patch0: %{name}-0.9.8-gcc42.patch
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: perl >= 5, make >= 3.79.1, gcc-core, sed, bc
-Requires: zlib
+BuildRequires(build,install): make, perl
+BuildRequires(build): bc, gcc
+Provides: openssl098 = %{version}-%{release}
 
 %description
 The OpenSSL Project is a collaborative effort to develop a robust,
@@ -33,35 +33,31 @@ on every system.
 
 %prep
 %setup -q
-#%patch0 -p1
 
 
 %build
 ./config \
-	--prefix=%{_prefix} \
-	--openssldir=/etc/ssl \
+	--prefix='%{_prefix}' \
+	--openssldir='%{_sysconfdir}/ssl' \
 	threads \
 	shared \
 	zlib-dynamic \
-	$RPM_OPT_FLAGS
-make %{_smp_mflags}
-make test
+	"${RPM_OPT_FLAGS}"
+%{__make} %{?_smp_mflags}
+%{__make} test
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-
-make INSTALL_PREFIX="$RPM_BUILD_ROOT" install
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} INSTALL_PREFIX="${RPM_BUILD_ROOT}"
 
 rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 # Relocate some stuff that is placed in silly places
-
-mkdir -p ${RPM_BUILD_ROOT}/%{_sbindir}
-mkdir -p ${RPM_BUILD_ROOT}/%{_mandir}
-mv -v ${RPM_BUILD_ROOT}/etc/ssl/man/* ${RPM_BUILD_ROOT}/%{_mandir}
-mv -v ${RPM_BUILD_ROOT}/etc/ssl/misc/* ${RPM_BUILD_ROOT}/%{_sbindir}
-rm -vfr ${RPM_BUILD_ROOT}/etc/ssl/man ${RPM_BUILD_ROOT}/etc/ssl/misc
+%{__mkdir_p} '%{buildroot}/%{_sbindir}' '%{buildroot}/%{_mandir}'
+%{__mv} '%{buildroot}/etc/ssl/man'/* '%{buildroot}/%{_mandir}'
+%{__mv} '%{buildroot}/etc/ssl/misc'/* '%{buildroot}/%{_sbindir}'
+%{__rm} -fr '%{buildroot}/etc/ssl/man' '%{buildroot}/etc/ssl/misc'
 
 
 %post
@@ -72,16 +68,17 @@ rm -vfr ${RPM_BUILD_ROOT}/etc/ssl/man ${RPM_BUILD_ROOT}/etc/ssl/misc
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc CHANGES* ChangeLog* FAQ LICENSE README* NEWS PROBLEMS VMS 
-%dir /etc/ssl
-%dir /etc/ssl/certs
-%dir /etc/ssl/private
-%config(noreplace) /etc/ssl/openssl.cnf
+%doc doc demos
+%dir %{_sysconfdir}/ssl
+%dir %attr(0711, root, root) %{_sysconfdir}/ssl/certs
+%dir %attr(0700, root, root) %{_sysconfdir}/ssl/private
+%config(noreplace) %attr(0644, root, root) %{_sysconfdir}/ssl/openssl.cnf
 %{_bindir}/openssl
 %{_bindir}/c_rehash
 %{_libdir}/engines/
@@ -91,13 +88,13 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_libdir}/libssl.*
 %{_libdir}/libcrypto.*
 %{_includedir}/openssl/
-%attr(0755, root, root) %{_sbindir}/CA.pl
-%attr(0755, root, root) %{_sbindir}/CA.sh
+%attr(0700, root, root) %{_sbindir}/CA.pl
+%attr(0700, root, root) %{_sbindir}/CA.sh
 %{_sbindir}/c_hash
 %{_sbindir}/c_info
 %{_sbindir}/c_issuer
 %{_sbindir}/c_name
-%{_mandir}/man1/*
-%{_mandir}/man3/*
-%{_mandir}/man5/*
-%{_mandir}/man7/*
+%doc %{_mandir}/man1/*
+%doc %{_mandir}/man3/*
+%doc %{_mandir}/man5/*
+%doc %{_mandir}/man7/*
