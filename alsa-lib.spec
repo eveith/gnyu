@@ -1,6 +1,6 @@
 Name: alsa-lib
-Version: 1.0.16
-Release: 2ev
+Version: 1.0.17a
+Release: 3ev
 Summary: Library for userspace access to the Advanced Linux Sound System
 URL: http://www.alsa-project.org/
 Group: System Environment/Libraries
@@ -8,7 +8,7 @@ License: LGPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.alsa-project.org/pub/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, doxygen, pkg-config
+BuildRequires: make >= 3.79.1, gcc, doxygen, pkg-config
 
 %description
 The Advanced Linux Sound Architecture (ALSA) provides audio and MIDI
