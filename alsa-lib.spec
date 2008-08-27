@@ -7,6 +7,9 @@ Group: System Environment/Libraries
 License: LGPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.alsa-project.org/pub/lib/%{name}-%{version}.tar.bz2
+Patch0: %{name}-1.0.17-pcm-rewind-forward.patch
+Patch1: %{name}-1.0.17-pcm-rewind-forward-return.patch
+Patch2: %{name}-1.0.17-sframe-type.patch
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: make >= 3.79.1, gcc, doxygen, pkg-config
 
