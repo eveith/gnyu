@@ -9,6 +9,8 @@ Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
+Requires: x11-proto
+BuildArch: noarch
 
 %description
 
@@ -27,7 +29,7 @@ BuildRequires: make, gcc, pkg-config
 %{__make_install} DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
-touch README COPYING ChangeLog TODO
+touch README COPYING ChangeLog TODO AUTHORS NEWS
 
 
 %clean
@@ -36,5 +38,5 @@ touch README COPYING ChangeLog TODO
 
 %files
 %defattr(-, root, root)
-%doc README COPYING ChangeLog TODO
+%doc README COPYING ChangeLog TODO AUTHORS NEWS
 %{_libdir}/pkgconfig/%{name}.pc
