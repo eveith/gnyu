@@ -1,4 +1,5 @@
-Name: damageproto
+Name: xorg-damageproto
+%define _src_name %(echo %{name} | sed 's,^xorg-,,')
 Version: 1.1.0
 Release: 1ev
 Summary: Protocol information and development headers for X damage extension
@@ -6,10 +7,10 @@ URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
-Source: http://xorg.freedesktop.org/releases/individual/proto/%{name}-%{version}.tar.bz2
+Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: x11-proto
+Requires: xorg-proto
 BuildArch: noarch
 
 %description
@@ -20,7 +21,7 @@ window to be redrawn instead of the whole.
 
 
 %prep
-%setup -q
+%setup -q -n '%{_src_name}-%{version}'
 
 
 %build
@@ -46,4 +47,4 @@ touch README COPYING ChangeLog TODO AUTHORS NEWS
 %doc README COPYING ChangeLog TODO AUTHORS NEWS damageproto.txt
 %{_includedir}/X11/extensions/damageproto.h
 %{_includedir}/X11/extensions/damagewire.h
-%{_libdir}/pkgconfig/%{name}.pc
+%{_libdir}/pkgconfig/%{_src_name}.pc

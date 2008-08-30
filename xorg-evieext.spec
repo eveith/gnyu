@@ -1,4 +1,5 @@
-Name: evieext
+Name: xorg-evieext
+%define _src_name %(echo %{name} | sed 's,^xorg-,,')
 Version: 1.0.2
 Release: 1ev
 Summary: Protocol information and development headers for X11 EvIE extension
@@ -6,10 +7,10 @@ URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
-Source: http://xorg.freedesktop.org/releases/individual/proto/%{name}-%{version}.tar.bz2
+Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: x11-proto
+Requires: xorg-proto
 BuildArch: noarch
 
 %description
@@ -21,7 +22,7 @@ More information about X.Org can be found at:
 
 
 %prep
-%setup -q
+%setup -q -n '%{_src_name}-%{version}'
 
 
 %build

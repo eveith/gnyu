@@ -1,6 +1,7 @@
-Name: xcb-proto
+Name: xorg-xcb-proto
+%define _src_name %(echo %{name} | sed 's,^xorg-,,')
 Version: 1.1
-Release: 2ev
+Release: 3ev
 Summary: XML-XCB protocol descriptions for libxcb
 URL: http://xcb.freedesktop.org/
 Group: User Interface/X
@@ -8,7 +9,7 @@ License: MIT
 Vendor: GNyU-Linux
 Source: ftp://xcb.freedesktop.org/dist/xcb-proto-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, gawk, make, gcc, libxml2, pkg-config
+BuildRequires: make, gcc, libxml2, pkg-config
 BuildArch: noarch
 Requires: pkg-config
 
@@ -18,7 +19,7 @@ uses to generate the majority of its code and API.
 
 
 %prep
-%setup -q
+%setup -q -n '%{_src_name}-%{version}'
 
 
 %build
@@ -39,4 +40,4 @@ uses to generate the majority of its code and API.
 %defattr(-, root, root)
 %doc README COPYING*
 %{_datadir}/xcb/
-%{_libdir}/pkgconfig/xcb-proto.pc
+%{_libdir}/pkgconfig/%{_src_name}.pc
