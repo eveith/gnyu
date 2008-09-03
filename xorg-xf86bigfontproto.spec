@@ -2,7 +2,7 @@ Name: xorg-xf86bigfontproto
 %define _src_name %(echo %{name} | sed 's,^xorg-,,')
 Version: 1.1.2
 Release: 1ev
-Summary: Protocol information and development headers for 
+Summary: Protocol information for X11 big fonts extension
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
