@@ -27,6 +27,7 @@ Requires: xorg-xf86vidmodeproto >= 2.2.2, xorg-xineramaproto >= 1.1.2
 Requires: xorg-xproto >= 7.0.10, xorg-xproxymanagementprotocol >= 1.0.2
 Requires: xorg-fslayout = %{version}
 Provides: x11-proto = %{version}-%{release}
+Obsoletes: x11-proto < %{version}-%{release}
 
 %description
 The Xorg protocol headers provide the header files required to build the
