@@ -10,7 +10,7 @@ Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: xorg-proto
+Requires: xorg-fslayout
 BuildArch: noarch
 
 %description
