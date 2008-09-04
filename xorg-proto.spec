@@ -1,82 +1,55 @@
-Name: x11-proto
-Version: 7.2
-Release: 3ev
+Name: xorg-proto
+Version: 7.3
+Release: 4ev
 Summary: Xorg protocol headers
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
-Source0: http://xorg.freedesktop.org/releases/individual/proto/applewmproto-1.0.3.tar.bz2
-Source1: http://xorg.freedesktop.org/releases/individual/proto/bigreqsproto-1.0.2.tar.bz2
-Source2: http://xorg.freedesktop.org/releases/individual/proto/compositeproto-0.4.tar.bz2
-Source3: http://xorg.freedesktop.org/releases/individual/proto/damageproto-1.1.0.tar.bz2
-Source4: http://xorg.freedesktop.org/releases/individual/proto/dmxproto-2.2.2.tar.bz2
-Source5: http://xorg.freedesktop.org/releases/individual/proto/evieext-1.0.2.tar.bz2
-Source6: http://xorg.freedesktop.org/releases/individual/proto/fixesproto-4.0.tar.bz2
-Source7: http://xorg.freedesktop.org/releases/individual/proto/fontcacheproto-0.1.2.tar.bz2
-Source8: http://xorg.freedesktop.org/releases/individual/proto/fontsproto-2.0.2.tar.bz2
-Source9: http://xorg.freedesktop.org/releases/individual/proto/glproto-1.4.8.tar.bz2
-Source10: http://xorg.freedesktop.org/releases/individual/proto/inputproto-1.4.3.tar.bz2
-Source11: http://xorg.freedesktop.org/releases/individual/proto/kbproto-1.0.3.tar.bz2
-Source12: http://xorg.freedesktop.org/releases/individual/proto/printproto-1.0.3.tar.bz2
-Source13: http://xorg.freedesktop.org/releases/individual/proto/randrproto-1.2.1.tar.bz2
-Source14: http://xorg.freedesktop.org/releases/individual/proto/recordproto-1.13.2.tar.bz2
-Source15: http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
-Source16: http://xorg.freedesktop.org/releases/individual/proto/resourceproto-1.0.2.tar.bz2
-Source17: http://xorg.freedesktop.org/releases/individual/proto/scrnsaverproto-1.1.0.tar.bz2
-Source18: http://xorg.freedesktop.org/releases/individual/proto/trapproto-3.4.3.tar.bz2
-Source19: http://xorg.freedesktop.org/releases/individual/proto/videoproto-2.2.2.tar.bz2
-Source20: http://xorg.freedesktop.org/releases/individual/proto/windowswmproto-1.0.3.tar.bz2
-Source21: http://xorg.freedesktop.org/releases/individual/proto/xcmiscproto-1.1.2.tar.bz2
-Source22: http://xorg.freedesktop.org/releases/individual/proto/xextproto-7.0.2.tar.bz2
-Source23: http://xorg.freedesktop.org/releases/individual/proto/xf86bigfontproto-1.1.2.tar.bz2
-Source24: http://xorg.freedesktop.org/releases/individual/proto/xf86dgaproto-2.0.2.tar.bz2
-Source25: http://xorg.freedesktop.org/releases/individual/proto/xf86driproto-2.0.4.tar.bz2
-Source26: http://xorg.freedesktop.org/releases/individual/proto/xf86miscproto-0.9.2.tar.bz2
-Source27: http://xorg.freedesktop.org/releases/individual/proto/xf86rushproto-1.1.2.tar.bz2
-Source28: http://xorg.freedesktop.org/releases/individual/proto/xf86vidmodeproto-2.2.2.tar.bz2
-Source29: http://xorg.freedesktop.org/releases/individual/proto/xineramaproto-1.1.2.tar.bz2
-Source30: http://xorg.freedesktop.org/releases/individual/proto/xproto-7.0.10.tar.bz2
-Source31: http://xorg.freedesktop.org/releases/individual/proto/xproxymanagementprotocol-1.0.2.tar.bz2
+Vendor: GNyU-Linux
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, gcc-g++, sed, gettext, gawk
 BuildArch: noarch
+Requires: xorg-applewmproto >= 1.0.3, xorg-bigreqsproto >= 1.0.2
+Requires: xorg-compositeproto >= 0.4, xorg-damageproto >= 1.1.0
+Requires: xorg-dmxproto >= 2.2.2, xorg-evieext >= 1.0.2, xorg-fixesproto >= 4.0
+Requires: xorg-fontcacheproto >= 0.1.2, xorg-fontsproto >= 2.0.2
+Requires: xorg-glproto >= 1.4.8, xorg-inputproto >= 1.4.2.1
+Requires: xorg-kbproto >= 1.0.3, xorg-printproto >= 1.0.3
+Requires: xorg-randrproto >= 1.2.1, xorg-recordproto >= 1.13.2
+Requires: xorg-renderproto >= 0.9.3, xorg-resourceproto >= 1.0.2
+Requires: xorg-scrnsaverproto >= 1.1.0, xorg-trapproto >= 3.4.3
+Requires: xorg-videoproto >= 2.2.2, xorg-windowswmproto >= 1.0.3
+Requires: xorg-windowswmproto >= 1.0.3, xorg-xcmiscproto >= 1.1.2
+Requires: xorg-xextproto >= 7.0.2, xorg-xf86bigfontproto >= 1.1.2
+Requires: xorg-xf86dgaproto >= 2.0.3, xorg-xf86driproto >= 2.0.3
+Requires: xorg-xf86miscproto >= 0.9.2, xorg-xf86rushproto >= 1.1.2
+Requires: xorg-xf86vidmodeproto >= 2.2.2, xorg-xineramaproto >= 1.1.2
+Requires: xorg-xproto >= 7.0.10, xorg-xproxymanagementprotocol >= 1.0.2
+Provides: x11-proto = %{version}-%{release}
 
 %description
 The Xorg protocol headers provide the header files required to build the
 system, and to allow other applications to build against the installed X
 Window system.
+This package is a meta-package, wrapping up all header packages into one neat
+dependency chain. It also provides the needed directory architecture.
 
 
 %prep
-%setup -q -c -a0 -a1 -a2 -a3 -a4 -a5 -a6 -a7 -a8 -a9 -a10 -a11 -a12 -a13 
-%setup -q -c -D -a14 -a15 -a16 -a17 -a18 -a19 -a20 -a21 -a22 -a23 -a24 -a25 -a26
-%setup -q -c -D -a27 -a28 -a29 -a30 -a31
+exit 0
 
 
 %build
-for dirname in $(ls -1)
-do
-	pushd "${dirname}"
-	%configure
-	%{__make} %{?_smp_mflags}
-	popd
-done
-
+exit 0
 
 %install
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-for dirname in $(ls -1)
-do
-	pushd "${dirname}"
-	%{__make_install} DESTDIR='%{buildroot}'
-	%{__cp} COPYING "../COPYING-${dirname%%-*}"
-	popd
-done
-
-%{__mv} '%{buildroot}/%{_datadir}/doc'/*/*.txt \
-	"${RPM_BUILD_DIR}/%{name}-%{version}"
-%{__rm} -rf '%{buildroot}/%{_datadir}'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/GL'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/GL/internal'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/X11'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/X11/extensions'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/X11/PM'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/X11/dri'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/X11/fonts'
 
 
 %clean
@@ -85,19 +58,10 @@ done
 
 %files
 %defattr(-, root, root)
-%doc COPYING* *.txt
 %dir %{_includedir}/GL
-%{_includedir}/GL/*.h
 %dir %{_includedir}/GL/internal
-%{_includedir}/GL/internal/*.h
 %dir %{_includedir}/X11
-%{_includedir}/X11/*.h
 %dir %{_includedir}/X11/extensions
-%{_includedir}/X11/extensions/*.h
 %dir %{_includedir}/X11/PM
-%{_includedir}/X11/PM/*.h
 %dir %{_includedir}/X11/dri
-%{_includedir}/X11/dri/*.h
 %dir %{_includedir}/X11/fonts
-%{_includedir}/X11/fonts/*.h
-%{_libdir}/pkgconfig/*.pc
