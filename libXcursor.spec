@@ -1,11 +1,11 @@
 Name: libXcursor
-Version: 1.1.8
-Release: 1ev
+Version: 1.1.9
+Release: 2ev
 Summary: The X Cursor management library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-core, pkg-config, x11-proto
@@ -26,12 +26,12 @@ size.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -42,7 +42,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -51,4 +51,4 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_includedir}/X11/Xcursor/
 %{_libdir}/libXcursor*.*
 %{_libdir}/pkgconfig/xcursor.pc
-%{_mandir}/man3/Xcursor*.3*
+%doc %{_mandir}/man3/Xcursor*.3*
