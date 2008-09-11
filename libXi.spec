@@ -1,6 +1,6 @@
 Name: libXi
-Version: 1.0.4
-Release: 1ev
+Version: 1.1.3
+Release: 2ev
 Summary: X Input Extension Library
 URL: http://www.x.org/
 Group: User Interface/X
