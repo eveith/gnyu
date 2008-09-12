@@ -1,14 +1,14 @@
 Name: libXxf86dga
-Version: 1.0.1
-Release: 1ev
+Version: 1.0.2
+Release: 2ev
 Summary: X11 Direct Graphics Access extension library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pkg-config, x11-proto, libX11, libXext
+BuildRequires: make, gcc, pkg-config, xorg-proto, libX11, libXext
 
 %description
 libXxf86dga provides the XFree86-DGA extension, which allows direct graphics
@@ -22,12 +22,12 @@ et al. It is mainly used by games and emulators for games.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -38,7 +38,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -46,6 +46,6 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %doc COPYING
 %{_libdir}/libXxf86dga.*
 %{_libdir}/pkgconfig/xxf86dga.pc
-%{_mandir}/man3/XDGA*.3x*
-%{_mandir}/man3/XF86DGA.3x*
-%{_mandir}/man3/XFree86-DGA.3x*
+%doc %{_mandir}/man3/XDGA*.3*
+%doc %{_mandir}/man3/XF86DGA.3*
+%doc %{_mandir}/man3/XFree86-DGA.3*
