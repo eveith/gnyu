@@ -12,10 +12,7 @@ BuildRequires: make, gcc, pkg-config, xorg-proto >= 7.3
 Requires: xorg-fslayout >= 7.3
 
 %description
-This driver adds mouse input support to the X.org X11 server. 
-The X.org Foundation X server supports four classes of mice: serial,
-bus and PS/2 mice, and additional mouse types supported by
-specific operating systems, such as USB mice.
+This driver adds keyboard input support to the X.org X11 server. 
 
 
 %prep
