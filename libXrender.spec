@@ -1,6 +1,6 @@
 Name: libXrender
-Version: 0.9.2
-Release: 1ev
+Version: 0.9.4
+Release: 2ev
 Summary: X Render Library
 URL: http://www.x.org/
 Group: User Interface/X
@@ -8,7 +8,7 @@ License: MIT
 Vendor: MSP Slackware
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pkg-config >= 0.9.0, x11-proto, libX11
+BuildRequires: make, gcc, pkg-config >= 0.9.0, xorg-proto, libX11
 
 %description
 The X Render Library.
@@ -20,12 +20,12 @@ The X Render Library.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -36,7 +36,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
