@@ -5,12 +5,13 @@ Summary: X11 client-side library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/libX11-%{version}.tar.bz2
 Patch: %{name}-1.1.2-badargs-1.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: coreutils, grep, sed, make, gcc, pkg-config
 BuildRequires: x11-proto, libxcb, xtrans
+Requires: xorg-fslayout >= 7.3
 
 %description
 This package provides the main client interface to the X Window System, 
@@ -49,8 +50,9 @@ functions of the window system.
 %doc COPYING README AUTHORS
 %{_includedir}/X11/*.h
 %{_libdir}/libX11*.*
-%dir %{_libdir}/X11
 %{_libdir}/X11/Xcms.txt
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man3/*.3*
-%{_datadir}/X11/
+%{_datadir}/X11/XErrorDB
+%{_datadir}/X11/XKeysymDB
+%{_datadir}/X11/locale/
