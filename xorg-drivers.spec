@@ -8,6 +8,7 @@ License: MIT
 Vendor: GNyU-Linux
 Buildroot: %{_tmppath}/%{name}-buildroot
 Requires: xf86-input-keyboard >= 1.2.2, xf86-input-mouse >= 1.2.2
+Requires: xf86-video-vesa >= 1.3.0
 Obsoletes: x11-drivers < %{version}-%{release}
 Provides: x11-drivers = %{version}-%{release}
 
