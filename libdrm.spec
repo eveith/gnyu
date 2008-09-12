@@ -1,14 +1,14 @@
 Name: libdrm
-Version: 2.3.0
-Release: 1ev
+Version: 2.3.1
+Release: 2ev
 Summary: Direct Rendering Manager library
 URL: http://dri.freedesktop.org/
 Group: System Environment/Libraries
 License: MIT
-Vendor: MSP Slackware
-Source: http://dri.freedesktop.org/libdrm/%{name}-%{version}.tar.gz
+Vendor: GNyU-Linux
+Source: http://dri.freedesktop.org/libdrm/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pkg-config
+BuildRequires: make, gcc, pkg-config
 
 %description
 DRI and DRM provides mechanics to draw directly on the hardware, which greatly
@@ -22,15 +22,12 @@ your graphics card.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
@@ -41,7 +38,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
