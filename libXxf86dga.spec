@@ -1,7 +1,7 @@
-Name: libXtst
-Version: 1.0.2
+Name: libXxf86dga
+Version: 1.0.1
 Release: 1ev
-Summary: X11 Testing -- Resource extension library
+Summary: X11 Direct Graphics Access extension library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
@@ -11,9 +11,9 @@ Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-core, pkg-config, x11-proto, libX11, libXext
 
 %description
-libXtst provides an X Window System client interface to the Record extension
-to the X protocol. The Record extension allows X clients to synthesise input 
-events, which is useful for automated testing.
+libXxf86dga provides the XFree86-DGA extension, which allows direct graphics
+access to a framebuffer-like region, and also allows relative mouse reporting,
+et al. It is mainly used by games and emulators for games.
 
 
 %prep
@@ -43,7 +43,9 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 %files
 %defattr(-, root, root)
-%doc COPYING README AUTHORS
-%{_libdir}/libXtst.*
-%{_libdir}/pkgconfig/xtst.pc
-%{_mandir}/man3/XTest*.3*
+%doc COPYING
+%{_libdir}/libXxf86dga.*
+%{_libdir}/pkgconfig/xxf86dga.pc
+%{_mandir}/man3/XDGA*.3x*
+%{_mandir}/man3/XF86DGA.3x*
+%{_mandir}/man3/XFree86-DGA.3x*
