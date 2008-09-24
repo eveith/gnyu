@@ -1,6 +1,6 @@
 Name: wireshark
-Version: 1.0.0
-Release: 1ev
+Version: 1.0.3
+Release: 2ev
 Summary: A network traffic analyzer ("sniffer") based on GTK+2
 URL: http://www.wireshark.org/
 Group: Applications/System
@@ -8,8 +8,8 @@ License: GPL-2
 Vendor: GNyU-Linux
 Source: http://www.wireshark.org/download/src/wireshark-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, sed, make, gcc, flex >= 2.5.1, bison, gtk2, glib2
-BuildRequires: perl, gawk, gettext, openssl, heimdal-libs, zlib, pcre
+BuildRequires: make, gcc, flex >= 2.5.1, bison, gtk2, glib2
+BuildRequires: perl, gettext, openssl, heimdal-libs, zlib, pcre
 BuildRequires: libgcrypt, gnutls, libpcap
 
 %description
