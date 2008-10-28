@@ -1,17 +1,18 @@
-Name: openssl
-Version: 0.9.8h
-Release: 2ev
+Name: openssl098
+Version: 0.9.8i
+Release: 3ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org/
 Group: System Environment/Libraries
 License: BSD
 Vendor: GNyU-Linux
-Source: http://www.openssl.org/source/%{name}-%{version}.tar.gz
-Patch0: %{name}-0.9.8-gcc42.patch
+Source: http://www.openssl.org/source/openssl-%{version}.tar.gz
+Patch0: %{name}-gcc42.patch
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires(build,install): make, perl
 BuildRequires(build): bc, gcc
-Provides: openssl098 = %{version}-%{release}
+Provides: openssl = %{version}-%{release}
+Obsoletes: openssl < %{version}
 
 %description
 The OpenSSL Project is a collaborative effort to develop a robust,
@@ -32,7 +33,7 @@ on every system.
 
 
 %prep
-%setup -q
+%setup -q -n 'openssl-%{version}'
 
 
 %build
@@ -93,7 +94,7 @@ popd
 
 %files
 %defattr(-, root, root)
-%doc CHANGES* ChangeLog* FAQ LICENSE README* NEWS PROBLEMS VMS 
+%doc CHANGES* FAQ LICENSE README* NEWS PROBLEMS VMS 
 %doc doc demos
 %dir %{_sysconfdir}/ssl
 %dir %attr(0711, root, root) %{_sysconfdir}/ssl/certs
