@@ -1,6 +1,6 @@
-Name: openssl098
+Name: openssl0.9.8
 Version: 0.9.8i
-Release: 3ev
+Release: 4ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org/
 Group: System Environment/Libraries
@@ -11,8 +11,9 @@ Patch0: %{name}-gcc42.patch
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires(build,install): make, perl
 BuildRequires(build): bc, gcc
+BuildRequires: pkg-config
 Provides: openssl = %{version}-%{release}
-Obsoletes: openssl < %{version}
+Obsoletes: openssl < %{version}, openssl098
 
 %description
 The OpenSSL Project is a collaborative effort to develop a robust,
@@ -50,9 +51,7 @@ on every system.
 
 %install
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} INSTALL_PREFIX="${RPM_BUILD_ROOT}"
-
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__fakeroot} %{__make} install INSTALL_PREFIX="${RPM_BUILD_ROOT}"
 
 # Relocate some stuff that is placed in silly places
 %{__mkdir_p} '%{buildroot}/%{_sbindir}' '%{buildroot}/%{_mandir}'
@@ -71,10 +70,23 @@ do
 		extension="${f##*.}"
 		if [[ "${extension}" =~ ^[0-9]+$ ]]
 		then
-			%{__mv} "${f}" "${basename}.${extension}ssl"
+			%{__mv} -v "${f}" "${basename}.${extension}ssl"
+			if [[ ! -L "${basename}.${extension}ssl" ]]
+			then
+				%{__bzip2} -z9 "${basename}.${extension}ssl"
+			fi
 		else
-			%{__mv} "${f}" "${basename}ssl.${extension}"
+			%{__mv} -v "${f}" "${basename}ssl.${extension}"
 		fi
+	done
+
+	# Now for the links
+	for f in *.${i}*
+	do
+		[[ -L "${f}" ]] || continue
+		t=$(readlink "${f}")
+		%{__rm} "${f}"
+		%{__ln_s} "${t}ssl.bz2" "${f}"
 	done
 	cd ..
 done
@@ -82,10 +94,10 @@ popd
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
 %clean
@@ -115,7 +127,7 @@ popd
 %{_sbindir}/c_info
 %{_sbindir}/c_issuer
 %{_sbindir}/c_name
-%doc %{_mandir}/man1/*
-%doc %{_mandir}/man3/*
-%doc %{_mandir}/man5/*
-%doc %{_mandir}/man7/*
+%doc %{_mandir}/man1/*ssl*
+%doc %{_mandir}/man3/*ssl*
+%doc %{_mandir}/man5/*ssl*
+%doc %{_mandir}/man7/*ssl*
