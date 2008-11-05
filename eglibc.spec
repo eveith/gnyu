@@ -1,7 +1,7 @@
 Name: glibc
 Summary: Standard Shared Libraries (from the GNU C Library)
 Version: 2.7
-Release: 2ev 
+Release: 3ev 
 Group: System Environment/Base
 License: GPL-2, LGPL-2.1
 URL: http://www.gnu.org/software/libc/
@@ -90,15 +90,22 @@ Nscd caches name service lookups and can dramatically improve
 performance with NIS, NIS+, and LDAP.
 
 
-%package -n timezone
+%package tzdata
 Summary: Timezone descriptions
 Group: System Environment/Base
+Obsoletes: timezone
+Requires: glibc = %{version}
+Conflicts: glibc > %{version}, glibc < %{version}
 AutoReq: on
 AutoProv: on
 
-%description -n timezone
-These are configuration files that describe available time zones. You
-can select an appropriate time zone for your system with YaST.
+%description tzdata
+These are configuration files that describe available time zones. If you want
+your clock to display the current time and date in your local time zone, you
+have to install this package.
+You can set your timezone by copying the apropriate file from
+%{_datadir}/zoneinfo to /etc/localtime, e. g. by issuing "cp
+/usr/share/zoneinfo/Europe/Berlin /etc/localtime".
 
 
 %package profile
@@ -389,28 +396,36 @@ post_install_glibc() {
 	done
 
 	cd ..
-	/sbin/ldconfig -l *.incoming
+	%{__ldconfig} -l *.incoming
 	
 	for incoming_file in *.incoming
 	do
 		basename=$(basename "${incoming_file}" .incoming)
 		%{__rm} -f "${basename}"
 		%{__cp} -a "${incoming_file}" "${basename}"
-		/sbin/ldconfig -l "${basename}"
+		%{__ldconfig} -l "${basename}"
 		%{__rm} -f "${incoming_file}"
 	done
 }
 post_install_glibc '/%{_lib}/incoming'
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 %post info
 update-info-dir
 
 %postun info
 update-info-dir
+
+%post -n nscd
+if [[ "${1}" -eq 0 ]]
+then
+	ng-update add daemon/nscd default
+	ngc -u daemon/nscd
+fi
+exit 0
 
 %preun -n nscd
 if [[ "${1}" -eq 0 ]]
@@ -431,13 +446,13 @@ exit 0
 %doc %{_mandir}/man1/getconf.1*
 %doc %{_mandir}/man1/getent.1*
 %doc %{_mandir}/man1/localedef.1*
-%doc %{_mandir}/man3/*
-%doc %{_mandir}/man5/*
+%doc %{_mandir}/man3/getifaddrs.3*
+%doc %{_mandir}/man5/locale.alias.5*
 %doc %{_mandir}/man8/rpcinfo.8*
-%config %{_sysconfdir}/ld.so.conf
+%config %attr(0644, root, root) %{_sysconfdir}/ld.so.conf
 %dir %{_sysconfdir}/ld.so.conf.d
 %attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_sysconfdir}/ld.so.cache
-%config(noreplace) %{_sysconfdir}/rpc
+%config(noreplace) %attr(0644, root, root) %{_sysconfdir}/rpc
 %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/nsswitch.conf
 %config(noreplace) %{_sysconfdir}/bindresvport.blacklist
 %ghost /%{_lib}/ld-%{version}.so
@@ -488,7 +503,7 @@ exit 0
 %ghost /%{_lib}/libutil-%{version}.so
 %ghost /%{_lib}/libutil.so.1
 /%{_lib}/incoming/
-/sbin/ldconfig
+%{__ldconfig}
 %{_bindir}/gencat
 %{_bindir}/getconf
 %{_bindir}/getent
@@ -545,13 +560,12 @@ exit 0
 %files locale -f libc.lang
 %defattr(-,root,root)
 %{_datadir}/locale/locale.alias
-%{_datadir}/locale/
 %{_libdir}/locale/
-%{_libdir}/gconv
+%{_libdir}/gconv/
 
 %files info
 %defattr(-, root, root)
-%{_infodir}/libc.info*
+%doc %{_infodir}/libc.info*
 
 %files html
 %defattr(-, root, root)
@@ -563,17 +577,17 @@ exit 0
 
 %files -n nscd
 %defattr(-, root, root)
-%config(noreplace) %{_sysconfdir}/nscd.conf
-%{_sysconfdir}/initng/daemon/nscd.i
+%attr(0600, root, root) %config(noreplace) %{_sysconfdir}/nscd.conf
+%attr(0700, root, root) %{_sysconfdir}/initng/daemon/nscd.i
 %{_sbindir}/nscd
-%dir %attr(0755, root, root) %{_localstatedir}/run/nscd
-%attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/nscd.pid
+%dir %attr(0711, root, root) %{_localstatedir}/run/nscd
+%attr(0600, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/nscd.pid
 %attr(0666, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/socket
 %attr(0600, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/passwd
 %attr(0600, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/group
 %attr(0600, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_localstatedir}/run/nscd/hosts
 
-%files -n timezone
+%files tzdata
 %defattr(-, root, root)
 %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/localtime
 %{_datadir}/zoneinfo/
