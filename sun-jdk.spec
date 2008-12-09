@@ -1,12 +1,12 @@
 Name: sun-jdk
 Version: 6.6
-Release: 2ev
+Release: 3ev
 Summary: Sun's Java software development kit
 URL: http://java.sun.com/
 Group: Development/Languages
 License: Proprietary
 Vendor: GNyU-Linux
-Source: jdk-6u6-linux-i586.bin
+Source: jdk-6u11-linux-i586.bin
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: bash, coreutils
 Provides: java-jdk, java-sdk, jdk
@@ -35,8 +35,8 @@ alias more=true
 echo 'yes' | sh '%{SOURCE0}'
 unalias more
 
-%{__ln_s} jdk1.6.0_06 jdk-%{version}
-%{__ln_s} jdk1.6.0_06 java
+%{__ln_s} jdk1.6.0_11 jdk-%{version}
+%{__ln_s} jdk1.6.0_11 java
 
 popd
 
