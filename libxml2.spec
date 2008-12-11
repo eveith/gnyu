@@ -1,6 +1,6 @@
 Name: libxml2 
-Version: 2.6.32
-Release: 2ev
+Version: 2.7.2
+Release: 3ev
 Summary: A library for manipulating XML and HTML resources.
 URL: http://www.xmlsoft.org/
 Group: System Environment/Libraries
@@ -27,7 +27,7 @@ Schemas is in progress. It includes xmllint, a command line XML validator.
 
 %package python
 Summary: Python bindings to libxml2
-Requires: libxml2 = %{version}, python
+Requires: libxml2 = %{version}, python = %{_python_base_version}
 Group: System Environment/Libraries
 
 %description python
@@ -54,10 +54,10 @@ libxml2.
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
 %clean
