@@ -1,13 +1,12 @@
 Name: kdelibs
-Version: 3.5.9
-Release: 2ev
+Version: 3.5.10
+Release: 3ev
 Summary: Base libraries for KDE-based applcations
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2, BSD
 Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/%{name}-%{version}.tar.bz2
-Patch0: %{name}-post-kde-3.5.5-kinit.diff
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: make >= 3.79.1, gcc-g++, gcc-core, libstdc++, qt3 >= 3.3.2
 BuildRequires: fontconfig, perl, bzip2, arts, zlib >= 1.1, libacl
@@ -19,6 +18,7 @@ BuildRequires: alsa-lib, aspell, heimdal-libs, doxygen, openexr
 BuildRequires: libSM, libX11, libICE, libXau, libXcursor, libXdmcp, libXext
 BuildRequires: libXfixes, libXft, libXinerama, libXrandr, libXrender
 BuildRequires: hicolor-icon-theme
+Requires: sudo
 
 %description
 Libraries for the K Desktop Environment (KDE):
@@ -29,7 +29,6 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 
 %prep
 %setup -q
-%patch0
 
 
 %build
@@ -60,10 +59,10 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
 %clean
