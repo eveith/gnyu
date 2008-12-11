@@ -1,6 +1,6 @@
 Name: arts
-Version: 1.5.9
-Release: 2ev
+Version: 1.5.10
+Release: 3ev
 Summary: Analogue Realtime Synthesizer - KDE's sound server
 URL: http://www.arts-project.org/
 Group: Applications/Multimedia
@@ -51,10 +51,10 @@ KDE-libs for most things).
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
 %clean
