@@ -1,6 +1,6 @@
 Name: kdebase
-Version: 3.5.9
-Release: 2ev
+Version: 3.5.10
+Release: 3ev
 Summary: Base package of the K Desktop Environment (KDE)
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -18,6 +18,7 @@ BuildRequires: openssl >= 0.9.6, libpam, mesalib, libtiff, libpng, libjpeg
 BuildRequires: libmng, freetype >= 2.0.0, libogg, libvorbis, libusb, sudo, sed
 BuildRequires: openldap-libs, %{_datadir}/usb.ids, dbus-qt3, coreutils
 BuildRequires: automake-110, kdelibs = %{version}
+Requires: sudo
 
 %description
 kdebase is the second mandatory package (besides kdelibs) for the K Desktop
