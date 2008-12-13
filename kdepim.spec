@@ -1,6 +1,6 @@
 Name: kdepim
-Version: 3.5.9
-Release: 1ev
+Version: 3.5.10
+Release: 2ev
 Summary: Personal Information Management suite for KDE
 URL: http://kdepim.kde.org/
 Group: Applications/Productivity
