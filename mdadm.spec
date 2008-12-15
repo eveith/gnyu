@@ -1,13 +1,12 @@
 Name: mdadm
-Version: 2.6
-Release: 1ev
+Version: 2.6.8
+Release: 2ev
 Summary: A tool to create, maintain, and monitor Linux Software RAID
 URL: http://www.cse.unsw.edu.au/~neilb/source/mdadm/
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: http://www.cse.unsw.edu.au/~neilb/source/mdadm/mdadm-%{version}.tgz
+License: GPL-2
+Vendor: GNyU-Linux
+Source: http://www.kernel.org/pub/linux/utils/raid/mdadm/mdadm-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
 
 %description
@@ -20,28 +19,31 @@ arrays, also known as Software RAID.
 
 
 %build
-make CWFLAGS="$RPM_OPT_FLAGS"
+%{__make} %{?_smp_mflags} CWFLAGS="${RPM_OPT_FLAGS}"
 
 
 %install
-make install MANDIR=%{_mandir} DESTDIR="$RPM_BUILD_ROOT" \
-	INSTALL="$(which install)"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make_install} \
+	SYSCONFDIR='%{_sysconfdir}' \
+	MANDIR='%{_mandir}' \
+	DESTDIR="${RPM_BUILD_ROOT}" \
+	INSTALL='%{__install}'
+%{__mkdir_p} '%{buildroot}/etc'
+touch '%{buildroot}/etc/mdadm.conf'
 
-mkdir -p ${RPM_BUILD_ROOT}/etc
-touch ${RPM_BUILD_ROOT}/etc/mdadm.conf
-
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc ANNOUNCE* COPYING ChangeLog README*
-%config(noreplace) %ghost /etc/mdadm.conf
-/sbin/mdadm
-%{_mandir}/man4/md.4.gz
-%{_mandir}/man5/mdadm.conf.5.gz
-%{_mandir}/man8/mdadm.8.gz
+%config(noreplace) %ghost %attr(0600, root, root) %{_sysconfdir}/mdadm.conf
+%attr(0750, root, root) /sbin/mdadm
+%doc %{_mandir}/man4/md.4*
+%doc %{_mandir}/man5/mdadm.conf.5*
+%doc %{_mandir}/man8/mdadm.8*
