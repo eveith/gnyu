@@ -15,7 +15,7 @@ BuildRequires: gettext >= 0.16, pcre >= 7.0, elfutils-libelf, bzip2, zlib
 BuildRequires: sqlite, pkg-config, expat, libxml2
 BuildConflicts: m4 = 1.4.10
 Provides: rpm = %{version}-%{release}
-Obsoletes: rpm < %{version}-%{release}
+Obsoletes: rpm < %{version}-%{release}, rpm-libs < %{version}-%{release}
 %define rpm_uid 37
 %define rpm_gid 37
 
