@@ -1,11 +1,11 @@
 Name: bash
 Version: 3.2
-Release: 1ev
+Release: 2ev
 Summary: The Bourne Again SHell
 URL: http://www.gnu.org/software/bash
 Group: System Environment/Shells
 License: GPL
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/bash/%{name}-%{version}.tar.gz
 Patch001: bash32-001
 Patch002: bash32-002
@@ -40,9 +40,24 @@ Patch030: bash32-030
 Patch031: bash32-031
 Patch032: bash32-032
 Patch033: bash32-033
+Patch034: bash32-034
+Patch035: bash32-035
+Patch036: bash32-036
+Patch037: bash32-037
+Patch038: bash32-038
+Patch039: bash32-039
+Patch040: bash32-040
+Patch041: bash32-041
+Patch042: bash32-042
+Patch043: bash32-043
+Patch044: bash32-044
+Patch045: bash32-045
+Patch046: bash32-046
+Patch047: bash32-047
+Patch048: bash32-048
 Patch100: bash-requires.patch
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, libtermcap
+BuildRequires: make >= 3.79.1, gcc, libtermcap
 
 %description
 This is the Bourne Again Shell.  Bash is the GNU Project's Bourne
@@ -58,23 +73,23 @@ of the shell's features.
 
 %prep
 %setup -q
-%patch -P 001
-%patch -P 002
-%patch -P 003
-%patch -P 004
-%patch -P 005
-%patch -P 006
-%patch -P 007
-%patch -P 008
-%patch -P 009
-%patch -P 010
-%patch -P 011
-%patch -P 012
-%patch -P 013
-%patch -P 014
-%patch -P 015
-%patch -P 016
-%patch -P 017 
+%patch001
+%patch002
+%patch003
+%patch004
+%patch005
+%patch006
+%patch007
+%patch008
+%patch009
+%patch010
+%patch011
+%patch012
+%patch013
+%patch014
+%patch015
+%patch016
+%patch017 -p0
 %patch018
 %patch019
 %patch020
@@ -91,7 +106,22 @@ of the shell's features.
 %patch031
 %patch032
 %patch033
-%patch -P 100 -p1
+%patch034
+%patch035
+%patch036
+%patch037
+%patch038
+%patch039
+%patch040
+%patch041
+%patch042
+%patch043
+%patch044
+%patch045
+%patch046
+%patch047
+%patch048
+#%patch -P 100 -p1
 
 %build
 %configure \
@@ -122,27 +152,27 @@ of the shell's features.
 	--enable-restricted \
 	--enable-select \
 	--enable-mem-scramble
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 %find_lang bash
-%{__rm} -f %{buildroot}/%{_infodir}/dir
+%{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 pushd %{buildroot}/bin
-ln -sf bash sh
+%{__ln_s} bash sh
 popd
 
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir > /dev/null 2>&1 ||:
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir 2>/dev/null 2>&1 ||:
 
 
@@ -157,6 +187,6 @@ update-info-dir 2>/dev/null 2>&1 ||:
 /bin/sh
 /bin/bash
 /bin/bashbug
-%{_infodir}/bash.info.gz
-%{_mandir}/man1/bash.1.gz
-%{_mandir}/man1/bashbug.1.gz
+%doc %{_infodir}/bash.info*
+%doc %{_mandir}/man1/bash.1*
+%doc %{_mandir}/man1/bashbug.1*
