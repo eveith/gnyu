@@ -31,6 +31,7 @@ at sane-frontends and XSane.
 [[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR=${RPM_BUILD_ROOT}
 %find_lang sane-backends
+%{__mkdir_p} '%{buildroot}/%{_datadir}/sane'
 
 
 %pre
@@ -159,3 +160,4 @@ at sane-frontends and XSane.
 %doc %{_docdir}/%{name}-%{version}/sane-mfgs-external.html
 %dir %attr(0750, root, scanner) %{_sysconfdir}/sane.d
 %attr(0640, root, scanner) %config %{_sysconfdir}/sane.d/*.conf
+%dir %{_datadir}/sane
