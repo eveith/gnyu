@@ -1,10 +1,10 @@
 Name: bash
 Version: 3.2
-Release: 2ev
+Release: 3ev
 Summary: The Bourne Again SHell
 URL: http://www.gnu.org/software/bash
 Group: System Environment/Shells
-License: GPL
+License: GPL-3
 Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/bash/%{name}-%{version}.tar.gz
 Patch001: bash32-001
@@ -56,8 +56,7 @@ Patch046: bash32-046
 Patch047: bash32-047
 Patch048: bash32-048
 Patch100: bash-requires.patch
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc, libtermcap
+BuildRequires: make >= 3.79.1, gcc, ncurses
 
 %description
 This is the Bourne Again Shell.  Bash is the GNU Project's Bourne
@@ -151,12 +150,12 @@ of the shell's features.
 	--enable-readline \
 	--enable-restricted \
 	--enable-select \
-	--enable-mem-scramble
+	--enable-mem-scramble \
+	--with-curses
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 %find_lang bash
 %{__rm} -f '%{buildroot}/%{_infodir}/dir'
@@ -174,10 +173,6 @@ update-info-dir > /dev/null 2>&1 ||:
 %postun
 %{__ldconfig}
 update-info-dir 2>/dev/null 2>&1 ||:
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f bash.lang
