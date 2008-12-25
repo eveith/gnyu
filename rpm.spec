@@ -1,6 +1,6 @@
 Name: rpm
 Version: 4.4.8
-Release: 2ev
+Release: 3ev
 Summary: The RPM Package Manager 
 URL: http://www.rpm.org/
 Group: System Environment/Base
@@ -257,7 +257,7 @@ shell-like rules.
 %patch71 -p0  -b .ordererase
 %patch72 -p0  -b .fileconflicts
 %patch77 -p0  -b .srcdefattr
-%patch78 -p0  -b .fcntl
+# %patch78 -p0  -b .fcntl
 %patch82 -p0 -b .ordering
 %patch83 -p1 -b .no-doc-conflicts
 %patch84 -p0 -b .poptQVghost
