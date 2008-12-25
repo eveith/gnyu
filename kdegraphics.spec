@@ -1,13 +1,12 @@
 Name: kdegraphics
-Version: 3.5.6
-Release: 1ev
+Version: 3.5.10
+Release: 2ev
 Summary: A collection of graphic-oriented programs for the KDE suite
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL, BSD
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-g++, qt3, kdelibs, kdebase, fontconfig, freetype
 BuildRequires: zlib, libxml2 >= 2.4.8, libxslt >= 1.0.7, libstdc++, libart
 BuildRequires: libICE, libX11, libSM, libXrender, libXrandr, libXext, expat
@@ -62,28 +61,13 @@ BuildRequires: libusb, libieee1284, libXmu
 
 %build
 %configure \
-	--enable-pch \
-	--enable-final \
 	--disable-debug \
 	--disable-warnings
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
-%post
-
-%postun
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__make_install} DESTDIR='%{buildroot}'
 
 
 %files
