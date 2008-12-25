@@ -1,6 +1,6 @@
 Name: rpm5
 Version: 5.1.6
-Release: 1ev
+Release: 2ev
 Summary: The RPM Package Manager
 URL: http://www.rpm5.org/
 Group: System Environment/Base
@@ -8,7 +8,6 @@ License: LGPL-2.1
 Vendor: GNyU-Linux
 Source0: http://rpm5.org/files/rpm/rpm-5.1/rpm-%{version}.tar.gz
 Source1: %{name}-gnyu-macros
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, python >= 2.4, perl >= 5.6, popt >= 1.9
 BuildRequires: beecrypt >= 4.0, uuid1, openssl >= 0.9.8, neon >= 0.26.0
 BuildRequires: gettext >= 0.16, pcre >= 7.0, elfutils-libelf, bzip2, zlib
@@ -17,7 +16,7 @@ BuildConflicts: m4 = 1.4.10
 Provides: rpm = %{version}-%{release}
 Obsoletes: rpm < %{version}-%{release}, rpm-libs < %{version}-%{release}
 %define rpm_uid 37
-%define rpm_gid 37
+%define rpm_gid 7
 
 %description
 The RPM Package Manager (RPM) is a powerful command line driven
@@ -94,7 +93,6 @@ the RPM database and use other RPM-specific functions.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 %find_lang rpm
 
@@ -150,21 +148,17 @@ fi
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 %{__chown} rpm:rpm '%{_localstatedir}'/lib/rpm/*
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 if [[ "${1}" -eq 0 ]]
 then
 	userdel rpm
 	groupdel rpm
 fi
 exit 0
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files -f rpm.lang
