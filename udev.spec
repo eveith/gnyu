@@ -1,6 +1,6 @@
 Name: udev
 Version: 135
-Release: 3ev
+Release: 4ev
 Summary: A system that provides Linux systems with a dynamic /dev directory 
 URL: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 Group: System Environment/Base
@@ -8,6 +8,7 @@ License: GPL-2
 Vendor: GNyU-Linux
 Source: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-%{version}.tar.bz2
 Source1: %{name}-links.conf
+Source2: %{name}-udevinfo
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: make >= 3.79.1, gcc, pkg-config, libxml2
 %define _build_extras extras/ata_id extras/cdrom_id extras/collect \\\
@@ -38,7 +39,6 @@ export CFLAGS CXXFLAGS
 %{__make} %{?_smp_mflags} 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} \
 	DESTDIR='%{buildroot}' \
 	EXTRAS='%{_build_extras}' \
@@ -57,6 +57,7 @@ export CFLAGS CXXFLAGS
 	'%{buildroot}/%{_sysconfdir}/udev/rules.d'
 %{__cp} rules/packages/*.rules '%{buildroot}/%{_sysconfdir}/udev/rules.d'
 %{__cp} '%{SOURCE1}' '%{buildroot}/etc/udev/links.conf'
+%{__cp} '%{SOURCE2}' '%{buildroot}/sbin/udevinfo'
 
 
 %post
@@ -64,10 +65,6 @@ export CFLAGS CXXFLAGS
 
 %postun
 %{__ldconfig}
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -113,6 +110,7 @@ export CFLAGS CXXFLAGS
 /%{_lib}/udev/write_net_rules
 %attr(0755, root, root) /sbin/udevd
 %attr(0770, root, root) /sbin/udevadm
+%attr(0770, root, root) /sbin/udevinfo
 %{_includedir}/libudev.h
 %{_includedir}/libvolume_id.h
 %{_libdir}/libudev.so*
