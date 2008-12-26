@@ -1,6 +1,6 @@
 Name: dbus
-Version: 1.0.3
-Release: 4ev
+Version: 1.2.10
+Release: 5ev
 Summary: An IPC framework: D-BUS message bus
 URL: http://www.freedesktop.org/software/dbus/
 Source0: http://dbus.freedesktop.org/releases/dbus/%{name}-%{version}.tar.gz
@@ -23,6 +23,7 @@ per-user-login-session messaging facility.
 
 
 %build
+CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
 %configure \
 	--enable-dnotify \
 	--enable-inotify \
@@ -61,7 +62,7 @@ touch %{buildroot}/%{_localstatedir}/lib/dbus/machine-id
 
 
 %pre
-if [[ "${1}" -eq 0 ]]
+if [[ "${1}" -eq 1 ]]
 then
 	userdel dbus
 	useradd \
@@ -101,12 +102,12 @@ exit 0
 %{_libdir}/libdbus-1*
 %{_libdir}/dbus-1.0/
 %{_libdir}/pkgconfig/dbus*.pc
+%{_libexecdir}/dbus-daemon-launch-helper
 %{_includedir}/dbus-1.0/
 %doc %{_mandir}/man1/dbus*.1*
 %attr(0755, dbus, root) %{_datadir}/dbus-1/
 %dir %attr(0755, dbus, root) %{_localstatedir}/lib/dbus/
 %ghost %config(noreplace) %attr(0644, dbus, root) %{_localstatedir}/lib/dbus/machine-id
-# %attr(0755, dbus, root) %{_localstatedir}/run/dbus
 %ghost %config(noreplace) %verify(not size md5) %{_localstatedir}/run/system_bus_socket
 %ghost %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dbus.pid
 %dir %{_sysconfdir}/dbus-1
