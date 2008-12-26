@@ -1,8 +1,8 @@
 Name: hal
-Version: 0.5.9.1
-Release: 2ev
+Version: 0.5.11
+Release: 4ev
 Summary: The Linux hardware abstraction layer
-License: GPL
+License: GPL-2
 Group: System Environment/Daemons
 Source: http://hal.freedesktop.org/releases/hal-%{version}.tar.gz
 Source1: %{name}-hald.i
@@ -10,14 +10,14 @@ Patch0: %{name}-dbus_close.patch
 Patch1: %{name}-kernel-headers-26.patch
 Patch2: %{name}-allow-plugdev-group-on-volumes-and-power-management.patch
 URL: http://www.freedesktop.org/wiki/Software/hal
-Vendor: MSP Slackware
-BuildRequires: coreutils, grep, sed, bash >= 2.0, make, gcc
-BuildRequires: dbus >= 0.60, udev >= 089, glib2 >= 2.6.0, expat >= 1.95.8
-BuildRequires: dbus-glib, util-linux >= 2.12, perl-XML-Parser, gettext
+Vendor: GNyU-Linux
+BuildRequires: make, gcc, dbus >= 0.60, udev >= 089, glib2 >= 2.6.0
+BuildRequires: expat >= 1.95.8, dbus-glib, util-linux >= 2.12,
+BuildRequires: perl-XML-Parser, gettext, pkg-config
 Requires: hal-info
-BuildRoot: %{_tmppath}/%{name}-root
 %define _hald_uid 82
-%define _hal_gid 24
+%define _hal_gid 28
+%define _hal_hardware_groups console,tty,uucp,floppy,disk,cdrom,plugdev,tape,usb,lp,audio,video,scanner
 
 %description
 The point of HAL is to merge information from various sources such that desktop
@@ -35,7 +35,6 @@ Stuff like this is important to the major desktop environments.
 
 %prep
 %setup -q
-%patch1 -p1
 %patch2 -p1
 
 
@@ -44,6 +43,7 @@ Stuff like this is important to the major desktop environments.
 	--enable-manpages \
 	--disable-gtk-doc \
 	--disable-policy-kit \
+	--disable-console-kit \
 	--enable-umount-helper \
 	--with-pid-file='%{_localstatedir}/run/hald.pid' \
 	--with-hwdata='%{_datadir}' \
@@ -55,13 +55,11 @@ Stuff like this is important to the major desktop environments.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
-%find_lang hal
 
 # Install HAL service file for InitNG 
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
-%{__cat} < %{SOURCE1} \
+%{__cat} < '%{SOURCE1}' \
 	| %{__sed} \
 		-e 's,@rm@,%{__rm},g' \
 		-e 's,@localstatedir@,%{_localstatedir},g' \
@@ -74,18 +72,18 @@ touch '%{buildroot}/%{_localstatedir}/cache/hald/fdi-cache'
 
 
 %pre
-{
-	userdel hald
-	groupdel hal
-} > /dev/null 2>&1
-groupadd -g '%{_hal_gid}' hal
-useradd \
-	-u '%{_hald_uid}' \
-	-g '%{_hal_gid}' \
-	-c 'Hardware Abstraction Layer' \
-	-s /sbin/nologin \
-	-d %{_sysconfdir}/hal \
-	hald
+if [[ "${1}" -eq 1 ]]
+then
+	groupadd -g '%{_hal_gid}' hal
+	useradd \
+		-u '%{_hald_uid}' \
+		-g '%{_hal_gid}' \
+		-G '%{_hal_hardware_groups}' \
+		-c 'Hardware Abstraction Layer' \
+		-s /sbin/nologin \
+		-d %{_sysconfdir}/hal \
+		hald
+fi > /dev/null 2>&1
 kill -HUP $(< %{_localstatedir}/run/dbus.pid)
 exit 0
 
@@ -97,23 +95,19 @@ then
 	userdel hald
 	groupdel hal
 fi > /dev/null 2>&1
-/sbin/ldconfig
+%{__ldconfig}
 exit 0
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-
-%files -f hal.lang
+%files
 %defattr(-, root, root)
 %doc README AUTHORS ChangeLog COPYING HACKING NEWS
 %doc %{_datadir}/gtk-doc/html/libhal
 %doc %{_datadir}/gtk-doc/html/libhal-storage
-/etc/udev/rules.d/*
+%{_sysconfdir}/udev/rules.d/*
 %{_sysconfdir}/initng/daemon/hald.i
 %{_sysconfdir}/hal/
 %config %{_sysconfdir}/dbus-1/system.d/hal.conf
@@ -125,8 +119,15 @@ exit 0
 %{_libdir}/libhal*
 %{_libdir}/pkgconfig/hal*.pc
 %{_libexecdir}/hal*
-%{_mandir}/man1/*hal*1.*
-%{_mandir}/man8/hald.8*
+%doc %{_mandir}/man1/hal-disable-polling.1*
+%doc %{_mandir}/man1/hal-find-by-capability.1*
+%doc %{_mandir}/man1/hal-find-by-property.1*
+%doc %{_mandir}/man1/hal-get-property.1*
+%doc %{_mandir}/man1/hal-is-caller-locked-out.1*
+%doc %{_mandir}/man1/hal-lock.1*
+%doc %{_mandir}/man1/hal-set-property.1*
+%doc %{_mandir}/man1/lshal.1*
+%doc %{_mandir}/man8/hald.8*
 %{_sbindir}/hald
 %{_datadir}/hal
 %dir %{_localstatedir}/cache/hald
