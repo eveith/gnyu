@@ -1,10 +1,11 @@
 Name: dbus
-Version: 1.2.10
-Release: 5ev
+Version: 1.2.3
+Release: 6ev
 Summary: An IPC framework: D-BUS message bus
 URL: http://www.freedesktop.org/software/dbus/
 Source0: http://dbus.freedesktop.org/releases/dbus/%{name}-%{version}.tar.gz
 Source1: %{name}-dbus.i
+Patch0: %{name}-1.2.3-panic-from-dbus_signature_validate.patch
 License: AFL-2.1/GPL-2
 Group: System Environment/Libraries
 Vendor: GNyU-Linux
@@ -20,6 +21,7 @@ per-user-login-session messaging facility.
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %build
