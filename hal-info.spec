@@ -1,14 +1,13 @@
 Name: hal-info
-Version: 20071212
-Release: 1ev
+Version: 20081219
+Release: 2ev
 Summary: Device information for HAL
 URL: http://www.freedesktop.org/wiki/Software/hal
 Group: System Environment/Daemons
 License: AFL-2.1/GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://hal.freedesktop.org/releases/hal-info-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, coreutils, hal
+BuildRequires: make, hal
 BuildArch: noarch
 
 %description
@@ -27,15 +26,7 @@ parameters accordingly.
 
 
 %install
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
-
-[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
