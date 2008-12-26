@@ -1,16 +1,14 @@
-Name: db45
+Name: db4.5
 Version: 4.5.20
-Release: 2ev
+Release: 3ev
 Summary: An embedded database for traditional and client/server applications
 URL: http://www.oracle.com/database/berkeley-db/index.html
 Group: System Environment/Libraries
 License: BSD
 Vendor: GNyU-Linux
-Source: http://download-east.oracle.com/berkeley-db/db-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: coreutils, grep, sed, gcc, gcc-g++, make >= 3.79.1, java-jdk
-BuildRequires: gettext, libstdc++
-Obsoletes: db < %{version}-%{release}
+Source: http://download.oracle.com/berkeley-db/db-%{version}.tar.gz
+BuildRequires: gcc, gcc-g++, make >= 3.79.1, java-jdk, gettext, libstdc++
+Obsoletes: db < %{version}-%{release}, db45
 Provides: db = %{version}
 
 %description
@@ -26,7 +24,7 @@ platforms as well as Windows XP, Windows NT, and Windows '95 (MSVC 6 and 7).
 %package cxx
 Summary: C++ API to Berkeley DB
 Group: System Environment/Libraries
-Obsoletes: db-cxx < %{version}-%{release}
+Obsoletes: db-cxx < %{version}-%{release}, db45-cxx
 Provides: db-cxx = %{version}
 
 %description cxx
@@ -37,7 +35,7 @@ bindings for Berkeley DB. It is totally independend from the C API package.
 %package java
 Summary: Java API to Berkeley DB
 Group: System Environment/Libraries
-Obsoletes: db-java < %{version}-%{release}
+Obsoletes: db-java < %{version}-%{release}, db45-java
 Provides: db-java = %{version}-%{release}
 
 %description java
@@ -48,8 +46,8 @@ bindings for Berkeley DB. It is totally independend from the C API package.
 %package utils
 Summary: Command line utilities to manage berkeley databases
 Group: Applications/Databases
-Requires: db45 = %{version}
-Obsoletes: db-utils < %{version}-%{release}
+Requires: db4.5 = %{version}
+Obsoletes: db-utils < %{version}-%{release}, db45-utils
 
 %description utils
 This package provides serveral helper utilities to manage Berkeley DB
@@ -61,7 +59,7 @@ db_printlog  db_recover  db_stat  db_upgrade  db_verify
 %package docs
 Summary: Complete documentation package for Berkeley DB
 Group: Documentation
-Obsoletes: db-docs < %{version}-%{release}
+Obsoletes: db-docs < %{version}-%{release}, db45-docs
 
 %description docs
 Independently shipped from the APIs, this package provides the complete
@@ -107,8 +105,6 @@ popd
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
 pushd build_unix
 %{__make_install} DESTDIR='%{buildroot}'
 
@@ -122,26 +118,22 @@ popd
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %post cxx
-/sbin/ldconfig
+%{__ldconfig}
 
 %post java
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun cxx
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun java
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
