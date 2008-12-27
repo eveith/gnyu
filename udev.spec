@@ -1,6 +1,6 @@
 Name: udev
 Version: 135
-Release: 4ev
+Release: 5ev
 Summary: A system that provides Linux systems with a dynamic /dev directory 
 URL: http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 Group: System Environment/Base
@@ -57,7 +57,12 @@ export CFLAGS CXXFLAGS
 	'%{buildroot}/%{_sysconfdir}/udev/rules.d'
 %{__cp} rules/packages/*.rules '%{buildroot}/%{_sysconfdir}/udev/rules.d'
 %{__cp} '%{SOURCE1}' '%{buildroot}/etc/udev/links.conf'
+
 %{__cp} '%{SOURCE2}' '%{buildroot}/sbin/udevinfo'
+%{__mkdir_p} '%{buildroot}/%{_bindir}'
+pushd '%{buildroot}/%{_bindir}'
+%{__ln_s} /sbin/udevinfo .
+popd
 
 
 %post
@@ -108,9 +113,10 @@ export CFLAGS CXXFLAGS
 /%{_lib}/udev/vol_id
 /%{_lib}/udev/write_cd_rules
 /%{_lib}/udev/write_net_rules
-%attr(0755, root, root) /sbin/udevd
-%attr(0770, root, root) /sbin/udevadm
-%attr(0770, root, root) /sbin/udevinfo
+%attr(0700, root, root) /sbin/udevd
+%attr(0750, root, root) /sbin/udevadm
+%attr(0750, root, root) /sbin/udevinfo
+%{_bindir}/udevinfo
 %{_includedir}/libudev.h
 %{_includedir}/libvolume_id.h
 %{_libdir}/libudev.so*
