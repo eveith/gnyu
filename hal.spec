@@ -1,6 +1,6 @@
 Name: hal
 Version: 0.5.11
-Release: 4ev
+Release: 5ev
 Summary: The Linux hardware abstraction layer
 License: GPL-2
 Group: System Environment/Daemons
@@ -14,7 +14,7 @@ Vendor: GNyU-Linux
 BuildRequires: make, gcc, dbus >= 0.60, udev >= 089, glib2 >= 2.6.0
 BuildRequires: expat >= 1.95.8, dbus-glib, util-linux >= 2.12,
 BuildRequires: perl-XML-Parser, gettext, pkg-config
-Requires: hal-info
+Requires: hal-info, %{_bindir}/udevinfo
 %define _hald_uid 82
 %define _hal_gid 28
 %define _hal_hardware_groups console,tty,uucp,floppy,disk,cdrom,plugdev,tape,usb,lp,audio,video,scanner
@@ -64,6 +64,7 @@ Stuff like this is important to the major desktop environments.
 		-e 's,@rm@,%{__rm},g' \
 		-e 's,@localstatedir@,%{_localstatedir},g' \
 		-e 's,@hald@,%{_sbindir}/hald,g' \
+		-e 's,@udevinfo@,%{_bindir}/udevinfo,g' \
 	> '%{buildroot}/%{_sysconfdir}/initng/daemon/hald.i'
 
 # Create ghost cache file; hald will create it at first run.
