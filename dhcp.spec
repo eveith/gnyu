@@ -1,6 +1,6 @@
 Name: dhcp-server
 Version: 4.1.0
-Release: 2ev
+Release: 3ev
 Summary: The ISC DHCP server daemon
 URL: http://www.isc.org/sw/bind/
 Group: System Environment/Daemons 
@@ -51,7 +51,8 @@ configure a linux system dynamically via DHCP.
 	--with-srv6-pid-file='%{_localstatedir}/run/dhcpd6.pid' \
 	--with-cli-pid-file='%{_localstatedir}/run/dhclient.pid' \
 	--with-cli6-pid-file='%{_localstatedir}/run/dhclient6.pid' \
-	--with-relay-pid-file='%{_localstatedir}/run/dhcrelay.pid'
+	--with-relay-pid-file='%{_localstatedir}/run/dhcrelay.pid' \
+	--disable-dhcpv6
 %{__make} %{?_smp_mflags}
 
 # Rebuild the DHCP client. DHCP now uses -lcrypto for the whole suite, but
