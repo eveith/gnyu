@@ -1,16 +1,15 @@
 Name: dhcp-server
-Version: 3.0.5
-Release: 1ev
+Version: 4.1.0
+Release: 2ev
 Summary: The ISC DHCP server daemon
 URL: http://www.isc.org/sw/bind/
 Group: System Environment/Daemons 
 License: BSD
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source0: http://ftp.isc.org/isc/dhcp/dhcp-%{version}.tar.gz
 Source1: dhcp-dhclient.i
 Source2: dhcp-dhcpd.i
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core
+BuildRequires: make, gcc, openssl
 
 %description
 The Internet Software Consortium DHCP distribution includes a DHCP client, a
@@ -43,102 +42,113 @@ configure a linux system dynamically via DHCP.
 
 
 %build
-cat << __END__ > site.conf
-CC_OPTIONS="$RPM_OPT_FLAGS"
-DEBUG=
-CC=%{_target_platform}-gcc
-USRBINDIR=%{_bindir}
-BINDIR=%{_bindir}
-CLIENTBINDIR=/sbin
-ADMMANDIR=%{_mandir}/man8
-ADMMANEXT=".8"
-FFMANDIR=%{_mandir}/man5
-FFMANEXT=".5"
-LIBDIR=%{_libdir}
-INCDIR=%{_includedir}
-VARRUN=/%{_var}/run/dhcp
-VARLIB=/%{_var}/lib/dhcp
-__END__
+%configure \
+	--with-srv-lease-file='%{_localstatedir}/state/dhcpd.leases' \
+	--with-srv6-lease-file='%{_localstatedir}/state/dhcpd6.leases' \
+	--with-cli-lease-file='%{_localstatedir}/state/dhclient.leases' \
+	--with-cli6-lease-file='%{_localstatedir}/state/dhclient6.leases' \
+	--with-srv-pid-file='%{_localstatedir}/run/dhcpd.pid' \
+	--with-srv6-pid-file='%{_localstatedir}/run/dhcpd6.pid' \
+	--with-cli-pid-file='%{_localstatedir}/run/dhclient.pid' \
+	--with-cli6-pid-file='%{_localstatedir}/run/dhclient6.pid' \
+	--with-relay-pid-file='%{_localstatedir}/run/dhcrelay.pid'
+%{__make} %{?_smp_mflags}
 
-./configure
-make %{_smp_mflags}
+# Rebuild the DHCP client. DHCP now uses -lcrypto for the whole suite, but
+# dhclient lies in /sbin, whereas libcrypto* are in /usr/lib. When we request
+# an IP address early during boot, /usr isn't mounted, and dhclient won't run.
+# We re-build using static linking.
+%{__make} -C client clean
+%{__make} -C client %{?_smp_mflags} LDFLAGS='-static'
 	
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make_install} DESTDIR='%{buildroot}'
 
-pushd "$RPM_BUILD_ROOT"
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
+%{__cat} < '%{SOURCE1}' \
+	| %{__sed} \
+		-e 's,@localstatedir@,%{_localstatedir},g' \
+		-e 's,@dhclient@,/sbin/dhclient,g' \
+	> '%{buildroot}/%{_sysconfdir}/initng/daemon/dhclient.i'
+%{__cat} < '%{SOURCE2}' \
+	| %{__sed} -e 's,@dhcpd@,%{_sbindir}/dhcpd,g' \
+	> '%{buildroot}/%{_sysconfdir}/initng/daemon/dhcpd.i'
 
-mkdir -p ./etc/initng/daemon
-cp %{SOURCE1} ./etc/initng/daemon/dhclient.i
-cat %{SOURCE2} \
-	| sed 's,@dhcpd@,%{_bindir}/dhcpd,g' \
-	> ./etc/initng/daemon/dhcpd.i
+%{__mkdir_p} '%{buildroot}/%{_localstatedir}'/{state,run}
+for i in dhcpd dhcpd6 dhclient dhclient6
+do
+	touch "%{buildroot}/%{_localstatedir}/run/${i}.pid"
+	touch "%{buildroot}/%{_localstatedir}/state/${i}.leases"{,~}
+done
+touch '%{buildroot}/%{_localstatedir}/run/dhcrelay.pid'
 
-mkdir -p ./%{_var}/{lib,run}/dhcp
-touch ./%{_var}/lib/dhcp/{dhcpd,dhclient}.leases{,~} \
-	./%{_var}/run/dhcp/{dhcpd,dhclient}.pid
+touch '%{buildroot}/%{_sysconfdir}/dhclient.conf'
+touch '%{buildroot}/%{_sysconfdir}/dhcpd.conf'
 
-touch ./etc/dhclient.conf ./etc/dhcpd.conf
-
-popd
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+# dhclient is needed at boottime, move it to /sbin:
+%{__mkdir_p} '%{buildroot}/sbin'
+%{__mv} '%{buildroot}/%{_sbindir}/dhclient' '%{buildroot}/sbin'
 
 
 %post
-/sbin/ldconfig
-if [ "$1" -gt 1 ] && ngc -s | grep 'daemon/dhcpd' > /dev/null 2>&1
+%{__ldconfig}
+if [[ "${1}" -eq 1 ]]
 then
-	ngc -r daemon/dhclient > /dev/null 2>&1 || :
-fi
+	ng-update add daemon/dhcpd default
+fi > /dev/null 2>&1
+exit 0
 
 %preun
-if [ "$1" -eq 0 ] && ngc -s | grep 'daemon/dhcpd' > /dev/null 2>&1
+if [[ "${1}" -eq 0 ]]
 then
-	ngc -d daemon/dhclient > /dev/null 2>&1 || :
-fi
-
+	ngc -d daemon/dhcpd
+	ng-update del daemon/dhcpd default
+fi > /dev/null 2>&1
+exit 0
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
-%doc README server/dhcpd.conf
-/etc/initng/daemon/dhcpd.i
-%ghost %config(noreplace) /etc/dhcpd.conf
-%{_bindir}/dhcpd
-%{_bindir}/dhcrelay
+%doc README LICENSE RELNOTES server/dhcpd.conf doc/api+protocol
+%doc doc/References.html doc/References.txt
+%attr(0640, root, root) %{_sysconfdir}/initng/daemon/dhcpd.i
+%ghost %config(noreplace) %attr(0640, root, root) %{_sysconfdir}/dhcpd.conf
+%attr(0700, root, root) %{_sbindir}/dhcpd
+%attr(0700, root, root) %{_sbindir}/dhcrelay
 %{_bindir}/omshell
-%{_libdir}/*.a
-%{_includedir}/dhcpctl.h
+%{_libdir}/libdhcpctl.a
+%{_libdir}/libdst.a
+%{_libdir}/libomapi.a
+%{_includedir}/dhcpctl/
 %{_includedir}/omapip/
 %{_includedir}/isc-dhcp/
-%{_mandir}/man1/omshell.1*
-%{_mandir}/man3/*.3*
-%{_mandir}/man5/dhcp*.5*
-%{_mandir}/man8/dhc*.8*
-%dir /%{_var}/lib/dhcp
-%dir /%{_var}/run/dhcp
-%ghost /%{_var}/run/dhcp/dhcpd.pid
-%ghost /%{_var}/lib/dhcp/dhcpd.leases*
+%doc %{_mandir}/man1/omshell.1*
+%doc %{_mandir}/man3/dhcpctl.3*
+%doc %{_mandir}/man3/omapi.3*
+%doc %{_mandir}/man5/dhcp-eval.5*
+%doc %{_mandir}/man5/dhcp-options.5*
+%doc %{_mandir}/man5/dhcpd.conf.5*
+%doc %{_mandir}/man5/dhcpd.leases.5*
+%doc %{_mandir}/man8/dhcpd.8*
+%doc %{_mandir}/man8/dhcrelay.8*
+%ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhcpd.pid
+%ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhcpd6.pid
+%ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhcrelay.pid
+%ghost %attr(0640, root, root) %config(noreplace) %{_localstatedir}/state/dhcpd.leases*
+%ghost %attr(0640, root, root) %config(noreplace) %{_localstatedir}/state/dhcpd6.leases*
 
 %files -n dhclient 
 %doc README client/dhclient.conf
-/etc/initng/daemon/dhclient.i
-%ghost %config(noreplace) /etc/dhclient.conf
-/sbin/dhclient*
-%{_mandir}/*/dhclient*.*
-%dir /%{_var}/lib/dhcp
-%dir /%{_var}/run/dhcp
-%ghost /%{_var}/run/dhcp/dhclient.pid
-%ghost /%{_var}/lib/dhcp/dhclient.leases*
+%attr(0640, root, root) %{_sysconfdir}/initng/daemon/dhclient.i
+%ghost %config(noreplace) %attr(0640, root, root) %{_sysconfdir}/dhclient.conf
+%attr(0700, root, root) /sbin/dhclient
+%doc %{_mandir}/*/dhclient*.*
+%ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhclient.pid
+%ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhclient6.pid
+%ghost %attr(0640, root, root) %config(noreplace) %{_localstatedir}/state/dhclient.leases*
+%ghost %attr(0640, root, root) %config(noreplace) %{_localstatedir}/state/dhclient6.leases*
