@@ -1,6 +1,6 @@
 Name: dhcp-server
 Version: 4.1.0
-Release: 3ev
+Release: 4ev
 Summary: The ISC DHCP server daemon
 URL: http://www.isc.org/sw/bind/
 Group: System Environment/Daemons 
@@ -92,6 +92,9 @@ touch '%{buildroot}/%{_sysconfdir}/dhcpd.conf'
 %{__mkdir_p} '%{buildroot}/sbin'
 %{__mv} '%{buildroot}/%{_sbindir}/dhclient' '%{buildroot}/sbin'
 
+# Install dhclient-script
+%{__cp} client/scripts/linux '%{buildroot}/sbin/dhclient-script'
+
 
 %post
 %{__ldconfig}
@@ -148,6 +151,7 @@ exit 0
 %attr(0640, root, root) %{_sysconfdir}/initng/daemon/dhclient.i
 %ghost %config(noreplace) %attr(0640, root, root) %{_sysconfdir}/dhclient.conf
 %attr(0700, root, root) /sbin/dhclient
+%attr(0700, root, root) /sbin/dhclient-script
 %doc %{_mandir}/*/dhclient*.*
 %ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhclient.pid
 %ghost %attr(0640, root, root) %config(noreplace) %verify(not size md5) %{_localstatedir}/run/dhclient6.pid
