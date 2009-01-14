@@ -1,6 +1,6 @@
 Name: dhcp-server
 Version: 4.1.0
-Release: 4ev
+Release: 5ev
 Summary: The ISC DHCP server daemon
 URL: http://www.isc.org/sw/bind/
 Group: System Environment/Daemons 
@@ -9,6 +9,7 @@ Vendor: GNyU-Linux
 Source0: http://ftp.isc.org/isc/dhcp/dhcp-%{version}.tar.gz
 Source1: dhcp-dhclient.i
 Source2: dhcp-dhcpd.i
+Source3: dhcp-dhclient-script
 BuildRequires: make, gcc, openssl
 
 %description
@@ -93,7 +94,7 @@ touch '%{buildroot}/%{_sysconfdir}/dhcpd.conf'
 %{__mv} '%{buildroot}/%{_sbindir}/dhclient' '%{buildroot}/sbin'
 
 # Install dhclient-script
-%{__cp} client/scripts/linux '%{buildroot}/sbin/dhclient-script'
+%{__cp} '%{SOURCE3}' '%{buildroot}/sbin/dhclient-script'
 
 
 %post
