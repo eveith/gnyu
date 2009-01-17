@@ -1,17 +1,16 @@
 Name: wesnoth
-Version: 1.4.4
-Release: 3ev
+Version: 1.4.7
+Release: 4ev
 Summary: A turn-based fantasy strategy game: The Battle for Wesnoth
 URL: http://www.wesnoth.org/
 Group: Amusements/Games
 License: GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires(build,install): make, gettext
 BuildRequires(build): gcc-g++, freetype, libX11, libsdlnet, libsdl >= 1.2.7
 BuildRequires(build): libsdlmixer >= 1.2, libsdlimage >= 1.2, boost >= 1.33
-BuildRequires(build): libstdc++, libgcc_s
+BuildRequires(build): libstdc++, fribidi
 Requires: %{name}-common = %{version}
 
 %description
@@ -43,7 +42,7 @@ The dedicated `wesnothd' server binary that is used to host a wesnoth server.
 %setup -q
 
 # Fix a bug: http://www.wesnoth.org/forum/viewtopic.php?f=4&p=292862
-%{__sed} -ie 's/hr //' po/wesnoth/LINGUAS
+#%{__sed} -ie 's/hr //' po/wesnoth/LINGUAS
 
 
 %build
@@ -59,13 +58,8 @@ The dedicated `wesnothd' server binary that is used to host a wesnoth server.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf "${RPM_BUILD_ROOT}"
 %{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
 %{__rm} -rf '%{buildroot}/%{_datadir}/doc'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf "${RPM_BUILD_ROOT}"
 
 
 %files
