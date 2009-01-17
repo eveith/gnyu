@@ -7,7 +7,6 @@ Group:
 License:
 Vendor: GNyU-Linux
 Source:
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires:
 
 %description
@@ -21,7 +20,6 @@ BuildRequires:
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 [[ -e '%{buildroot}/%{_infodir}/dir' ]] \
@@ -34,7 +32,6 @@ BuildRequires:
 
 
 %clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
