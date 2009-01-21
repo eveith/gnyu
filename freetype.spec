@@ -1,6 +1,6 @@
 Name: freetype
-Version: 2.3.6
-Release: 2ev
+Version: 2.3.8
+Release: 3ev
 Summary: An open-source font renderer
 URL: http://www.freetype.org/
 Group: System Environment/Libraries
@@ -11,8 +11,7 @@ Patch0: freetype-2.1.10-enable-ft2-bci.patch
 Patch1: freetype-2.2.1-memcpy-fix.patch
 Patch2: freetype-2.3.0-enable-spr.patch
 Patch3: freetype-multilib.patch
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, zlib, pkg-config
+BuildRequires: make >= 3.79.1, gcc, zlib, pkg-config
 
 %description
 FreeType 2 is a software font engine that is designed to be small, efficient,
@@ -32,26 +31,22 @@ well.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc ChangeLog* README* docs/*
 %{_bindir}/freetype-config
-%{_includedir}/freetype2/
+%dir %{_includedir}/freetype2
+%{_includedir}/freetype2/*
 %{_includedir}/ft2build.h
 %{_libdir}/libfreetype.*
 %{_libdir}/pkgconfig/freetype2.pc
