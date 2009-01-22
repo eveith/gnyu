@@ -1,14 +1,13 @@
 Name: gnutls
-Version: 2.4.1
-Release: 2ev
+Version: 2.6.3
+Release: 3ev
 Summary: An Open Source implementation of TLS 1.0 Internet protocol (RFC 2246)
 URL: http://www.gnu.org/software/gnutls/
 Group: System Environment/Libraries
 License: LGPL-2.1
 Vendor: GNyU-Linux
 Source: ftp://ftp.gnutls.org/pub/gnutls/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, sed, grep, make, gcc, gcc-g++, gettext, libstdc++
+BuildRequires: make, gcc, gcc-g++, gettext, libstdc++
 BuildRequires: libgcrypt, zlib, libgpg-error, readline, ncurses
 
 %description
@@ -28,16 +27,12 @@ designed to prevent eavesdropping, tampering, or message forgery."
 %build
 %configure \
 	--disable-rpath \
-	--with-included-opencdk \
 	--with-included-libtasn1 \
-	--with-included-libcfg \
-	--with-included-lzo \
-	--with-libgcrypt
+	--with-included-libcfg 
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} DESTDIR='%{buildroot}'
 %{find_lang} gnutls
 
@@ -46,14 +41,10 @@ designed to prevent eavesdropping, tampering, or message forgery."
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files -f gnutls.lang
