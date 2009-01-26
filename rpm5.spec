@@ -1,6 +1,6 @@
 Name: rpm5
 Version: 5.1.6
-Release: 2ev
+Release: 3ev
 Summary: The RPM Package Manager
 URL: http://www.rpm5.org/
 Group: System Environment/Base
@@ -8,6 +8,8 @@ License: LGPL-2.1
 Vendor: GNyU-Linux
 Source0: http://rpm5.org/files/rpm/rpm-5.1/rpm-%{version}.tar.gz
 Source1: %{name}-gnyu-macros
+Source2: %{name}-noarch-macros
+Source3: %{name}-i686-macros
 BuildRequires: make, gcc, python >= 2.4, perl >= 5.6, popt >= 1.9
 BuildRequires: beecrypt >= 4.0, uuid1, openssl >= 0.9.8, neon >= 0.26.0
 BuildRequires: gettext >= 0.16, pcre >= 7.0, elfutils-libelf, bzip2, zlib
@@ -85,7 +87,7 @@ the RPM database and use other RPM-specific functions.
 	--with-lua=internal \
 	--with-pcre \
 	--with-xar=internal \
-	--with-path-macros='%{_libdir}/rpm/macros:%{_sysconfdir}/rpm/macros.d/*:~/.rpmmacros' \
+	--with-path-macros='%{_libdir}/rpm/macros:%{_sysconfdir}/rpm/macros.d/*:%{_libdir}/rpm/%%{_target}/macros:~/.rpmmacros' \
 	--with-db-tools-integrated \
 	--enable-build-pic \
 	--enable-build-pie 
@@ -129,6 +131,10 @@ find '%{buildroot}/%{_mandir}' -name rpmgraph\* -exec %{__rm} '{}' \;
 # Install our own macro definitions
 %{__install} -m0644 '%{SOURCE1}' \
 	'%{buildroot}/%{_sysconfdir}/rpm/macros.d/00-gnyu'
+%{__mkdir_p} '%{buildroot}/%{_libdir}/rpm/noarch-linux'
+%{__cat} < '%{SOURCE2}' > '%{buildroot}/%{_libdir}/rpm/noarch-linux/macros'
+%{__mkdir_p} '%{buildroot}/%{_libdir}/rpm/i686-linux'
+%{__cat} < '%{SOURCE3}' > '%{buildroot}/%{_libdir}/rpm/i686-linux/macros'
 
 
 %pre
@@ -149,7 +155,7 @@ fi
 
 %post
 %{__ldconfig}
-%{__chown} rpm:rpm '%{_localstatedir}'/lib/rpm/*
+%{__chown} rpm:rpm '%{_localstatedir}/lib/rpm'/*
 
 %postun
 %{__ldconfig}
@@ -192,6 +198,10 @@ exit 0
 %doc %{_mandir}/man8/rpmmtree.8*
 %attr(0755, rpm, rpm) %dir %{_libdir}/rpm
 %attr(0644, rpm, rpm) %{_libdir}/rpm/macros
+%attr(0755, rpm, rpm) %dir %{_libdir}/rpm/i686-linux
+%attr(0644, rpm, rpm) %{_libdir}/rpm/i686-linux/macros
+%attr(0755, rpm, rpm) %dir %{_libdir}/rpm/noarch-linux
+%attr(0644, rpm, rpm) %{_libdir}/rpm/noarch-linux/macros
 %attr(0644, rpm, rpm) %{_libdir}/rpm/rpmpopt
 %{exeattr} %{_libdir}/rpm/db_*
 %{exeattr} %{_libdir}/rpm/magic
