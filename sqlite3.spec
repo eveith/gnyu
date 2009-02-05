@@ -1,15 +1,14 @@
-Name: sqlite
-Version: 3.5.7
-Release: 1ev
+Name: sqlite3
+Version: 3.6.10
+Release: 2ev
 Summary: A self-contained, embeddable SQL database
 URL: http://www.sqlite.org/
 Group: Applications/Databases
 License: Public Domain
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: http://www.sqlite.org/sqlite-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: gcc, make >= 3.79.1, pkg-config, readline
+Obsoletes: sqlite
 
 %description
 SQLite is a small, fast, embeddable SQL database engine that supports most of
@@ -20,10 +19,11 @@ use. Bindings for other languages are also available.
 
 
 %prep
-%setup -q
+%setup -q -n 'sqlite-%{version}'
 
 
 %build
+export LDFLAGS=-ldl
 %configure \
 	--enable-threadsafe \
 	--enable-cross-thread-connections \
@@ -36,19 +36,14 @@ use. Bindings for other languages are also available.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
