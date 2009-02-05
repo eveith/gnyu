@@ -1,6 +1,6 @@
 Name: dbus
 Version: 1.2.3
-Release: 6ev
+Release: 7ev
 Summary: An IPC framework: D-BUS message bus
 URL: http://www.freedesktop.org/software/dbus/
 Source0: http://dbus.freedesktop.org/releases/dbus/%{name}-%{version}.tar.gz
@@ -31,8 +31,8 @@ CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
 	--enable-inotify \
 	--with-xml=expat \
     --with-dbus-user=dbus \
-	--with-system-pid-file=%{_localstatedir}/run/dbus.pid \
-	--with-system-socket=%{_localstatedir}/run/system_bus_socket \
+	--with-system-pid-file='%{_localstatedir}/run/dbus.pid' \
+	--with-system-socket='%{_localstatedir}/run/system_bus_socket' \
 	--with-session-socket-dir=/tmp \
 	--enable-verbose-mode \
 	--disable-asserts \
@@ -45,6 +45,8 @@ CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
 %{__make_install} DESTDIR='%{buildroot}'
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/dbus-1/session.d'
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/run'
+
+%{__mkdir_p} '%{buildroot}/%{_datadir}/dbus-1/interfaces'
 
 touch '%{buildroot}/%{_localstatedir}/run/system_bus_socket'
 touch '%{buildroot}/%{_localstatedir}/run/dbus.pid'
@@ -80,8 +82,11 @@ exit 0
 
 %post
 %{__ldconfig}
-%{__rm} -f %{_localstatedir}/lib/dbus/machine-id
-dbus-uuidgen > %{_localstatedir}/lib/dbus/machine-id || :
+if [[ "${1}" -eq 1 ]]
+then
+	%{__rm} -f '%{_localstatedir}/lib/dbus/machine-id'
+	dbus-uuidgen > '%{_localstatedir}/lib/dbus/machine-id'
+fi
 exit 0
 
 %preun
@@ -99,7 +104,7 @@ exit 0
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog COPYING HACKING README
-%{_sysconfdir}/initng/daemon/dbus.i
+%attr(0700, root, root) %{_sysconfdir}/initng/daemon/dbus.i
 %{_bindir}/dbus-*
 %{_libdir}/libdbus-1*
 %{_libdir}/dbus-1.0/
