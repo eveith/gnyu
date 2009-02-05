@@ -67,7 +67,7 @@ BuildRequires: libusb, libieee1284, libXmu
 
 
 %install
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
