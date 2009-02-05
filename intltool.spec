@@ -1,12 +1,12 @@
 Name: intltool
-Version: 0.9.5
+Version: 0.40.5
 Release: 1ev
 Summary: Extracts translatable strings from various source files
 URL: ftp://ftp.gnome.org/pub/gnome/sources/intltool/
 Group: Development/Tools
 License: GPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.gnome.org/pub/gnome/sources/%{name}/0.9/%{name}-%{version}.tar.bz2
+Source: ftp://ftp.gnome.org/pub/gnome/sources/%{name}/0.40/%{name}-%{version}.tar.bz2
 BuildRequires: make, perl, automake
 BuildArch: noarch
 
@@ -36,17 +36,17 @@ The intltool collection will do this steps:
 
 %files
 %defattr(-, root, root)
-%doc ABOUT-NLS AUTHORS ChangeLog COPYING NEWS README
-%{_bindir}/xml-i18n-extract
-%{_bindir}/xml-i18n-merge
-%{_bindir}/xml-i18n-prepare
-%{_bindir}/xml-i18n-toolize
-%{_bindir}/xml-i18n-unicodify
-%{_bindir}/xml-i18n-update
-%doc %{_mandir}/man8/xml-i18n-extract.8*
-%doc %{_mandir}/man8/xml-i18n-merge.8*
-%doc %{_mandir}/man8/xml-i18n-prepare.8*
-%doc %{_mandir}/man8/xml-i18n-toolize.8*
-%{_datadir}/aclocal/xml-i18n-tools.m4
+%doc AUTHORS ChangeLog COPYING NEWS README TODO
+%{_bindir}/intltool-extract
+%{_bindir}/intltool-merge
+%{_bindir}/intltool-prepare
+%{_bindir}/intltool-update
+%{_bindir}/intltoolize
+%doc %{_mandir}/man8/intltool-extract.8*
+%doc %{_mandir}/man8/intltool-merge.8*
+%doc %{_mandir}/man8/intltool-prepare.8*
+%doc %{_mandir}/man8/intltool-update.8*
+%doc %{_mandir}/man8/intltoolize.8*
+%{_datadir}/aclocal/intltool.m4
 %dir %{_datadir}/intltool
 %{_datadir}/intltool/*.*
