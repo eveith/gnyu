@@ -46,5 +46,6 @@ or if you want to stick to good old C++.
 %{_includedir}/CLucene.h
 %dir %{_includedir}/CLucene
 %{_includedir}/CLucene/*
+%dir %{_libdir}/CLucene
 %{_libdir}/CLucene/clucene-config.h
 %{_libdir}/libclucene.*
