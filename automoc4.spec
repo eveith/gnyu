@@ -1,14 +1,13 @@
 Name: automoc4
-Version: 0.9.84
-Release: 1ev
+Version: 0.9.87
+Release: 2ev
 Summary: CMake automatic MOC generation
 URL: http://www.kde.org/
 Group: Development/Tools
 License: BSD
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/unstable/%{name}/%{version}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires(build): cmake >= 2.4.5, qt4, make, gcc-g++
+BuildRequires(build): cmake >= 2.4.5, qt4, make, gcc-g++, libstdc++
 BuildRequires(install): make
 Requires: cmake >= 2.4.5
 
@@ -27,12 +26,7 @@ automatically to projects that use CMake as the buildsystem.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
