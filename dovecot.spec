@@ -1,6 +1,6 @@
 Name: dovecot
-Version: 1.1.10
-Release: 1ev
+Version: 1.1.11
+Release: 2ev
 Summary: A very secure and robust IMAP server
 URL: http://www.dovecot.org/
 Group: Networking/Servers/IMAP
@@ -10,7 +10,7 @@ Source0: http://www.dovecot.org/releases/1.1/dovecot-%{version}.tar.gz
 Source1: %{name}-dovecot.ii
 Source2: %{name}-dovecot.conf
 Source3: %{name}-dovecot.pam
-BuildRequires: make, gcc, cyrus-sasl, openssl, libcap2, libpam
+BuildRequires: make, gcc, cyrus-sasl, openssl, libcap2, libpam, openldap-libs
 %define dovecot_uid 509
 %define dovecot_gid 57
 
@@ -40,7 +40,8 @@ on performance.
 	--with-rundir='%{_localstatedir}/run/dovecot' \
 	--with-statedir='%{_localstatedir}/lib/dovecot' \
 	--with-pop3d \
-	--with-docs
+	--with-docs \
+	--with-ldap
 %{__make} %{?_smp_mflags}
 
 
