@@ -7,7 +7,7 @@ Group: User Interface/Desktops
 License: GPL-2, LGPL-2, BSD
 Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/kdelibs-%{version}.tar.bz2
-BuildRequires: cmake >= 2.6, make, gcc-g++, qt4 >= 4.4, automoc4 >= 0.9.87
+BuildRequires: cmake >= 2.6, make, gcc-g++, qt4 >= 4.4.2, automoc4 >= 0.9.86
 BuildRequires: libICE, libX11, libSM
 BuildRequires: perl,  bzip2, openssl, zlib, strigi >= 0.6.3, gettext, mesalib
 BuildRequires: libacl, libattr, pcre, libxslt, libxml2, hal, heimdal-libs
@@ -37,6 +37,7 @@ pushd 'kdelibs-%{version}-obj'
 	'../kdelibs-%{version}'
 %{__make} %{?_smp_mflags}
 popd
+
 
 %install
 pushd 'kdelibs-%{version}-obj'
