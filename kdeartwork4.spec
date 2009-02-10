@@ -69,6 +69,7 @@ popd
 %dir %{_datadir}/emoticons/Boxed
 %dir %{_datadir}/emoticons/KMess
 %dir %{_datadir}/emoticons/KMess-Blue
+%dir %{_datadir}/emoticons/KMess-Cartoon
 %dir %{_datadir}/emoticons/KMess-Violet
 %{_datadir}/emoticons/*/*.*
 %{_bindir}/*.kss
