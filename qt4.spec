@@ -8,14 +8,12 @@ License: QPL
 Vendor: GNyU-Linux
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 Source1: %{name}-profile.sh
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires(prep,build,install): coreutils, grep, sed
 BuildRequires(build,install): make
 BuildRequires(install): findutils
-BuildRequires(build): libtiff, libjpeg, libpng, zlib, libstdc++, glib2
+BuildRequires(build): libtiff, libjpeg, libpng, zlib, glib2, clucene-core, dbus
 BuildRequires(build): fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
 BuildRequires(build): libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
-BuildRequires(build): make >= 3.79.1, gcc, gcc-g++, gstreamer, openssl
+BuildRequires(build): make >= 3.79.1, gcc-g++, gstreamer, openssl, cups
 
 %description
 Qt is a complete and well-developed object-oriented framework for
@@ -54,8 +52,8 @@ examples.
 # set correct FLAGS
 %{__sed} -i \
 	-e "s,\(QMAKE_CFLAGS_RELEASE[[:space:]]+=\).*$,\1 ${RPM_OPT_FLAGS},g" \
-	-e 's,\(QMAKE_CC[[:space:]]=\).*$,\1 %{_target_platform}-gcc,g' \
-	-e 's,\(QMAKE_CXX[[:space:]]*=\).*$,\1 %{_target_platform}-g++,g' \
+	-e "s,\(QMAKE_CC[[:space:]]=\).*$,\1 ${CC:-%{_target_platform}-gcc},g" \
+	-e "s,\(QMAKE_CXX[[:space:]]*=\).*$,\1 ${CXX:-%{_target_platform}-g++},g" \
 	mkspecs/common/g++.conf
 
 
@@ -71,10 +69,10 @@ echo 'yes' | ./configure \
 	-qt3support \
 	-qt-gif \
 	-system-zlib \
-	-no-g++-exceptions \
+	-no-exceptions \
 	-nis \
 	-cups \
-	-stl \
+	-fast \
 	-openssl \
 	-system-libmng \
 	-system-libjpeg \
@@ -89,41 +87,37 @@ echo 'yes' | ./configure \
 	-no-tablet \
 	-xkb \
 	-qdbus \
-	-phonon \
+	-no-phonon \
 	-glib \
 	-webkit
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} INSTALL_ROOT='%{buildroot}'
 
 %{__mkdir_p} %{buildroot}/%{_libdir}
 %{__cp} -R %{buildroot}/%{_libdir}/qt4/lib/pkgconfig %{buildroot}/%{_libdir}
 
 # Install Qt shell profile script
-%{__mkdir_p} %{buildroot}/etc/profile.d
-%{__install} -m 0755 %{SOURCE1} %{buildroot}/etc/profile.d/qt4.sh
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/profile.d'
+%{__install} '%{SOURCE1}' '%{buildroot}/%{_sysconfdir}/profile.d/qt4.sh'
 
 # Now, let's add a fine ldconfig file
-%{__mkdir_p} %{buildroot}/etc/ld.so.conf.d
-echo %{_libdir}/qt4/lib > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/ld.so.conf.d'
+echo %{_libdir}/qt4/lib \
+	> '%{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}'
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%post -p %{__ldconfig}
+%postun -p %{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc GPL_*.TXT LICENSE.* OPENSOURCE-NOTICE.TXT README
 /etc/ld.so.conf.d/%{name}-%{_arch}
-%attr(0755, root, root) /etc/profile.d/qt4.sh
+%attr(0755, root, root) %{_sysconfdir}/profile.d/qt4.sh
 %dir %{_libdir}/qt4/
 %dir %{_libdir}/qt4/bin
 %{_libdir}/qt4/bin/designer
@@ -178,9 +172,9 @@ echo %{_libdir}/qt4/lib > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}
 %{_libdir}/qt4/lib/libQtUiTools.*
 %{_libdir}/qt4/lib/libQtWebKit.*
 %{_libdir}/qt4/lib/libQtXml.*
-%{_libdir}/qt4/lib/libphonon.*
+#%{_libdir}/qt4/lib/libphonon.*
 %dir %{_libdir}/qt4/lib/pkgconfig
-%{_libdir}/qt4/lib/pkgconfig/phonon.pc
+#%{_libdir}/qt4/lib/pkgconfig/phonon.pc
 %{_libdir}/qt4/lib/pkgconfig/Qt3Support.pc
 %{_libdir}/qt4/lib/pkgconfig/QtCLucene.pc
 %{_libdir}/qt4/lib/pkgconfig/QtCore.pc
@@ -211,7 +205,7 @@ echo %{_libdir}/qt4/lib > %{buildroot}/etc/ld.so.conf.d/%{name}-%{_arch}
 %{_libdir}/qt4/plugins/
 %{_libdir}/qt4/phrasebooks/
 %{_libdir}/qt4/q3porting.xml
-%{_libdir}/pkgconfig/phonon.pc
+#%{_libdir}/pkgconfig/phonon.pc
 %{_libdir}/pkgconfig/Qt3Support.pc
 %{_libdir}/pkgconfig/QtCLucene.pc
 %{_libdir}/pkgconfig/QtCore.pc
