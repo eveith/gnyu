@@ -31,7 +31,6 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 pushd 'kdelibs-%{version}-obj'
 %{cmake} \
 	-DKDE_DISTRIBUTION_TEXT='%{vendor}' \
-	-DKDE4_ENABLE_FPIE:BOOL=ON \
 	-DCONFIG_INSTALL_DIR='%{_sysconfdir}/kde4' \
 	-DMAN_INSTALL_DIR='%{_mandir}' \
 	-DQT_QMAKE_EXECUTABLE:FILEPATH='%{_libdir}/qt4/bin/qmake' \
