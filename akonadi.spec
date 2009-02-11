@@ -53,6 +53,7 @@ exit 0
 %{_includedir}/akonadi/
 %{_libdir}/libakonadi*.*
 %{_libdir}/pkgconfig/akonadi.pc
+%dir %{_datadir}/config/akonadi
 %{_datadir}/config/akonadi/mysql-global.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.Akonadi.*.xml
 %{_datadir}/dbus-1/services/org.freedesktop.Akonadi.Control.service
