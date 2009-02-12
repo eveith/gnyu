@@ -1,6 +1,6 @@
 Name: gpgme
-Version: 1.1.4
-Release: 2ev
+Version: 1.1.8
+Release: 3ev
 Summary: A library designed to make access to GnuPG easier for applications
 URL: http://www.gnupg.org/related_software/gpgme/
 Group: System Environment/Libraries
@@ -8,7 +8,7 @@ License: LGPL
 Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, libgpg-error, gnupg >= 1.3.0, gnupg2 >= 1.9.6
+BuildRequires: make, gcc, libgpg-error >= 1.4, gnupg >= 1.3.0, gnupg2 >= 2.0.4
 BuildRequires: pth, glib2 >= 2.0.0
 
 %description
@@ -33,9 +33,7 @@ every application benefits from this.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
-
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
@@ -48,10 +46,6 @@ update-info-dir
 %postun
 %{__ldconfig}
 update-info-dir
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
