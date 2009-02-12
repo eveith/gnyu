@@ -8,9 +8,9 @@ License: LGPL-2.1, GPL-2, BSD
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdepimlibs-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.86
-BuildRequires: kdelibs4 = %{version}, phonon >= 4.3.0, boost >= 1.33.1, cyrus-sasl
-BuildRequires: gpgme, akonadi >= 0.80, libical >= 0.33, pkg-config
-BuildRequires: openldap-libs
+BuildRequires: kdelibs4 = %{version}, phonon >= 4.3.0, boost >= 1.33.1
+BuildRequires: cyrus-sasl, gpgme >= 1.1.8, akonadi >= 0.80, libical >= 0.33
+BuildRequires: openldap-libs, pkg-config
 
 %description
 This module includes libraries that are central to the development and
