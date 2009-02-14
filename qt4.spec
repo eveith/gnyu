@@ -10,10 +10,10 @@ Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.
 Source1: %{name}-profile.sh
 BuildRequires(build,install): make
 BuildRequires(install): findutils
-BuildRequires(build): libtiff, libjpeg, libpng, zlib, glib2, clucene-core, dbus
-BuildRequires(build): fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
-BuildRequires(build): libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
-BuildRequires(build): make >= 3.79.1, gcc-g++, gstreamer, openssl, cups
+BuildRequires: libtiff, libjpeg, libpng, libmng, zlib, glib2, clucene-core, dbus
+BuildRequires: fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
+BuildRequires: libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
+BuildRequires: make >= 3.79.1, gcc-g++, libstdc++, openssl, cups, mesalib
 
 %description
 Qt is a complete and well-developed object-oriented framework for
@@ -59,11 +59,10 @@ examples.
 
 %build
 echo 'yes' | ./configure \
-	-prefix %{_libdir}/qt4 \
+	-prefix '%{_libdir}/qt4' \
 	-docdir '%{_docdir}/%{name}-%{version}' \
 	-release \
 	-iconv \
-	-release \
 	-shared \
 	-largefile \
 	-qt3support \
@@ -73,20 +72,23 @@ echo 'yes' | ./configure \
 	-nis \
 	-cups \
 	-fast \
-	-openssl \
 	-system-libmng \
 	-system-libjpeg \
 	-system-libpng \
+	-openssl \
 	-no-nas-sound \
+	-dbus \
+	-no-separate-debug-info \
+	-opengl \
 	-sm \
 	-xshape \
 	-xinerama \
 	-xcursor \
 	-xrandr \
 	-xrender \
+	-fontconfig \
 	-no-tablet \
 	-xkb \
-	-qdbus \
 	-no-phonon \
 	-glib \
 	-webkit
@@ -121,38 +123,22 @@ echo %{_libdir}/qt4/lib \
 %dir %{_libdir}/qt4/
 %dir %{_libdir}/qt4/bin
 %{_libdir}/qt4/bin/designer
-%{_libdir}/qt4/bin/designer.debug
 %{_libdir}/qt4/bin/linguist
-%{_libdir}/qt4/bin/linguist.debug
 %{_libdir}/qt4/bin/lrelease
-%{_libdir}/qt4/bin/lrelease.debug
 %{_libdir}/qt4/bin/lupdate
-%{_libdir}/qt4/bin/lupdate.debug
 %{_libdir}/qt4/bin/moc
-%{_libdir}/qt4/bin/moc.debug
 %{_libdir}/qt4/bin/pixeltool
-%{_libdir}/qt4/bin/pixeltool.debug
 %{_libdir}/qt4/bin/qdbus
-%{_libdir}/qt4/bin/qdbus.debug
 %{_libdir}/qt4/bin/qdbuscpp2xml
-%{_libdir}/qt4/bin/qdbuscpp2xml.debug
 %{_libdir}/qt4/bin/qdbusviewer
-%{_libdir}/qt4/bin/qdbusviewer.debug
 %{_libdir}/qt4/bin/qdbusxml2cpp
-%{_libdir}/qt4/bin/qdbusxml2cpp.debug
 %{_libdir}/qt4/bin/qhelpconverter
-%{_libdir}/qt4/bin/qhelpconverter.debug
 %{_libdir}/qt4/bin/qmake
 %{_libdir}/qt4/bin/qt3to4
-%{_libdir}/qt4/bin/qt3to4.debug
 %{_libdir}/qt4/bin/qtconfig
-%{_libdir}/qt4/bin/qtconfig.debug
 %{_libdir}/qt4/bin/rcc
-%{_libdir}/qt4/bin/rcc.debug
 %{_libdir}/qt4/bin/uic
-%{_libdir}/qt4/bin/uic.debug
 %{_libdir}/qt4/bin/uic3
-%{_libdir}/qt4/bin/uic3.debug
 %{_libdir}/qt4/include/
 %dir %{_libdir}/qt4/lib
 %{_libdir}/qt4/lib/libQt3Support.*
