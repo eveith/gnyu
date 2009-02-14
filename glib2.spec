@@ -1,15 +1,15 @@
 Name: glib2
-Version: 2.16.3
-Release: 2ev
+Version: 2.18.4
+Release: 3ev
 Summary: The low-level core library for projects such as GTK+
 URL: http://www.gtk.org/
 Group: Sytem Environment/Libraries
-License: LGPL
+License: LGPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.gtk.org/pub/glib/2.16/glib-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: coreutils, grep, sed, make >= 3.79.1, gcc, gettext, pkg-config
+Source: ftp://ftp.gtk.org/pub/glib/2.18/glib-%{version}.tar.bz2
+BuildRequires: make >= 3.79.1, gcc, gettext, pkg-config, zlib
 BuildRequires: pcre >= 7.2
+Requires: pkg-config
 
 %description
 GLib is the low-level core library that forms the basis 
@@ -25,38 +25,35 @@ dynamic loading, and an object system.
 
 %build
 %configure \
+	--enable-debug=no \
 	--enable-threads \
+	--disable-selinux \
+	--disable-fam \
+	--enable-xattr \
+	--enable-regex \
 	--enable-man \
-	--with-html-dir=%{_docdir} \
 	--with-pcre=system
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR="$RPM_BUILD_ROOT"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 %{__rm} -vrf "${RPM_BUILD_ROOT}/%{_infodir}/dir" 
 %find_lang glib20
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files -f glib20.lang
 %defattr(-, root, root)
 %doc AUTHORS* COPYING* ChangeLog* NEWS* README*
 %doc docs/*.txt docs/reference/glib docs/reference/gobject
-%doc %{_docdir}/glib
-%doc %{_docdir}/gobject
-%doc %{_docdir}/gio
+%doc %{_datadir}/gtk-doc/html/*
 %{_bindir}/glib-genmarshal
 %{_bindir}/glib-gettextize
 %{_bindir}/glib-mkenums
@@ -83,6 +80,8 @@ dynamic loading, and an object system.
 %doc %{_mandir}/man1/glib-gettextize.1*
 %doc %{_mandir}/man1/glib-mkenums.1*
 %doc %{_mandir}/man1/gobject-query.1*
+%doc %{_mandir}/man1/gtester.1*
+%doc %{_mandir}/man1/gtester-report.1*
 %{_datadir}/aclocal/glib-2.0.m4
 %{_datadir}/aclocal/glib-gettext.m4
 %{_datadir}/glib-2.0/
