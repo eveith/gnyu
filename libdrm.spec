@@ -1,6 +1,6 @@
 Name: libdrm
-Version: 2.3.1
-Release: 2ev
+Version: 2.4.4
+Release: 3ev
 Summary: Direct Rendering Manager library
 URL: http://dri.freedesktop.org/
 Group: System Environment/Libraries
@@ -8,7 +8,8 @@ License: MIT
 Vendor: GNyU-Linux
 Source: http://dri.freedesktop.org/libdrm/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, pkg-config
+BuildRequires: make, gcc, pkg-config, udev
+Requires: pkg-config, udev
 
 %description
 DRI and DRM provides mechanics to draw directly on the hardware, which greatly
@@ -21,29 +22,26 @@ your graphics card.
 
 
 %build
-%configure
+%configure \
+	--enable-udev
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %{_includedir}/drm/
+%{_includedir}/intel_bufmgr.h
 %{_includedir}/xf86*.h
-%{_libdir}/libdrm.*
+%{_libdir}/libdrm*.*
 %{_libdir}/pkgconfig/libdrm.pc
