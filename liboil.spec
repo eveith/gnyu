@@ -1,14 +1,14 @@
 Name: liboil
-Version: 0.3.12
-Release: 1ev
+Version: 0.3.15
+Release: 2ev
 Summary: A library of simple functions that are optimized for various CPUs
 URL: http://liboil.freedesktop.org/
 Group: System Environment/Libraries
 License: BSD
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://liboil.freedesktop.org/download/liboil-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core
+BuildRequires: make, gcc, pkg-config
+Requires: pkg-config
 
 %description
 Liboil is a library of simple functions that are optimized for various CPUs.
@@ -30,32 +30,23 @@ broader range of applications.
 %build
 %configure \
 	--disable-glib
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS BUG-REPORTING COPYING HACKING ChangeLog* NEWS README
+%doc AUTHORS BUG-REPORTING COPYING HACKING NEWS README
 %doc %{_datadir}/gtk-doc/html/liboil
 %{_bindir}/oil-bugreport
 %{_includedir}/liboil-0.3/
