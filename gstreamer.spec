@@ -1,14 +1,13 @@
 Name: gstreamer
-Version: 0.10.14
-Release: 1ev
-Summary:  A multimedia playback and processing framework
+Version: 0.10.22
+Release: 2ev
+Summary: A multimedia playback and processing framework
 URL: http://gstreamer.freedesktop.org/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: LGPL-2
+Vendor: GNyU-Linux
 Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core
+BuildRequires: make, gcc, pkg-config, glib2, zlib, libxml2
 
 %description
 GStreamer is a library that allows the construction of graphs of
@@ -24,41 +23,43 @@ plugin with a clean, generic interface.
 
 
 %build
-%configure \
-	--disable-gtk-doc
-make %{_smp_mflags}
+%configure
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
+%find_lang gstreamer-0.10
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
-
-
-%files
+%files -f gstreamer-0.10.lang
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS COPYING ChangeLog NEWS README RELEASE TODO
 %doc %{_datadir}/gtk-doc/html/gstreamer-0.10
 %doc %{_datadir}/gtk-doc/html/gstreamer-libs-0.10
 %doc %{_datadir}/gtk-doc/html/gstreamer-plugins-0.10
-%{_bindir}/gst-*
+%{_bindir}/gst-feedback
+%{_bindir}/gst-feedback-0.10
+%{_bindir}/gst-inspect
+%{_bindir}/gst-inspect-0.10
+%{_bindir}/gst-launch
+%{_bindir}/gst-launch-0.10
+%{_bindir}/gst-typefind
+%{_bindir}/gst-typefind-0.10
+%{_bindir}/gst-xmlinspect
+%{_bindir}/gst-xmlinspect-0.10
+%{_bindir}/gst-xmllaunch
+%{_bindir}/gst-xmllaunch-0.10
 %{_includedir}/gstreamer-0.10/
 %{_libdir}/gstreamer-0.10/
 %{_libdir}/libgst*-0.10*.*
 %{_libdir}/pkgconfig/gstreamer-*0.10.pc
-%{_mandir}/man1/*.1*
-%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%doc %{_mandir}/man1/*.1*
 %{_datadir}/aclocal/gst-element-check-0.10.m4
