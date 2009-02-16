@@ -1,7 +1,7 @@
 Name: libflac
-Version: 1.1.2
-Release: 1ev
-Summary: Cross-Platform Audio Output Library
+Version: 1.2.1
+Release: 2ev
+Summary: Cross-Platform Audio Output Library: Free Lossless Audio Codec
 URL: http://www.vorbis.com/
 Group: System Environment/Libraries
 License: GPL
@@ -9,11 +9,9 @@ Vendor: MSP Slackware
 Packager: Eric MSP Veith <eveith@wwweb-library.net>
 Source: http://downloads.xiph.org/releases/flac/flac-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, libogg >= 1.1.2, gcc-g++, libtool
-BuildRequires: nasm, autoconf
-Requires: libogg >= 1.1.2
-Provides: libtool(%{_libdir}/libOggFLAC.la) libtool(%{_libdir}/libFLAC++.la)
-Provides: libtool(%{_libdir}/libFLAC.la) libtool(%{_libdir}/libOggFLAC.la)
+BuildRequires: make >= 3.79.1, gcc, gcc-g++, nasm >= 0.98.30, pkg-config
+BuildRequires: libogg >= 1.1.2
+Requires: pkg-config
 
 %description
 Libao is a cross-platform audio output library.  It currently supports
@@ -24,28 +22,24 @@ in order for them to work.
 
 
 %prep
-%setup -q -n flac-%{version}
+%setup -q -n 'flac-%{version}'
 
 
 %build
-%configure --with-ogg=%{_prefix}
-make
+%configure \
+	--disable-xmms-plugin
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__ldconfig}
 
 
 %files
@@ -56,15 +50,11 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_bindir}/metaflac
 %{_includedir}/FLAC++/
 %{_includedir}/FLAC/
-%{_includedir}/OggFLAC++/
-%{_includedir}/OggFLAC/
 %{_libdir}/libFLAC++.*
 %{_libdir}/libFLAC.*
-%{_libdir}/libOggFLAC++.*
-%{_libdir}/libOggFLAC.*
-%{_mandir}/man1/flac.1*
-%{_mandir}/man1/metaflac.1*
+%{_libdir}/pkgconfig/flac.pc
+%{_libdir}/pkgconfig/flac++.pc
+%doc %{_mandir}/man1/flac.1*
+%doc %{_mandir}/man1/metaflac.1*
 %{_datadir}/aclocal/libFLAC++.m4
 %{_datadir}/aclocal/libFLAC.m4
-%{_datadir}/aclocal/libOggFLAC++.m4
-%{_datadir}/aclocal/libOggFLAC.m4
