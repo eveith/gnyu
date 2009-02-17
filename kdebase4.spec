@@ -8,13 +8,15 @@ License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.4.2, automoc4 >= 0.9.86
-BuildRequires: kdelibs4 = %{version}, libX11, libICE, libXau, libXcomposite
+BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
+BuildRequires: kdebase4-workspace = %{version}, kdebase4-runtime = %{version}
+BuildRequires: libX11, libICE, libXau, libXcomposite
 BuildRequires: libXcursor, libXdamage, libXdmcp, libXext, libXfixes, libXft
 BuildRequires: libXinerama, libxkbfile, libXpm, libXrandr, libXv, libXt
 BuildRequires: libXrender, libXxf86misc, dbus, libstdc++
 BuildRequires: perl, strigi, zlib, qimageblitz >= 0.0.4, pciutils, mesalib
 BuildRequires: soprano, glib2, phonon >= 4.3.0
-Requires: dbus
+Requires: dbus, kdebase4-workspace = %{version}
 Obsoletes: kdebase < %{version}
 
 %description
