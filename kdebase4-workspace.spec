@@ -10,11 +10,12 @@ Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-workspace-%{vers
 Source1: %{name}-kde.pamd
 Source2: %{name}-kdm.ii
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
-BuildRequires: kdebase4 = %{version}, glib2, soprano, perl, qimageblitz >= 0.0.4
+BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
+BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
 BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
 BuildRequires: libXScrnSaver, libXft, libxklavier >= 3.0
 BuildRequires: freetype, fontconfig, libusb, libpam, phonon >= 4.3.0
-Requires: dbus, kdebase4 = %{version}, kdebase4-runtime = %{version}
+Requires: dbus
 
 %description
 KDE Workspace consisting of what is the desktop. This means it includes
@@ -116,6 +117,7 @@ popd
 %{_bindir}/kwin
 %{_bindir}/kwin_killer_helper
 %{_bindir}/kwin_rules_dialog
+%{_bindir}/kxkb
 %{_bindir}/plasma
 %{_bindir}/plasma-overlay
 %{_bindir}/plasmaengineexplorer
@@ -189,6 +191,7 @@ popd
 %{_libdir}/libweather_ion.so*
 %{_libdir}/libkdeinit4_plasma.so*
 %{_libdir}/libkdeinit4_kaccess.so*
+%{_libdir}/libkdeinit4_kxkb.so
 %{_libdir}/libkfontinst.so*
 %{_libdir}/libkfontinstui.so*
 %{_libdir}/strigi/strigita_font.so
@@ -241,9 +244,8 @@ popd
 %{_datadir}/apps/konqsidebartng/virtual_folders/services/fonts.desktop
 %dir %{_datadir}/apps/desktoptheme
 %dir %{_datadir}/apps/desktoptheme/default
-%{_datadir}/apps/desktoptheme/default/*/*.svgz
 %dir %{_datadir}/apps/desktoptheme/default/widgets
-%{_datadir}/apps/desktoptheme/default/widgets/*.svgz
+%{_datadir}/apps/desktoptheme/default/*/*.svgz
 %dir %{_datadir}/apps/desktoptheme/default/calendar
 %dir %{_datadir}/apps/desktoptheme/default/system-monitor
 %dir %{_datadir}/apps/solid
