@@ -1,5 +1,5 @@
 Name: xorg-applewmproto
-%define _src_name %(echo %{name} | sed 's,^xorg-,,')
+%define _src_name %(echo %{name} | %{__sed} 's,^xorg-,,')
 Version: 1.0.3
 Release: 1ev
 Summary: Protocol information and development headers for Apple's WM extension
@@ -10,7 +10,7 @@ Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: xorg-fslayout
+Requires: xorg-fslayout, pkg-config
 BuildArch: noarch
 
 %description
@@ -27,15 +27,10 @@ Contains headers for Apple's window manager extension API.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
