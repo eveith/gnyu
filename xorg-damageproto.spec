@@ -1,5 +1,5 @@
 Name: xorg-damageproto
-%define _src_name %(echo %{name} | sed 's,^xorg-,,')
+%define _src_name %(echo %{name} | %{__sed} 's,^xorg-,,')
 Version: 1.1.0
 Release: 1ev
 Summary: Protocol information and development headers for X damage extension
@@ -8,9 +8,8 @@ Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: xorg-fslayout
+Requires: xorg-fslayout, pkg-config
 BuildArch: noarch
 
 %description
@@ -30,16 +29,11 @@ window to be redrawn instead of the whole.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 %{__rm} -rf '%{buildroot}/%{_datadir}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO AUTHORS NEWS
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
