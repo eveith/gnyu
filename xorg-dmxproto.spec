@@ -8,9 +8,8 @@ Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
-Requires: x11-proto
+Requires: x11-proto, pkg-config
 BuildArch: noarch
 
 %description
@@ -29,15 +28,10 @@ files for that extension.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO AUTHORS NEWS
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
