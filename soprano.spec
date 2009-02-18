@@ -1,13 +1,14 @@
 Name: soprano
 Version: 2.2.1
-Release: 1ev
+Release: 2ev
 Summary: An interface library between Qt 4 and RDF storage solutions
 URL: http://soprano.sourceforge.net/
 Group: System Environment/Libraries
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/soprano/soprano-%{version}.tar.bz2
-BuildRequires: cmake, make, gcc-g++, qt4, java-jdk, clucene-core
+BuildRequires: cmake >= 2.6.2, make, gcc-g++, qt4 >= 4.4.0, redland >= 1.0.6
+BuildRequires: clucene-core >= 0.9.19
 BuildRequires: libX11, libXext, libICE, dbus, pkg-config, libstdc++
 
 %description
@@ -41,7 +42,9 @@ Soprano has the following features:
 
 
 %build
-%{cmake} .
+%{cmake} \
+	-DQT_QMAKE_EXECUTABLE:FILEPATH='%{_libdir}/qt4/bin/qmake' \
+	.
 %{__make} %{?_smp_mflags}
 
 
