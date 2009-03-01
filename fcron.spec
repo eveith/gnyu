@@ -13,9 +13,8 @@ Source3: %{name}-fcrontab.pamd
 Patch0: fcron-fcrontab_shell_error.diff
 BuildRequires: make >= 3.79.1, libpam, gcc
 Requires: %{_bindir}/sendmail, %{_bindir}/vim
-
-%define _cron_uid 16
-%define _cron_gid 29
+%define cron_uid 16
+%define cron_gid 29
 
 %description
 Fcron is a periodical command scheduler which aims at replacing vixie cron, so
@@ -112,13 +111,13 @@ then
 	userdel cron
 	groupdel cron
 	groupadd \
-		-g %{_cron_gid} \
+		-g '%{cron_gid}' \
 		cron
 	useradd \
 		-g cron \
-		-u %{_cron_uid} \
+		-u '%{cron_uid}' \
 		-s /sbin/nologin  \
-		-d %{_localstatedir}/spool/cron \
+		-d '%{_localstatedir}/spool/cron' \
 	  	cron
 fi > /dev/null 2>&1
 exit 0
