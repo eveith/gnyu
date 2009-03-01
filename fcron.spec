@@ -123,7 +123,7 @@ fi > /dev/null 2>&1
 exit 0
 
 %preun
-if [[ $1 -eq 0 ]]
+if [[ "${1}" -eq 0 ]]
 then
 	ngc -d daemon/fcron > /dev/null 2>&1
 	ng-update del daemon/fcron > /dev/null 2>&1
@@ -131,7 +131,7 @@ fi
 exit 0
 
 %postun
-if [[ $1 -eq 0 ]]
+if [[ "${1}" -eq 0 ]]
 then
 	userdel cron 
 	groupdel cron
