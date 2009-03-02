@@ -1,6 +1,6 @@
-Name: x11-server
-Version: 1.3.0.0
-Release: 3ev
+Name: xorg-xserver
+Version: 1.4.2
+Release: 4ev
 Summary: The X Server
 URL: http://www.x.org/
 Group: User Interface/X
@@ -35,12 +35,14 @@ Patch24: %{name}-1.4-0009-Don-t-break-grab-and-focus-state-for-a-window-when-r.p
 Patch25: %{name}-xorg-server-1.4.0.90-automake-1.10.1-fixup.patch
 Patch26: xorg-server-1.2.0-xcmisc-1.patch
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, sed, grep, make, gcc, pkg-config, zlib, mesalib
-BuildRequires: x11-fonts, xkeyboard-config, libdrm, libICE, libSM, libX11
-BuildRequires: libXau, libXaw, libXdmcp, libXext, libXfixes, libXrender
-BuildRequires: libXfont, libXi, libXmu, libXpm, libxcb, libxkbfile, libXt
-BuildRequires: libXxf86misc, libpciaccess >= 0.8.0, flex, bison, dbus, hal
+BuildRequires: make, gcc, pkg-config, flex, bison, zlib, mesalib
+BuildRequires: x11-fonts, xorg-proto >= 7.3, xorg-libs >= 7.3, libdrm >= 2.0
+BuildRequires: libsdl >= 1.2, libpciaccess >= 0.8.0, dbus, hal
 BuildRequires: freetype >= 2.0.0, ncurses
+Requires: xorg-fslayout >= 7.3
+Provides: x11-server = %{version}-%{release}
+Provides: xorg-server = %{version}-%{release}
+Obsoletes: x11-server < %{version}
 
 %description
 The Xorg Server is the core of the X Window system.
@@ -48,42 +50,11 @@ The Xorg Server is the core of the X Window system.
 
 %prep
 %setup -q -n xorg-server-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p0
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p0
-%{__aclocal}
-%{__automake} --add-missing
-%{__autoconf}
 
 
 %build
 %configure \
 	--with-os-vendor='GNyU Linux' \
-	--with-module-dir=%{_libdir}/X11/modules \
-	--with-dri-driver-path=%{_libdir}/X11/modules/dri \
 	--with-xkb-output=%{_localstatedir}/lib/xkb \
 	--disable-xprint \
 	--disable-dmx \
@@ -120,8 +91,6 @@ touch '%{buildroot}/%{_sysconfdir}/X11/xorg.conf'
 %ghost %config(noreplace) %{_sysconfdir}/X11/xorg.conf
 %dir %{_sysconfdir}/X11/Xsession.d
 %{_bindir}/X
-%{_bindir}/Xfake
-%{_bindir}/Xneomagic
 %{_bindir}/Xnest
 %attr(4755, root, root) %{_bindir}/Xorg
 %{_bindir}/Xvfb
@@ -156,24 +125,29 @@ touch '%{buildroot}/%{_sysconfdir}/X11/xorg.conf'
 %{_includedir}/xorg/
 %{_includedir}/X11/pixmaps/
 %{_includedir}/X11/bitmaps/
-%{_libdir}/X11/Cards/
-%{_libdir}/X11/Options/
-%{_libdir}/X11/modules/
+%{_libdir}/X11/Cards
+%{_libdir}/X11/Options
+%{_libdir}/xorg/modules/*.??
+%{_libdir}/xorg/modules/extensions/*.??
+%{_libdir}/xorg/modules/fonts/*.??
+%{_libdir}/xorg/modules/linux/*.??
+%{_libdir}/xorg/modules/multimedia/*.??
 %{_libdir}/xserver/
 %{_libdir}/pkgconfig/xorg-server.pc
-%{_mandir}/man1/Xnest.1*
-%{_mandir}/man1/Xorg.1*
-%{_mandir}/man1/Xserver.1*
-%{_mandir}/man1/Xvfb.1*
-%{_mandir}/man1/cvt.1*
-%{_mandir}/man1/gtf.1*
-%{_mandir}/man1/pcitweak.1*
-%{_mandir}/man1/scanpci.1*
-%{_mandir}/man1/xorgcfg.1*
-%{_mandir}/man1/xorgconfig.1*
-%{_mandir}/man4/exa.4*
-%{_mandir}/man4/fbdevhw.4*
-%{_mandir}/man5/xorg.conf.5*
+%doc %{_mandir}/man1/Xnest.1*
+%doc %{_mandir}/man1/Xorg.1*
+%doc %{_mandir}/man1/Xserver.1*
+%doc %{_mandir}/man1/Xvfb.1*
+%doc %{_mandir}/man1/cvt.1*
+%doc %{_mandir}/man1/gtf.1*
+%doc %{_mandir}/man1/pcitweak.1*
+%doc %{_mandir}/man1/scanpci.1*
+%doc %{_mandir}/man1/xorgcfg.1*
+%doc %{_mandir}/man1/xorgconfig.1*
+%doc %{_mandir}/man4/exa.4*
+%doc %{_mandir}/man4/fbdevhw.4*
+%doc %{_mandir}/man5/xorg.conf.5*
+%doc %{_mandir}/man5/SecurityPolicy.5*
 %{_datadir}/X11/app-defaults/XOrgCfg
 %{_datadir}/aclocal/xorg-server.m4
 %dir %{_localstatedir}/lib/xkb
