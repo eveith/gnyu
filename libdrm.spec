@@ -1,6 +1,6 @@
 Name: libdrm
-Version: 2.4.4
-Release: 3ev
+Version: 2.4.5
+Release: 4ev
 Summary: Direct Rendering Manager library
 URL: http://dri.freedesktop.org/
 Group: System Environment/Libraries
@@ -45,3 +45,4 @@ your graphics card.
 %{_includedir}/xf86*.h
 %{_libdir}/libdrm*.*
 %{_libdir}/pkgconfig/libdrm.pc
+%{_libdir}/pkgconfig/libdrm_intel.pc
