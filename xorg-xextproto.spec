@@ -1,15 +1,14 @@
 Name: xorg-xextproto
-%define _src_name %(echo %{name} | sed 's,^xorg-,,')
-Version: 7.0.2
-Release: 1ev
+%define src_name %(echo %{name} | sed 's,^xorg-,,')
+Version: 7.0.5
+Release: 2ev
 Summary: Protocol information and development headers for various X11 extensions
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
-Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, pkg-config
+Source: http://xorg.freedesktop.org/releases/individual/proto/%{src_name}-%{version}.tar.bz2
+BuildRequires: make, pkg-config
 Requires: xorg-fslayout
 BuildArch: noarch
 
@@ -19,7 +18,7 @@ client-side libraries of which are provided in the Xext library.
 
 
 %prep
-%setup -q -n '%{_src_name}-%{version}'
+%setup -q -n '%{src_name}-%{version}'
 
 
 %build
@@ -28,15 +27,10 @@ client-side libraries of which are provided in the Xext library.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO AUTHORS NEWS
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -49,16 +43,18 @@ touch README COPYING ChangeLog TODO AUTHORS NEWS
 %{_includedir}/X11/extensions/XShm.h
 %{_includedir}/X11/extensions/XTest.h
 %{_includedir}/X11/extensions/Xag.h
-%{_includedir}/X11/extensions/Xagsrv.h
 %{_includedir}/X11/extensions/Xagstr.h
 %{_includedir}/X11/extensions/Xcup.h
 %{_includedir}/X11/extensions/Xcupstr.h
 %{_includedir}/X11/extensions/Xdbe.h
 %{_includedir}/X11/extensions/Xdbeproto.h
 %{_includedir}/X11/extensions/Xext.h
+%{_includedir}/X11/extensions/Xge.h
 %{_includedir}/X11/extensions/dpms.h
 %{_includedir}/X11/extensions/dpmsstr.h
 %{_includedir}/X11/extensions/extutil.h
+%{_includedir}/X11/extensions/ge.h
+%{_includedir}/X11/extensions/geproto.h
 %{_includedir}/X11/extensions/lbxbuf.h
 %{_includedir}/X11/extensions/lbxbufstr.h
 %{_includedir}/X11/extensions/lbxdeltastr.h
@@ -78,4 +74,4 @@ touch README COPYING ChangeLog TODO AUTHORS NEWS
 %{_includedir}/X11/extensions/syncstr.h
 %{_includedir}/X11/extensions/xtestext1.h
 %{_includedir}/X11/extensions/xteststr.h
-%{_libdir}/pkgconfig/%{_src_name}.pc
+%{_libdir}/pkgconfig/%{src_name}.pc
