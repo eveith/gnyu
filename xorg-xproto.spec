@@ -1,14 +1,13 @@
 Name: xorg-xproto
-%define _src_name %(echo %{name} | sed 's,^xorg-,,')
-Version: 7.0.10
-Release: 1ev
+%define src_name %(echo %{name} | sed 's,^xorg-,,')
+Version: 7.0.15
+Release: 2ev
 Summary: X11 core wire protocol and auxiliary headers
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
-Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
+Source: http://xorg.freedesktop.org/releases/individual/proto/%{src_name}-%{version}.tar.bz2
 BuildRequires: make, gcc, pkg-config
 Requires: xorg-fslayout
 BuildArch: noarch
@@ -20,7 +19,7 @@ abstract OS-specific functions.
 
 
 %prep
-%setup -q -n '%{_src_name}-%{version}'
+%setup -q -n '%{src_name}-%{version}'
 
 
 %build
@@ -29,15 +28,10 @@ abstract OS-specific functions.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO AUTHORS NEWS
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -69,4 +63,4 @@ touch README COPYING ChangeLog TODO AUTHORS NEWS
 %{_includedir}/X11/ap_keysym.h
 %{_includedir}/X11/keysym.h
 %{_includedir}/X11/keysymdef.h
-%{_libdir}/pkgconfig/%{_src_name}.pc
+%{_libdir}/pkgconfig/%{src_name}.pc
