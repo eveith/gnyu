@@ -1,14 +1,14 @@
 Name: libSM
-Version: 1.0.3
-Release: 2ev
+Version: 1.1.0
+Release: 3ev
 Summary: X Session Management Library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, x11-proto, libICE, xtrans
+BuildRequires: make, gcc, pkg-config >= 0.9.0
+BuildRequires: libICE, xorg-xproto, xtrans, uuid1
 
 %description
 This library manages X sessions.
@@ -24,19 +24,14 @@ This library manages X sessions.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
