@@ -1,6 +1,6 @@
 Name: qt4
 Version: 4.4.3
-Release: 3ev
+Release: 4ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -10,9 +10,17 @@ Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.
 Source1: %{name}-profile.sh
 BuildRequires(build,install): make
 BuildRequires(install): findutils
-BuildRequires: libtiff, libjpeg, libpng, libmng, zlib, glib2, clucene-core, dbus
-BuildRequires: fontconfig >= 2.0, freetype >= 1.7, libXext, libXinerama
-BuildRequires: libSM, libICE, libX11, libXcursor,  libXrender, libXrandr
+BuildRequires: libtiff, libjpeg, libpng, libmng, zlib
+BuildRequires: glib2 >= 2.8.3, clucene-core, dbus
+BuildRequires: fontconfig >= 2.0, freetype >= 1.7
+BuildRequires: libXrender >= 0.9.0, libXrandr >= 1.0.2, libXcursor >= 1.1.4
+BuildRequires: libXfixes >= 3.0.0, libXinerama
+#BuildRequires: libXfixes >= 3.0.0, libXinerama >= 1.1.0
+BuildRequires: libXi, libXt >= 0.99, libXext
+#BuildRequires: libXi >= 1.3.0, libXt >= 0.99, libXext
+#BuildRequires: libXi >= 1.3.0, libXt >= 0.99, libXext >= 6.4.3
+#BuildRequires: libX11 >= 6.2.1, libSM >= 6.0.4, libICE >= 6.3.5
+BuildRequires: libX11, libSM, libICE
 BuildRequires: make >= 3.79.1, gcc-g++, libstdc++, openssl, cups, mesalib
 
 %description
@@ -80,26 +88,29 @@ echo 'yes' | ./configure \
 	-dbus \
 	-no-separate-debug-info \
 	-opengl \
-	-sm \
 	-xshape \
-	-xinerama \
-	-xcursor \
-	-xrandr \
-	-xrender \
 	-fontconfig \
 	-no-tablet \
 	-xkb \
 	-no-phonon \
 	-glib \
-	-webkit
+	-webkit \
+	-xrender \
+	-xrandr \
+	-xcursor \
+	-xfixes \
+	-xinerama \
+	-sm \
+	-glib
 %{__make} %{?_smp_mflags}
 
 
 %install
-%{__make_install} INSTALL_ROOT='%{buildroot}'
+%{__make} install INSTALL_ROOT='%{buildroot}'
 
-%{__mkdir_p} %{buildroot}/%{_libdir}
-%{__cp} -R %{buildroot}/%{_libdir}/qt4/lib/pkgconfig %{buildroot}/%{_libdir}
+%{__mkdir_p} '%{buildroot}/%{_libdir}'
+%{__cp} -R '%{buildroot}/%{_libdir}/qt4/lib/pkgconfig' \
+	'%{buildroot}/%{_libdir}'
 
 # Install Qt shell profile script
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/profile.d'
@@ -107,7 +118,7 @@ echo 'yes' | ./configure \
 
 # Now, let's add a fine ldconfig file
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/ld.so.conf.d'
-echo %{_libdir}/qt4/lib \
+echo '%{_libdir}/qt4/lib' \
 	> '%{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}'
 
 
