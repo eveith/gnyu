@@ -1,14 +1,15 @@
 Name: libXi
-Version: 1.1.3
-Release: 2ev
+Version: 1.2.1
+Release: 3ev
 Summary: X Input Extension Library
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, pkg-config, xorg-proto, libX11, libXext
+BuildRequires: make, gcc, pkg-config >= 0.9.0
+BuildRequires: xorg-xproto, xorg-xextproto, xorg-inputproto >= 1.5
+BuildRequires: libXext, libX11
 
 %description
 libXi provides an X Window System client interface to the X Input Extension,
@@ -25,19 +26,14 @@ an extension to the X protocol.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
