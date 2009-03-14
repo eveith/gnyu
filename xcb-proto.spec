@@ -1,15 +1,13 @@
-Name: xorg-xcb-proto
-%define _src_name %(echo %{name} | sed 's,^xorg-,,')
-Version: 1.1
-Release: 3ev
+Name: xcb-proto
+Version: 1.4
+Release: 4ev
 Summary: XML-XCB protocol descriptions for libxcb
 URL: http://xcb.freedesktop.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: ftp://xcb.freedesktop.org/dist/xcb-proto-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, libxml2, pkg-config
+BuildRequires: make, python >= 2.5, libxml2, pkg-config
 BuildArch: noarch
 Requires: pkg-config
 
@@ -19,7 +17,7 @@ uses to generate the majority of its code and API.
 
 
 %prep
-%setup -q -n '%{_src_name}-%{version}'
+%setup -q
 
 
 %build
@@ -28,16 +26,13 @@ uses to generate the majority of its code and API.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc README COPYING*
-%{_datadir}/xcb/
-%{_libdir}/pkgconfig/%{_src_name}.pc
+%{_libdir}/pkgconfig/xcb-proto.pc
+%{_libdir}/python*.*/site-packages/xcbgen/
+%dir %{_datadir}/xcb
+%{_datadir}/xcb/*.x[sm][dl]
