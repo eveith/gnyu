@@ -1,15 +1,14 @@
 Name: libXau
-Version: 1.0.3
-Release: 1ev
+Version: 1.0.4
+Release: 2ev
 Summary: A library implementing the X11 authentication protocol
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: ftp://ftp.x.org/pub/individual/lib/libXau-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, x11-proto
-Requires: pkg-config, x11-proto
+BuildRequires: make, gcc, pkg-config >= 0.9.0, xorg-xproto
 
 %description
 The libXau package contains a library implementing the X11 Authorization
@@ -22,26 +21,18 @@ Protocol. This is useful for restricting client access to the display.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
@@ -50,4 +41,4 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_libdir}/libXau.*
 %{_includedir}/X11/Xauth.h
 %{_libdir}/pkgconfig/xau.pc
-%{_mandir}/man3/Xau*.3*
+%doc %{_mandir}/man3/Xau*.3*
