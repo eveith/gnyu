@@ -1,6 +1,6 @@
 Name: libX11
-Version: 1.2
-Release: 3ev
+Version: 1.1.5
+Release: 5ev
 Summary: X11 client-side library
 URL: http://www.x.org/
 Group: User Interface/X
@@ -12,7 +12,8 @@ Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config >= 0.9.0
 BuildRequires: xorg-xproto >= 7.0.13, xorg-xcmiscproto, xorg-bigreqsproto
 BuildRequires: xorg-xextproto, xtrans
-BuildRequires: libXdmcp, libXau, libxcb >= 1.1.92
+BuildRequires: libXdmcp, libXau, libxcb >= 0.9.92
+BuildConflicts: xorg-xproto > 7.0.13
 Requires: xorg-fslayout >= 7.3
 
 %description
