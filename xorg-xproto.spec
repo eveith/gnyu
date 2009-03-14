@@ -1,7 +1,7 @@
 Name: xorg-xproto
 %define src_name %(echo %{name} | sed 's,^xorg-,,')
-Version: 7.0.15
-Release: 2ev
+Version: 7.0.13
+Release: 3ev
 Summary: X11 core wire protocol and auxiliary headers
 URL: http://www.x.org/
 Group: User Interface/X
