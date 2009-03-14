@@ -1,6 +1,6 @@
 Name: libICE
-Version: 1.0.4
-Release: 2ev
+Version: 1.0.5
+Release: 3ev
 Summary: X Inter Client Exchange Library
 URL: http://www.x.org/
 Group: User Interface/X
@@ -8,7 +8,8 @@ License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, grep, sed, make, gcc, pkg-config, x11-proto, xtrans
+BuildRequires: make, gcc, pkg-config >= 0.9.0
+BuildRequires: xorg-xproto, xtrans
 
 %description
 Based on X authentication, the ICE protocol allows X clients to exchange
@@ -28,19 +29,14 @@ messages of every kind, either locally via sockets or over network by TCP/IP.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
