@@ -31,7 +31,8 @@ both.
 
 
 %build
-%configure
+%configure \
+	--enable-xinput
 %{__make} %{?_smp_mflags}
 
 
