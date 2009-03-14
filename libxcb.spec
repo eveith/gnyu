@@ -1,6 +1,6 @@
 Name: libxcb
-Version: 1.2
-Release: 4ev
+Version: 1.1
+Release: 5ev
 Summary: A programmatic interface to the X Window System Protocol
 URL: http://xcb.freedesktop.org/
 Group: User Interface/X
@@ -25,14 +25,13 @@ both.
 
 %prep
 %setup -q
-#%patch0 -p1
-#%patch1 -p1
-#%patch2 -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 
 %build
-%configure \
-	--enable-xinput
+%configure
 %{__make} %{?_smp_mflags}
 
 
