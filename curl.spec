@@ -1,17 +1,13 @@
 Name: curl
-Version: 7.16.2
-Release: 1ev
-Summary: A command line tool for client-side URL transfers
+Version: 7.19.4
+Release: 2ev
+Summary: A command line tool and library for client-side URL transfers
 URL: http://curl.haxx.se/
 Group: Applications/Internet
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://curl.haxx.se/download/curl-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, openssl, zlib
-Requires: openssl, zlib
-Requires: openssl, zlib
-Provides: libtool(%{_libdir}/libcurl.la)
+BuildRequires: make, pkg-config, gcc, openssl, zlib, openldap-libs
 
 %description
 curl and libcurl is a tool for transferring files using URL syntax. It
@@ -28,26 +24,19 @@ to libcurl for over 30 languages and environments.
 
 %build
 %configure \
-	--without-gnutls \
-	--enable-thread \
-	--disable-ipv6
-make %{_smp_mflags}
+	--enable-thread
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
@@ -55,7 +44,8 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %doc CHANGES COPYING README RELEASE-NOTES 
 %{_bindir}/curl*
 %{_includedir}/curl/
-%{_mandir}/*/*
 %{_libdir}/*.*
 %{_libdir}/pkgconfig/libcurl.pc
-%{_datadir}/curl/
+%{_mandir}/man1/curl.1*
+%{_mandir}/man1/curl-config.1*
+%doc %{_mandir}/man3/*curl*.3*
