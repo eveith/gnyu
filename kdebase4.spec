@@ -1,6 +1,6 @@
 Name: kdebase4
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: KDE Base Applications: "What Runs The Desktop"
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -16,7 +16,7 @@ BuildRequires: libXinerama, libxkbfile, libXpm, libXrandr, libXv, libXt
 BuildRequires: libXrender, libXxf86misc, dbus, libstdc++
 BuildRequires: perl, strigi, zlib, qimageblitz >= 0.0.4, pciutils, mesalib
 BuildRequires: soprano, glib2, phonon >= 4.3.0
-Requires: dbus, kdebase4-workspace = %{version}
+Requires: dbus, kdebase4-workspace >= %{version}, kdebase4-runtime >= %{version}
 Obsoletes: kdebase < %{version}
 
 %description
