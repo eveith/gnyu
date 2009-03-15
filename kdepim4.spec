@@ -1,6 +1,6 @@
 Name: kdepim4
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: Personal Information Management suite for KDE
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -61,6 +61,7 @@ main result is KDE Kontact, KDE's personal information manager.
 %{_bindir}/akonadi_maildir_resource
 %{_bindir}/akonadi_mailthreader_agent
 %{_bindir}/akonadi_nepomuktag_resource
+%{_bindir}/akonadi_nepomuk_*_feeder
 %{_bindir}/akonadi_nntp_resource
 %{_bindir}/akonadi_strigi_feeder
 %{_bindir}/akonadi_vcard_resource
