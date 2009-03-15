@@ -1,6 +1,6 @@
 name: kdemultimedia4
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: Multimedia applications for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktops
