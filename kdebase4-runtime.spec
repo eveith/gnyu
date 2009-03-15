@@ -1,6 +1,6 @@
 Name: kdebase4-runtime
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -8,13 +8,13 @@ License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-runtime-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
-BuildRequires: kdelibs4 = %{version}, kdebase4-workspace = %{version}
+BuildRequires: kdelibs4 = %{version}
 BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
 BuildRequires: phonon >= 4.3.0, openexr, clucene-core, samba-libs, bzip2
 BuildRequires: xine-lib
 BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
 BuildRequires: libXScrnSaver, libXft
-Requires: dbus, kdebase4 = %{version}
+Requires: dbus
 
 %description
 KDE Workspace consisting of what is the desktop. This means it includes
