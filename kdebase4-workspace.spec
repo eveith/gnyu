@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -11,11 +11,12 @@ Source1: %{name}-kde.pamd
 Source2: %{name}-kdm.ii
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
 BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
+BuildRequires: kdebase4-runtime = %{version}
 BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
 BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
 BuildRequires: libXScrnSaver, libXft, libxklavier >= 3.0
 BuildRequires: freetype, fontconfig, libusb, libpam, phonon >= 4.3.0
-Requires: dbus
+Requires: dbus, kdebase4-runtime = %{version}
 
 %description
 KDE Workspace consisting of what is the desktop. This means it includes
@@ -146,9 +147,9 @@ popd
 %{_includedir}/solid/control/ifaces/*.h
 %{_includedir}/*.h
 %{_includedir}/*/*.h
-%dir %{_libdir}/KDE4Workspace-%{version}
-%dir %{_libdir}/KDE4Workspace-%{version}/cmake
-%{_libdir}/KDE4Workspace-%{version}/cmake/*.cmake
+%dir %{_libdir}/KDE4Workspace-*
+%dir %{_libdir}/KDE4Workspace-*/cmake
+%{_libdir}/KDE4Workspace-*/cmake/*.cmake
 %{_libdir}/kconf_update_bin/*
 %{_libdir}/kde4/*.so
 %{_libdir}/kde4/libexec/kcheckpass
