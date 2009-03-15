@@ -1,6 +1,6 @@
 Name: kdeartwork4
-Version: 4.2.0
-Release: 1ev
+Version: 4.2.1
+Release: 2ev
 Summary: Miscellaneous artworks for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -47,11 +47,6 @@ popd
 pushd 'kdeartwork-%{version}-obj'
 %{__make} install DESTDIR='%{buildroot}'
 popd
-
-
-%post
-
-%postun
 
 
 %files
