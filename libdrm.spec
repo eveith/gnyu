@@ -1,6 +1,6 @@
 Name: libdrm
 Version: 2.4.5
-Release: 4ev
+Release: 5ev
 Summary: Direct Rendering Manager library
 URL: http://dri.freedesktop.org/
 Group: System Environment/Libraries
@@ -22,8 +22,7 @@ your graphics card.
 
 
 %build
-%configure \
-	--enable-udev
+%configure
 %{__make} %{?_smp_mflags}
 
 
