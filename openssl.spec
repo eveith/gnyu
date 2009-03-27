@@ -1,6 +1,6 @@
 Name: openssl0.9.8
-Version: 0.9.8j
-Release: 5ev
+Version: 0.9.8k
+Release: 6ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org/
 Group: System Environment/Libraries
@@ -50,7 +50,7 @@ on every system.
 
 
 %install
-%{__fakeroot} %{__make} install INSTALL_PREFIX="${RPM_BUILD_ROOT}"
+%{__make} install INSTALL_PREFIX="${RPM_BUILD_ROOT}"
 
 # Relocate some stuff that is placed in silly places
 %{__mkdir_p} '%{buildroot}/%{_sbindir}' '%{buildroot}/%{_mandir}'
@@ -115,8 +115,6 @@ popd
 %{_libdir}/pkgconfig/openssl.pc
 %{_libdir}/libssl.*
 %{_libdir}/libcrypto.*
-%{_libdir}/fips_premain.c
-%{_libdir}/fips_premain.c.sha1
 %{_includedir}/openssl/
 %attr(0700, root, root) %{_sbindir}/CA.pl
 %attr(0700, root, root) %{_sbindir}/CA.sh
