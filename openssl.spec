@@ -1,6 +1,6 @@
 Name: openssl0.9.8
-Version: 0.9.8i
-Release: 4ev
+Version: 0.9.8j
+Release: 5ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org/
 Group: System Environment/Libraries
@@ -50,7 +50,6 @@ on every system.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__fakeroot} %{__make} install INSTALL_PREFIX="${RPM_BUILD_ROOT}"
 
 # Relocate some stuff that is placed in silly places
@@ -100,17 +99,13 @@ popd
 %{__ldconfig}
 
 
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-
 %files
 %defattr(-, root, root)
 %doc CHANGES* FAQ LICENSE README* NEWS PROBLEMS VMS 
 %doc doc demos
 %dir %{_sysconfdir}/ssl
 %dir %attr(0711, root, root) %{_sysconfdir}/ssl/certs
-%dir %attr(0700, root, root) %{_sysconfdir}/ssl/private
+%dir %attr(0711, root, root) %{_sysconfdir}/ssl/private
 %config(noreplace) %attr(0644, root, root) %{_sysconfdir}/ssl/openssl.cnf
 %{_bindir}/openssl
 %{_bindir}/c_rehash
@@ -120,6 +115,8 @@ popd
 %{_libdir}/pkgconfig/openssl.pc
 %{_libdir}/libssl.*
 %{_libdir}/libcrypto.*
+%{_libdir}/fips_premain.c
+%{_libdir}/fips_premain.c.sha1
 %{_includedir}/openssl/
 %attr(0700, root, root) %{_sbindir}/CA.pl
 %attr(0700, root, root) %{_sbindir}/CA.sh
