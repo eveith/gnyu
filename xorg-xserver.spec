@@ -1,6 +1,6 @@
 Name: xorg-xserver
 Version: 1.5.3
-Release: 6ev
+Release: 7ev
 Summary: The X Server
 URL: http://www.x.org/
 Group: User Interface/X
@@ -42,15 +42,12 @@ The Xorg Server is the core of the X Window system.
 %build
 %configure \
 	--enable-aiglx \
-	--enable-glx-tls \
 	--enable-dri \
-	--disable-dri2 \
-	--enable-multibuffer \
 	--enable-xorg \
+	--with-vendor-name='%{_vendor}' \
 	--with-os-vendor='GNyU Linux' \
 	--with-xkb-output='%{_localstatedir}/lib/xkb' \
 	--disable-xprint \
-	--disable-dmx \
 	--enable-install-setuid \
 	--enable-xorgcfg \
 	--enable-kdrive \
