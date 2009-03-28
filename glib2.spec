@@ -1,14 +1,14 @@
 Name: glib2
-Version: 2.18.4
-Release: 3ev
-Summary: The low-level core library for projects such as GTK+
+Version: 2.20.0
+Release: 4ev
+Summary: The low-level core library for projects such as GTK+ and Qt 4
 URL: http://www.gtk.org/
 Group: Sytem Environment/Libraries
 License: LGPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.gtk.org/pub/glib/2.18/glib-%{version}.tar.bz2
+Source: ftp://ftp.gtk.org/pub/glib/2.20/glib-%{version}.tar.bz2
 BuildRequires: make >= 3.79.1, gcc, gettext, pkg-config, zlib
-BuildRequires: pcre >= 7.2
+BuildRequires: pcre >= 7.2, python >= 2.4, perl
 Requires: pkg-config
 
 %description
@@ -20,7 +20,7 @@ dynamic loading, and an object system.
 
 
 %prep
-%setup -q -n glib-%{version}
+%setup -q -n 'glib-%{version}'
 
 
 %build
