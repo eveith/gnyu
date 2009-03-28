@@ -87,22 +87,11 @@ echo 'yes' | ./configure \
 	-no-nas-sound \
 	-dbus \
 	-no-separate-debug-info \
-	-opengl \
-	-xshape \
-	-fontconfig \
-	-xkb \
 	-no-phonon \
-	-glib \
+	-plugin-sql-mysql \
 	-webkit \
-	-xrender \
-	-xrandr \
-	-xcursor \
-	-xfixes \
-	-xinerama \
-	-sm \
 	-glib \
-	-gtkstyle \
-	-graphicssystem opengl
+	-gtkstyle 
 %{__make} %{?_smp_mflags}
 
 
