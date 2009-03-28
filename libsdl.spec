@@ -1,14 +1,15 @@
 Name: libsdl
 Version: 1.2.13
-Release: 1ev
+Release: 2ev
 Summary: A library that gives portable low-level access for multimedia apps
 URL: http://www.libsdl.org/
 Group: System Environment/Libraries
 License: LGPL-2
 Vendor: GNyU-Linux
 Source: http://www.libsdl.org/release/SDL-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: coreutils, grep, sed, make, gcc, alsa-lib, pth, svgalib
+BuildRequires: make, gcc, alsa-lib >= 0.9.0
+BuildRequires: libICE, libSM, libX11, libXext, libXrender, libXrandr
+BuildRequires: mesalib, libusb, pth, 
 BuildRequires: pkg-config
 
 %description
@@ -23,58 +24,37 @@ portable games which run on many different platforms.
 
 %build
 %configure \
-	--enable-libc \
-	--enable-audio \
-	--enable-video \
-	--enable-events \
-	--enable-joystick \
-	--enable-cdrom \
-	--enable-threads \
-	--enable-timers \
-	--enable-files \
-	--enable-loadso \
-	--enable-cpuinfo \
-	--enable-assembly \
 	--disable-oss \
 	--enable-alsa \
 	--enable-alsa-shared \
 	--disable-esd \
-	--disable-pulseaudio \
 	--disable-arts \
 	--disable-nas \
-	--enable-diskaudio \
-	--enable-dummyaudio \
 	--disable-mintaudio \
 	--disable-ipod \
 	--disable-video-photon \
 	--disable-video-carbon \
 	--disable-video-cocoa \
+	--disable-video-svga \
 	--disable-video-ps2gs \
 	--disable-video-aalib \
 	--disable-video-qtopia \
-	--enable-input-events \
 	--disable-input-tslib \
-	--enable-pth \
-	--enable-pthreads \
 	--enable-sdl-dlopen \
-	--disable-atari-ldg
+	--disable-atari-ldg \
+	--disable-video-x11-xinerama
 %{__make} %{?_smp_mflags}	
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
