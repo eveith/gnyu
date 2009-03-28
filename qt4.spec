@@ -1,6 +1,6 @@
 Name: qt4
-Version: 4.4.3
-Release: 4ev
+Version: 4.5.0
+Release: 5ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -77,7 +77,7 @@ echo 'yes' | ./configure \
 	-qt-gif \
 	-system-zlib \
 	-no-exceptions \
-	-nis \
+	-no-nis \
 	-cups \
 	-fast \
 	-system-libmng \
@@ -90,7 +90,6 @@ echo 'yes' | ./configure \
 	-opengl \
 	-xshape \
 	-fontconfig \
-	-no-tablet \
 	-xkb \
 	-no-phonon \
 	-glib \
@@ -101,7 +100,9 @@ echo 'yes' | ./configure \
 	-xfixes \
 	-xinerama \
 	-sm \
-	-glib
+	-glib \
+	-gtkstyle \
+	-graphicssystem opengl
 %{__make} %{?_smp_mflags}
 
 
@@ -128,13 +129,14 @@ echo '%{_libdir}/qt4/lib' \
 
 %files
 %defattr(-, root, root)
-%doc GPL_*.TXT LICENSE.* OPENSOURCE-NOTICE.TXT README
+%doc LGPL_EXCEPTION.txt LICENSE.* KNOWN.ISSUES README changes*
 /etc/ld.so.conf.d/%{name}-%{_arch}
 %attr(0755, root, root) %{_sysconfdir}/profile.d/qt4.sh
 %dir %{_libdir}/qt4/
 %dir %{_libdir}/qt4/bin
 %{_libdir}/qt4/bin/designer
 %{_libdir}/qt4/bin/linguist
+%{_libdir}/qt4/bin/lconvert
 %{_libdir}/qt4/bin/lrelease
 %{_libdir}/qt4/bin/lupdate
 %{_libdir}/qt4/bin/moc
@@ -163,6 +165,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/lib/libQtNetwork.*
 %{_libdir}/qt4/lib/libQtOpenGL.*
 %{_libdir}/qt4/lib/libQtScript.*
+%{_libdir}/qt4/lib/libQtScriptTools.*
 %{_libdir}/qt4/lib/libQtSvg.*
 %{_libdir}/qt4/lib/libQtSql.*
 %{_libdir}/qt4/lib/libQtTest.*
@@ -183,6 +186,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/lib/pkgconfig/QtNetwork.pc
 %{_libdir}/qt4/lib/pkgconfig/QtOpenGL.pc
 %{_libdir}/qt4/lib/pkgconfig/QtScript.pc
+%{_libdir}/qt4/lib/pkgconfig/QtScriptTools.pc
 %{_libdir}/qt4/lib/pkgconfig/QtSql.pc
 %{_libdir}/qt4/lib/pkgconfig/QtSvg.pc
 %{_libdir}/qt4/lib/pkgconfig/QtTest.pc
@@ -214,6 +218,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/pkgconfig/QtNetwork.pc
 %{_libdir}/pkgconfig/QtOpenGL.pc
 %{_libdir}/pkgconfig/QtScript.pc
+%{_libdir}/pkgconfig/QtScriptTools.pc
 %{_libdir}/pkgconfig/QtSql.pc
 %{_libdir}/pkgconfig/QtSvg.pc
 %{_libdir}/pkgconfig/QtTest.pc
