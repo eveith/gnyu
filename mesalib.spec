@@ -1,6 +1,6 @@
 Name: mesalib
 Version: 7.2
-Release: 2ev
+Release: 3ev
 Summary: 3-D graphics library which uses the OpenGL API
 URL: http://mesa3d.sf.net/
 Group: System Environment/Libraries
@@ -28,15 +28,13 @@ Mesa instead without changing the source code.
 
 
 %build
-%configure \
-	--enable-xcb \
-	--enable-glx-tls
+%configure
 %{__make} %{?_smp_mflags}
 
 
 %install
 %{__mkdir_p} '%{buildroot}/%{_prefix}'
-%{__make_install} INSTALL_DIR='%{_prefix}' DESTDIR='%{buildroot}'
+%{__make} install INSTALL_DIR='%{_prefix}' DESTDIR='%{buildroot}'
 
 
 %post
