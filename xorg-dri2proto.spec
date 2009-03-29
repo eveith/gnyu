@@ -1,7 +1,7 @@
 Name: xorg-dri2proto
 %define src_name %(echo %{name} | sed 's,^xorg-,,')
-Version: 1.1
-Release: 1ev
+Version: 1.99.3
+Release: 2ev
 Summary: Protocol information and development headers for DRI2 extension
 URL: http://www.x.org/
 Group: User Interface/X
@@ -44,4 +44,5 @@ touch README COPYING ChangeLog TODO AUTHORS NEWS
 %defattr(-, root, root)
 %doc README COPYING ChangeLog TODO AUTHORS NEWS
 %{_includedir}/X11/extensions/dri2proto.h
+%{_includedir}/X11/extensions/dri2tokens.h
 %{_libdir}/pkgconfig/%{src_name}.pc
