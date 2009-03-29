@@ -1,6 +1,6 @@
 Name: mesalib
-Version: 7.2
-Release: 3ev
+Version: 7.4
+Release: 4ev
 Summary: 3-D graphics library which uses the OpenGL API
 URL: http://mesa3d.sf.net/
 Group: System Environment/Libraries
@@ -9,9 +9,9 @@ Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/mesa3d/MesaLib-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: gcc, gcc-g++, make >= 3.79.1, pkg-config >= 0.9.0
-BuildRequires: libstdc++, libdrm >= 2.3.1, expat
-BuildRequires: libX11, libICE, libSM, libXdamage, libXext, libXfixes, libXt
-BuildRequires: libXxf86vm, libxcb
+BuildRequires: libstdc++, libdrm >= 2.4.3, expat
+BuildRequires: xorg-dri2proto >= 1.99.3
+BuildRequires: libX11, libXdamage, libXext, libXfixes, libXxf86vm
 
 %description
 Mesa is a 3-D graphics library which uses the OpenGL API (Application
