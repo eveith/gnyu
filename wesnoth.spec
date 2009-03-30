@@ -1,6 +1,6 @@
 Name: wesnoth
-Version: 1.4.7
-Release: 4ev
+Version: 1.6a
+Release: 5ev
 Summary: A turn-based fantasy strategy game: The Battle for Wesnoth
 URL: http://www.wesnoth.org/
 Group: Amusements/Games
@@ -8,9 +8,10 @@ License: GPL-2
 Vendor: GNyU-Linux
 Source: http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.bz2
 BuildRequires(build,install): make, gettext
-BuildRequires(build): gcc-g++, freetype, libX11, libsdlnet, libsdl >= 1.2.7
-BuildRequires(build): libsdlmixer >= 1.2, libsdlimage >= 1.2, boost >= 1.33
-BuildRequires(build): libstdc++, fribidi
+BuildRequires(build): cmake >= 2.4.1, gcc-g++, boost >= 1.33.0
+BuildRequires(build): libsdl >= 1.2.7, libsdlimage >= 1.2, libsdlmixer >= 1.2
+BuildRequires(build): libsdlnet, libsdlttf >= 2.0.8, zlib
+BuildRequires(build): fontconfig >= 2.4.1, pango >= 1.14.8
 Requires: %{name}-common = %{version}
 
 %description
@@ -47,7 +48,9 @@ The dedicated `wesnothd' server binary that is used to host a wesnoth server.
 
 %build
 %configure \
+	--disable-strict-compilation \
 	--enable-server \
+	--enable-editor \
 	--enable-editor \
 	--disable-gnome1 \
 	--disable-gnome2 \
@@ -66,11 +69,11 @@ The dedicated `wesnothd' server binary that is used to host a wesnoth server.
 %defattr(-, root, root)
 %doc README COPYING ABOUT-NLS doc/manual
 %{_bindir}/wesnoth
-%{_bindir}/wesnoth_editor
+#%{_bindir}/wesnoth_editor
 %doc %{_mandir}/*/man6/wesnoth.6*
 %doc %{_mandir}/man6/wesnoth.6*
-%doc %{_mandir}/*/man6/wesnoth_editor.6*
-%doc %{_mandir}/man6/wesnoth_editor.6*
+#%doc %{_mandir}/*/man6/wesnoth_editor.6*
+#%doc %{_mandir}/man6/wesnoth_editor.6*
 %{_datadir}/applications/wesnoth.desktop
 %{_datadir}/applications/wesnoth_editor.desktop
 %{_datadir}/icons/wesnoth-icon.png
