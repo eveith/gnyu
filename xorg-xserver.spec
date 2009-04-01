@@ -1,6 +1,6 @@
 Name: xorg-xserver
 Version: 1.5.3
-Release: 7ev
+Release: 8ev
 Summary: The X Server
 URL: http://www.x.org/
 Group: User Interface/X
@@ -42,6 +42,7 @@ The Xorg Server is the core of the X Window system.
 %build
 %configure \
 	--enable-aiglx \
+	--enable-glx-tls \
 	--enable-dri \
 	--enable-xorg \
 	--with-vendor-name='%{_vendor}' \
