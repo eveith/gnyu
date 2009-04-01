@@ -1,6 +1,6 @@
 Name: libX11
-Version: 1.1.5
-Release: 5ev
+Version: 1.1.4
+Release: 6ev
 Summary: X11 client-side library
 URL: http://www.x.org/
 Group: User Interface/X
@@ -27,8 +27,7 @@ functions of the window system.
 
 
 %build
-%configure \
-	--with-xcb
+%configure
 %{__make} %{?_smp_mflags}
 
 
