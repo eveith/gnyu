@@ -1,17 +1,14 @@
 Name: lcms
-Version: 1.15
-Release: 1ev
+Version: 1.18
+Release: 2ev
 Summary: A little colour management system
 URL: http://www.littlecms.com/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: BSD
+Vendor: GNyU-Linux
 Source: http://www.littlecms.com/lcms-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-%define pyver %(echo $(python -c "import sys; print sys.version[0:3]"))
-BuildRequires: libtiff, libpng, libjpeg, make >= 3.79.1, gcc-core
-BuildRequires: python >= %pyver, zlib
-Provides: libtool(%{_libdir}/liblcms.la)
+BuildRequires: gcc, make, pkg-config, libtiff, libpng, libjpeg, zlib
+Requires: python >= %{python_version}
 
 %description
 Little cms intends to be a small-footprint, speed optimized color management
@@ -25,23 +22,17 @@ engine in open source form.
 %build
 %configure \
 	--with-python
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
@@ -58,4 +49,6 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %{_includedir}/lcms.h
 %{_libdir}/liblcms.*
 %{_libdir}/pkgconfig/lcms.pc
-%{_mandir}/man1/*.1*
+%doc %{_mandir}/man1/*.1*
+%{_libdir}/python?.?/site-packages/lcms.py
+%{_libdir}/python?.?/site-packages/_lcms.*
