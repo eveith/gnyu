@@ -1,6 +1,6 @@
 Name: xtrans
-Version: 1.2.3
-Release: 3ev
+Version: 1.2.1
+Release: 4ev
 Summary: A library of transport code shared amoung various X packages
 URL: http://www.x.org/
 Group: User Interface/X
