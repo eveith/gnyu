@@ -1,16 +1,15 @@
 Name: xterm
-Version: 229
-Release: 1ev
+Version: 243
+Release: 2ev
 Summary: A terminal emulator for the X Window System
 URL: http://invisible-island.net/xterm/
 Group: User Interface/X
 License: MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: ftp://invisible-island.net/xterm/xterm.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, pkg-config, luit, freetype, libXaw, libXt, zlib
-BuildRequires: libICE, libSM, libX11, libXext, libXft, libXmu, libXrender
-BuildRequires: fontconfig, libtermcap
+BuildRequires: make, gcc, pkg-config, luit, freetype
+BuildRequires: libICE, libX11, libXt, libXaw, libSM
+BuildRequires: fontconfig, ncurses, zlib
 
 %description
 The xterm program is the standard terminal emulator for the X Window System.
@@ -33,23 +32,11 @@ to notify programs running in the window whenever it is resized.
 	--enable-256-color \
 	--enable-readline-mouse \
 	--enable-luit
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-
-%post
-/sbin/ldconfig
-
-%postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %files
@@ -57,8 +44,9 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %doc README*
 %{_bindir}/xterm
 %{_bindir}/uxterm
+%{_bindir}/koi8rxterm
 %{_bindir}/resize
 %{_libdir}/X11/app-defaults/*XTerm*
-%{_mandir}/man1/resize.1*
-%{_mandir}/man1/xterm.1*
+%doc %{_mandir}/man1/resize.1*
+%doc %{_mandir}/man1/*xterm.1*
 %{_datadir}/pixmaps/xterm*.xpm
