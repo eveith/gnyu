@@ -1,14 +1,13 @@
 Name: xtrans
-Version: 1.1
-Release: 2ev
+Version: 1.2.3
+Release: 3ev
 Summary: A library of transport code shared amoung various X packages
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: ftp://ftp.x.org/pub/individual/lib/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, pkg-config
+BuildRequires: make, pkg-config
 BuildArch: noarch
 
 %description
@@ -32,19 +31,14 @@ pkg-config file and an autoconf m4 macro file with the flags needed to use it.
 %{__make} %{?_smp_mflags}
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
