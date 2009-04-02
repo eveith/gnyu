@@ -21,10 +21,7 @@ messages of every kind, either locally via sockets or over network by TCP/IP.
 
 
 %build
-%configure \
-	--enable-unix-transport \
-	--enable-tcp-transport \
-	--enable-IPv6
+%configure
 %{__make} %{?_smp_mflags}
 
 
