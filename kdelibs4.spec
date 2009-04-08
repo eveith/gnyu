@@ -1,6 +1,6 @@
 Name: kdelibs4
-Version: 4.2.1
-Release: 2ev
+Version: 4.2.2
+Release: 3ev
 Summary: Base libraries for KDE-based applcations
 URL: http://www.kde.org/
 Group: User Interface/Desktops
