@@ -1,6 +1,6 @@
 Name: qt4
 Version: 4.5.0
-Release: 5ev
+Release: 6ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -78,6 +78,7 @@ echo 'yes' | ./configure \
 	-system-zlib \
 	-no-exceptions \
 	-no-nis \
+	-no-xinerama \
 	-cups \
 	-fast \
 	-system-libmng \
@@ -161,9 +162,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/lib/libQtUiTools.*
 %{_libdir}/qt4/lib/libQtWebKit.*
 %{_libdir}/qt4/lib/libQtXml.*
-#%{_libdir}/qt4/lib/libphonon.*
 %dir %{_libdir}/qt4/lib/pkgconfig
-#%{_libdir}/qt4/lib/pkgconfig/phonon.pc
 %{_libdir}/qt4/lib/pkgconfig/Qt3Support.pc
 %{_libdir}/qt4/lib/pkgconfig/QtCLucene.pc
 %{_libdir}/qt4/lib/pkgconfig/QtCore.pc
@@ -195,7 +194,6 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/plugins/
 %{_libdir}/qt4/phrasebooks/
 %{_libdir}/qt4/q3porting.xml
-#%{_libdir}/pkgconfig/phonon.pc
 %{_libdir}/pkgconfig/Qt3Support.pc
 %{_libdir}/pkgconfig/QtCLucene.pc
 %{_libdir}/pkgconfig/QtCore.pc
