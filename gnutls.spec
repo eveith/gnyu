@@ -1,6 +1,6 @@
 Name: gnutls
-Version: 2.6.3
-Release: 3ev
+Version: 2.6.4
+Release: 4ev
 Summary: An Open Source implementation of TLS 1.0 Internet protocol (RFC 2246)
 URL: http://www.gnu.org/software/gnutls/
 Group: System Environment/Libraries
