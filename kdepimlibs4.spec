@@ -1,6 +1,6 @@
 Name: kdepimlibs4
-Version: 4.2.1
-Release: 2ev
+Version: 4.2.2
+Release: 3ev
 Summary: Libraries common to all KDE 4 PIM applications
 URL: http://www.kde.org/
 Group: System Environment/Libraries
@@ -65,9 +65,9 @@ scheduling and even sticky notes.
 %{_libdir}/libkxmlrpcclient.so*
 %{_libdir}/libmailtransport.so*
 %{_libdir}/libsyndication.so*
-%dir %{_libdir}/KdepimLibs-4.2.0
-%dir %{_libdir}/KdepimLibs-4.2.0/cmake
-%{_libdir}/KdepimLibs-4.2.0/cmake/*.cmake
+%dir %{_libdir}/KdepimLibs-%{version}
+%dir %{_libdir}/KdepimLibs-%{version}/cmake
+%{_libdir}/KdepimLibs-%{version}/cmake/*.cmake
 %dir %{_libdir}/gpgmepp
 %{_libdir}/gpgmepp/*.cmake
 %{_libdir}/kde4/*.so
