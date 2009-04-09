@@ -1,6 +1,6 @@
 Name: kdebase4
-Version: 4.2.1
-Release: 2ev
+Version: 4.2.2
+Release: 3ev
 Summary: KDE Base Applications: "What Runs The Desktop"
 URL: http://www.kde.org/
 Group: User Interface/Desktops
