@@ -1,6 +1,6 @@
 Name: mesalib
 Version: 7.4
-Release: 5ev
+Release: 6ev
 Summary: 3-D graphics library which uses the OpenGL API
 URL: http://mesa3d.sf.net/
 Group: System Environment/Libraries
@@ -29,7 +29,7 @@ Mesa instead without changing the source code.
 
 %build
 %configure \
-	--with-driver=dri \
+	--enable-gl-osmesa \
 	--enable-glx-tls \
 	--enable-xcb \
 	--disable-glut
@@ -56,7 +56,9 @@ Mesa instead without changing the source code.
 %{_libdir}/libGL.*
 %{_libdir}/libGLU.*
 %{_libdir}/libGLw.*
+%{_libdir}/libOSMesa.*
+%{_libdir}/pkgconfig/dri.pc
 %{_libdir}/pkgconfig/gl.pc
 %{_libdir}/pkgconfig/glu.pc
 %{_libdir}/pkgconfig/glw.pc
-%{_libdir}/pkgconfig/dri.pc
+%{_libdir}/pkgconfig/osmesa.pc
