@@ -1,6 +1,6 @@
 Name: qt4
 Version: 4.5.0
-Release: 7ev
+Release: 8ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -153,7 +153,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/lib/libQtGui.*
 %{_libdir}/qt4/lib/libQtHelp.*
 %{_libdir}/qt4/lib/libQtNetwork.*
-#%{_libdir}/qt4/lib/libQtOpenGL.*
+%{_libdir}/qt4/lib/libQtOpenGL.*
 %{_libdir}/qt4/lib/libQtScript.*
 %{_libdir}/qt4/lib/libQtScriptTools.*
 %{_libdir}/qt4/lib/libQtSvg.*
@@ -172,7 +172,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/qt4/lib/pkgconfig/QtGui.pc
 %{_libdir}/qt4/lib/pkgconfig/QtHelp.pc
 %{_libdir}/qt4/lib/pkgconfig/QtNetwork.pc
-#%{_libdir}/qt4/lib/pkgconfig/QtOpenGL.pc
+%{_libdir}/qt4/lib/pkgconfig/QtOpenGL.pc
 %{_libdir}/qt4/lib/pkgconfig/QtScript.pc
 %{_libdir}/qt4/lib/pkgconfig/QtScriptTools.pc
 %{_libdir}/qt4/lib/pkgconfig/QtSql.pc
@@ -203,7 +203,7 @@ echo '%{_libdir}/qt4/lib' \
 %{_libdir}/pkgconfig/QtGui.pc
 %{_libdir}/pkgconfig/QtHelp.pc
 %{_libdir}/pkgconfig/QtNetwork.pc
-#%{_libdir}/pkgconfig/QtOpenGL.pc
+%{_libdir}/pkgconfig/QtOpenGL.pc
 %{_libdir}/pkgconfig/QtScript.pc
 %{_libdir}/pkgconfig/QtScriptTools.pc
 %{_libdir}/pkgconfig/QtSql.pc
