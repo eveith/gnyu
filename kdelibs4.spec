@@ -50,12 +50,12 @@ popd
 
 %post
 %{__ldconfig}
-update-mime-database '%{_datadir}/mime' 2>&1
+update-mime-database '%{_datadir}/mime' > /dev/null 2>&1
 exit 0
 
 %postun
 %{__ldconfig}
-update-mime-database '%{_datadir}/mime' 2>&1
+update-mime-database '%{_datadir}/mime' > /dev/null 2>&1
 exit 0
 
 
