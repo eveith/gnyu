@@ -1,5 +1,5 @@
 Name: alsa-lib
-Version: 1.0.17a
+Version: 1.0.19
 Release: 3ev
 Summary: Library for userspace access to the Advanced Linux Sound System
 URL: http://www.alsa-project.org/
@@ -30,19 +30,14 @@ simplifies programing and provides higher level functionality.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
