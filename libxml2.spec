@@ -1,14 +1,12 @@
 Name: libxml2 
-Version: 2.7.2
-Release: 3ev
+Version: 2.7.3
+Release: 4ev
 Summary: A library for manipulating XML and HTML resources.
 URL: http://www.xmlsoft.org/
 Group: System Environment/Libraries
 License: MIT
 Vendor: GNyU-Linux
 Source: ftp://xmlsoft.org/libxml2/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires(build,prep,install): coreutils, grep, sed
 BuildRequires(build,install): make, python, pkg-config
 BuildRequires(build): gcc, zlib
 
@@ -27,7 +25,7 @@ Schemas is in progress. It includes xmllint, a command line XML validator.
 
 %package python
 Summary: Python bindings to libxml2
-Requires: libxml2 = %{version}, python = %{_python_base_version}
+Requires: libxml2 = %{version}
 Group: System Environment/Libraries
 
 %description python
@@ -47,8 +45,7 @@ libxml2.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 (cd doc/examples ; %{__make} clean ; %{__rm} -rf .deps)
 %{__rm} -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
 
@@ -58,10 +55,6 @@ libxml2.
 
 %postun
 %{__ldconfig}
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
