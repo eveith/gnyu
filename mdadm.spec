@@ -23,20 +23,14 @@ arrays, also known as Software RAID.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} \
 	SYSCONFDIR='%{_sysconfdir}' \
 	MANDIR='%{_mandir}' \
 	DESTDIR="${RPM_BUILD_ROOT}" \
 	INSTALL='%{__install}'
-%{__mkdir_p} '%{buildroot}/etc'
-touch '%{buildroot}/etc/mdadm.conf'
 
-%{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}'
+%{__touch} '%{buildroot}/%{_sysconfdir}/mdadm.conf'
 
 
 %files
