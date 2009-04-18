@@ -1,6 +1,6 @@
 Name: cups
-Version: 1.3.7
-Release: 3ev
+Version: 1.3.10
+Release: 5ev
 Summary: Common Unix Printing System
 URL: http://www.cups.org/
 Group: System Environment/Daemons
@@ -28,19 +28,18 @@ Patch24: cups-maxlogsize.patch
 Patch28: cups-no-propagate-ipp-port.patch
 Patch32: cups-pid.patch
 Patch41: cups-relro.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
-BuildRequires: coreutils, grep, sed, make >= 3.80, gcc, gcc-g++, pkg-config
+BuildRequires: make >= 3.80, gcc, gcc-g++, pkg-config, libstdc++
 BuildRequires: libjpeg, libpng, libtiff, libpam, heimdal-libs, openldap-libs
 BuildRequires: pcre, perl, dbus >= 0.60, openslp, gnutls, zlib
-Requires: perl
+Requires: perl, %{name}-libs = %{version}
 Provides: %{_bindir}/lpq, /usr/bin/lpr, /usr/bin/lp, /usr/bin/cancel 
 Provides: %{_bindir}/lprm, /usr/bin/lpstat
 Provides: lpd, lpr, LPRng = 3.8.15-3
 Conflicts: foomatic < 3.0.2-33.3
 Conflicts: hplip < 0.9.9-5.1
 Obsoletes: lpd, lpr, LPRng <= 3.8.15-3
-%define _lp_uid 4
-%define _lp_gid 7
+%define _lp_uid 11
+%define _lp_gid 19
 
 %description
 The Common UNIX Printing System provides a portable printing layer for 
@@ -68,35 +67,25 @@ some other packages.
 
 %build
 %configure \
+	--enable-raw-printing \
+	--enable-pdftops \
 	--with-cups-user=lp \
 	--with-cups-group=lp \
-	--with-logdir=/%{_var}/log/cups \
+	--with-logdir='%{_localstatedir}/log/cups' \
 	--enable-dbus \
-	--enable-jpeg \
-	--enable-png \
-	--enable-tiff \
-	--enable-slp \
-	--enable-ldap \
-	--enable-openssl \
-	--disable-gnutls \
-	--enable-pam \
-	--enable-threads \
 	--disable-dnssd \
 	--disable-launchd \
-	--with-optim="${RPM_OPT_FLAGS} ${CFLAGS}" \
+	--with-optim="${CFLAGS:-%{optflags}}" \
 	--with-perl
 %{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
 
 # Install init file
-%{__make_install} BUILDROOT='%{buildroot}'
-%{__cat} %{SOURCE1} | \
-	%{__sed} -e 's,@cupsd@,%{_sbindir}/cupsd,g' \
-	> '%{buildroot}/etc/initng/daemon/cupsd.i'
+%{__make} install BUILDROOT='%{buildroot}'
+%{install_ifile '%{SOURCE1}' daemon/cupsd.i}
 
 %{__install} -c -m 0644 '%{SOURCE13}' \
 	'%{buildroot}/%{_sysconfdir}/cups/pdftops.conf'
@@ -129,7 +118,7 @@ touch '%{buildroot}/%{_sysconfdir}/cups/printers.conf' \
 		-u '%{_lp_uid}' \
 		-g '%{_lp_gid}' \
 		-c 'Printer Spooler' \
-		-d '%{_localstatedir}/spool/cups' \
+		-d '%{_localstatedir}/spool/lp' \
 		-s /sbin/nologin \
 		lp
 } > /dev/null 2>&1
@@ -143,23 +132,11 @@ then
 fi > /dev/null 2>&1
 exit 0
 
-%postun
-if [[ "${1}" -eq 0 ]]
-then
-	userdel lp
-	groupdel lp
-fi > /dev/null 2>&1
-exit 0
-
 %post libs
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun libs
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
@@ -200,10 +177,11 @@ exit 0
 %{_datadir}/cups/templates
 %{_datadir}/locale/*/*
 %{_datadir}/doc/cups/
-%dir %attr(1770, root, lp) /var/spool/cups/tmp
-%dir %attr(0710, root, lp) /var/spool/cups
-%dir %attr(0755, lp, sys) /var/log/cups
+%dir %attr(1770, root, lp) %{_localstatedir}/spool/cups/tmp
+%dir %attr(0710, root, lp) %{_localstatedir}/spool/cups
+%dir %attr(0755, lp, sys) %{_localstatedir}/log/cups
 
 %files libs
+%defattr(-, root, root)
 %{_libdir}/libcupsimage.*
 %{_libdir}/libcups.*
