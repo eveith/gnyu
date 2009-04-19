@@ -7,6 +7,7 @@ Group: System Environment/Libraries
 License: GPL-2, LGPL-2.1
 Vendor: GNyU-Linux
 Source: http://www.kernel.org/pub/linux/bluetooth/bluez-%{version}.tar.gz
+Source1: %{name}-bluetoothd.ii
 BuildRequires: make, gcc, bison, flex, pkg-config
 BuildRequires: dbus, glib2, gstreamer, alsa-lib, libsndfile, libusb
 
@@ -28,6 +29,9 @@ BuildRequires: dbus, glib2, gstreamer, alsa-lib, libsndfile, libusb
 %install
 	%{__make} install DESTDIR='%{buildroot}'
 
+	%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
+	%{install_ifile '%{SOURCE1}' daemon/bluetoothd.i}
+
 
 %post
 	%{__ldconfig}
@@ -39,7 +43,8 @@ BuildRequires: dbus, glib2, gstreamer, alsa-lib, libsndfile, libusb
 
 %files
 	%defattr(-, root, root)
-	%doc
+	%doc README COPYING* NEWS
+	%attr(0700, root, root) %{_sysconfdir}/initng/daemon/bluetoothd.i
 	%config(noreplace) %{_sysconfdir}/alsa/bluetooth.conf
 	%dir %{_sysconfdir}/bluetooth
 	%config(noreplace) %{_sysconfdir}/bluetooth/main.conf
