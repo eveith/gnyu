@@ -1,6 +1,6 @@
 Name: alsa-lib
 Version: 1.0.19
-Release: 3ev
+Release: 4ev
 Summary: Library for userspace access to the Advanced Linux Sound System
 URL: http://www.alsa-project.org/
 Group: System Environment/Libraries
@@ -14,41 +14,44 @@ Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: make >= 3.79.1, gcc, doxygen, pkg-config
 
 %description
-The Advanced Linux Sound Architecture (ALSA) provides audio and MIDI
-functionality to the Linux operating system. This the userspace library that
-simplifies programing and provides higher level functionality.
+	The Advanced Linux Sound Architecture (ALSA) provides audio and MIDI
+	functionality to the Linux operating system. This the userspace library that
+	simplifies programing and provides higher level functionality.
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure
-%{__make} %{?_smp_mflags}
-%{__make} doc
+	%configure
+	%{__make} %{?_smp_mflags}
+	%{__make} doc
 
 
 %install
-%{__make} install DESTDIR='%{buildroot}'
+	%{__make} install DESTDIR='%{buildroot}'
+	%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/alsa'
 
 
 %post
-%{__ldconfig}
+	%{__ldconfig}
+
 
 %postun
-%{__ldconfig}
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc COPYING ChangeLog MEMORY-LEAK NOTES TODO doc/asoundrc.txt
-%doc doc/pictures/ doc/doxygen/
-%{_bindir}/aserver
-%{_includedir}/alsa/
-%{_includedir}/sys/asoundlib.h
-%{_libdir}/alsa-lib/
-%{_libdir}/libasound.*
-%{_libdir}/pkgconfig/alsa.pc
-%{_datadir}/aclocal/alsa.m4
-%{_datadir}/alsa/
+	%defattr(-, root, root)
+	%doc COPYING ChangeLog MEMORY-LEAK NOTES TODO doc/asoundrc.txt
+	%doc doc/pictures/ doc/doxygen/
+	%dir %{_sysconfdir}/alsa
+	%{_bindir}/aserver
+	%{_includedir}/alsa/
+	%{_includedir}/sys/asoundlib.h
+	%{_libdir}/alsa-lib/
+	%{_libdir}/libasound.*
+	%{_libdir}/pkgconfig/alsa.pc
+	%{_datadir}/aclocal/alsa.m4
+	%{_datadir}/alsa/
