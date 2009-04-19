@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
 Version: 4.2.2
-Release: 3ev
+Release: 4ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -15,7 +15,7 @@ BuildRequires: kdebase4-runtime = %{version}
 BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
 BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
 BuildRequires: libXScrnSaver, libXft, libxklavier >= 3.0
-BuildRequires: freetype, fontconfig, libusb, libpam, phonon >= 4.3.0
+BuildRequires: freetype, fontconfig, libusb, libpam, phonon >= 4.3.0, bluez
 Requires: dbus, kdebase4-runtime = %{version}
 
 %description
