@@ -13,7 +13,7 @@ BuildRequires:
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
@@ -22,8 +22,8 @@ BuildRequires:
 %install
 
 
-[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
+	[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
+		&& %{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
 %post
@@ -31,9 +31,6 @@ BuildRequires:
 %postun
 
 
-%clean
-
-
 %files
-%defattr(-, root, root)
-%doc 
+	%defattr(-, root, root)
+	%doc 
