@@ -1,6 +1,6 @@
 Name: bluez
 Version: 4.36
-Release: 1ev
+Release: 2ev
 Summary: Linux Bluetooth Stack: Userspace
 URL: http://www.bluez.org/
 Group: System Environment/Libraries
