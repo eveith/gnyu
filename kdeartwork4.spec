@@ -1,12 +1,12 @@
 Name: kdeartwork4
-Version: 4.2.1
-Release: 2ev
+Version: 4.2.2
+Release: 3ev
 Summary: Miscellaneous artworks for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
-Source: ftp://ftp.kde.org/pub/kde/stable/4.2.0/src/kdeartwork-%{version}.tar.bz2
+Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdeartwork-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4, automoc4 >= 0.8.86
 BuildRequires: libX11, libICE, libXpm
 BuildRequires: kdelibs4, kdebase4, kdebase4-workspace, phonon >= 4.3.0, strigi
