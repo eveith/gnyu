@@ -1,12 +1,12 @@
 Name: ruby
-Version: 1.9.1
-Release: 3ev
+Version: 1.8.7
+Release: 4ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p0.tar.bz2
+Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p160.tar.bz2
 BuildRequires: make, gcc, groff, openssl
 BuildRequires: libtermcap, ncurses, zlib, db, libX11, readline, zlib
 
@@ -30,49 +30,50 @@ Features of Ruby:
 
 
 %prep
-%setup -q -n '%{name}-%{version}-p0'
+	%setup -q -n '%{name}-%{version}-p160'
 
 
 %build
-%configure \
-	--enable-pthread \
-	--enable-shared \
-	--enable-install-doc
-%{__make} %{?_smp_mflags}
+	%configure \
+		--enable-pthread \
+		--enable-shared \
+		--enable-install-doc
+	%{__make} %{?_smp_mflags}
 
 
 %install
-%{__make} install DESTDIR='%{buildroot}'
+	%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-%{__ldconfig}
+	%{__ldconfig}
+
 
 %postun
-%{__ldconfig}
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
-%{_bindir}/ruby
-%{_bindir}/testrb
-%{_bindir}/rdoc
-%{_bindir}/erb
-%{_bindir}/gem
-%{_bindir}/rake
-%{_bindir}/ri
-%{_bindir}/irb
-%{_libdir}/*ruby*.*
-%dir %{_libdir}/ruby
-%{_libdir}/ruby/%{version}/
-%dir %{_includedir}/ruby-%{version}
-%{_includedir}/ruby-%{version}/*
-%doc %{_mandir}/man1/ruby.1*
-%dir %{_datadir}/ri
-%dir %{_datadir}/ri/%{version}/
-%{_datadir}/ri/%{version}/*
-%doc %{_mandir}/man1/erb.1*
-%doc %{_mandir}/man1/irb.1*
-%doc %{_mandir}/man1/rake.1*
-%doc %{_mandir}/man1/ri.1*
+	%defattr(-, root, root)
+	%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+	%{_bindir}/ruby
+	%{_bindir}/testrb
+	%{_bindir}/rdoc
+	%{_bindir}/erb
+	#%{_bindir}/gem
+	#%{_bindir}/rake
+	%{_bindir}/ri
+	%{_bindir}/irb
+	%{_libdir}/*ruby*.*
+	%dir %{_libdir}/ruby
+	%{_libdir}/ruby/?.?/
+	#%dir %{_includedir}/ruby-?.?
+	#%{_includedir}/ruby-?.?/*
+	%dir %{_datadir}/ri
+	%dir %{_datadir}/ri/?.?/
+	%{_datadir}/ri/?.?/*
+	%doc %{_mandir}/man1/ruby.1*
+	#%doc %{_mandir}/man1/erb.1*
+	#%doc %{_mandir}/man1/irb.1*
+	#%doc %{_mandir}/man1/rake.1*
+	#%doc %{_mandir}/man1/ri.1*
