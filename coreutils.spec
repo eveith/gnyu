@@ -12,6 +12,7 @@ Patch1: coreutils-5.97-uname-1.patch
 Patch2: coreutils-5.97-uname-2.patch
 BuildRequires: make, gcc, gettext, gmp
 Obsoletes: mktemp
+Provides: mktemp
 
 %description
 The GNU Core Utilities are the basic file, shell and text manipulation
