@@ -7,10 +7,11 @@ Group: System Environment/Base
 License: GPL-3
 Vendor: GNyU-Linux
 Source0: http://ftp.gnu.org/pub/gnu/coreutils/%{name}-%{version}.tar.gz
-BuildRequires: make, gcc, gettext, gmp
 Patch0: coreutils-5.97-i18n-1.patch
 Patch1: coreutils-5.97-uname-1.patch
 Patch2: coreutils-5.97-uname-2.patch
+BuildRequires: make, gcc, gettext, gmp
+Obsoletes: mktemp
 
 %description
 The GNU Core Utilities are the basic file, shell and text manipulation
@@ -26,7 +27,7 @@ The programs that are installed with this package are:
   md5sum mkdir mkfifo mknod mv nice nl nohup od paste pathchk pinky pr
   printenv printf ptx pwd readlink rm rmdir seq sha1sum shred sleep sort
   split stat stty sum sync tac tail tee test touch tr true tsort tty
-  uname unexpand uniq unlink uptime users vdir wc who whoami yes
+  uname unexpand uniq unlink users vdir wc who whoami yes
 
 
 %prep
@@ -80,7 +81,10 @@ The programs that are installed with this package are:
 	# the "shadow" package. 
 	# And /bin/hostname is provided by net-tools.
 	%{__find} '%{buildroot}' \
-		\( -name 'su*' -or -name 'groups*' -or -name 'hostname*' \) \
+		\( -name 'su' -or -name 'su.1*' \
+			-or -name 'groups' -or -name 'groups.1*' \
+			-or -name 'hostname' -or -name 'hostname.1*' \
+			-or -name 'uptime' -or -name 'uptime.1*' \) \
 		-exec %{__rm} -vf '{}' \;
 	
 	%find_lang coreutils
@@ -175,6 +179,7 @@ The programs that are installed with this package are:
 	%doc %{_mandir}/man1/split.1*
 	%doc %{_mandir}/man1/stat.1*
 	%doc %{_mandir}/man1/stty.1*
+	%doc %{_mandir}/man1/sum.1*
 	%doc %{_mandir}/man1/sync.1*
 	%doc %{_mandir}/man1/tac.1*
 	%doc %{_mandir}/man1/tail.1*
@@ -191,7 +196,6 @@ The programs that are installed with this package are:
 	%doc %{_mandir}/man1/unexpand.1*
 	%doc %{_mandir}/man1/uniq.1*
 	%doc %{_mandir}/man1/unlink.1*
-	%doc %{_mandir}/man1/uptime.1*
 	%doc %{_mandir}/man1/users.1*
 	%doc %{_mandir}/man1/vdir.1*
 	%doc %{_mandir}/man1/wc.1*
