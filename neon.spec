@@ -1,14 +1,13 @@
 Name: neon
-Version: 0.26.4
-Release: 1ev
+Version: 0.28.4
+Release: 2ev
 Summary: A HTTP and WebDAV client library
 URL: http://www.webdav.org/neon/
 Group: System Environment/Libraries
 License: LGPL-2
 Vendor: GNyU-Linux
 Source: http://www.webdav.org/neon/neon-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc, expat, zlib, openssl, heimdal-libs
+BuildRequires: make >= 3.79.1, gcc, expat, zlib, gnutls, heimdal-libs
 
 %description
 neon is an HTTP and WebDAV client library, with a C interface. Featuring: 
@@ -30,41 +29,36 @@ neon is an HTTP and WebDAV client library, with a C interface. Featuring:
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--disable-debug \
-	--enable-shared \
-	--with-expat \
-	--with-ssl
-%{__make} %{?_smp_mflags}
+	%configure \
+		--disable-debug \
+		--enable-shared \
+		--with-expat \
+		--with-ssl=gnutls
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-%{__rm} -f %{buildroot}/%{_infodir}/dir
-%find_lang neon
+	%{__make} install DESTDIR='%{buildroot}'
+	%{__rm} -f '%{buildroot}/%{_infodir}/dir'
+	%find_lang neon
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%post -p %{__ldconfig}
+%postun -p %{__ldconfig}
 
 
 %files -f neon.lang
-%defattr(-, root, root)
-%doc AUTHORS BUGS ChangeLog* NEWS README THANKS TODO src/COPYING.LIB
-%doc %{_datadir}/doc/%{name}-%{version} 
-%{_bindir}/neon-config
-%{_includedir}/neon/
-%{_libdir}/libneon*.*
-%{_libdir}/pkgconfig/neon.pc
-%{_mandir}/man1/neon-config.1.gz
-%{_mandir}/man3/ne_*.*
-%{_mandir}/man3/neon.3.gz
+	%defattr(-, root, root)
+	%doc AUTHORS BUGS ChangeLog* NEWS README THANKS TODO src/COPYING.LIB
+	%doc %{_datadir}/doc/%{name}-%{version} 
+	%{_bindir}/neon-config
+	%{_includedir}/neon/
+	%{_libdir}/libneon*.*
+	%{_libdir}/pkgconfig/neon.pc
+	%doc %{_mandir}/man1/neon-config.1*
+	%doc %{_mandir}/man3/ne_*.*
+	%doc %{_mandir}/man3/neon.3*
