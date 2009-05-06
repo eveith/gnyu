@@ -1,6 +1,6 @@
 Name: coreutils
 Version: 7.3
-Release: 2ev
+Release: 3ev
 Summary: Core utilities that ought to exist on every GNU/Linux system
 URL: http://www.gnu.org/software/coreutils
 Group: System Environment/Base
