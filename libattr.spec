@@ -1,16 +1,13 @@
 Name: libattr
-Version: 2.4.39
-Release: 1ev
+Version: 2.4.43
+Release: 2ev
 Summary: Extended file system attributes userspace library
 URL: http://oss.sgi.com/projects/xfs/
 Group: System Environment/Libraries
 License: LGPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: ftp://oss.sgi.com/projects/xfs/cmd_tars/attr_%{version}-1.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: autoconf, make >= 3.79.1, gcc-core, libtool
-Provides: libtool(%{_libdir}/libattr.la) libtool(%{_libexecdir}/libattr.la)
+BuildRequires: make >= 3.79.1, gcc, libtool
 
 %description
 Extended attributes implement the ability for a user to attach name:value
@@ -22,63 +19,69 @@ reduced resolution overview of a high resolution graphic image.
 
 
 %prep
-%setup -q -n attr-%{version}
+	%setup -q -n 'attr-%{version}'
 
 
 %build
-%configure
-make CC="%{_target_platform}-gcc" %{_smp_mflags}
+	%configure \
+		--libdir='/%{_lib}' \
+		--bindir='/bin'
+
+	# No good CC handling here, because otherwise we confuse libtool...
+	%{__make} %{?_smp_mflags} \
+		CC="%{_target_platform}-gcc"
+
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "${RPM_BUILD_ROOT}"
-make DIST_ROOT="$RPM_BUILD_ROOT" install install-lib install-dev
-%find_lang attr
+	%{__make} \
+		DIST_ROOT="$RPM_BUILD_ROOT" \
+		install \
+		install-lib \
+		install-dev
+	%find_lang attr
+	%{__rm_rf} '%{buildroot}/%{_datadir}/doc'
 
 
 %post
-/sbin/ldconfig
+	%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != '/' ] && rm -rf "${RPM_BUILD_ROOT}"
+	%{__ldconfig}
 
 
 %files -f attr.lang
-%defattr(-, root, root)
-%doc README VERSION doc 
-%doc %{_datadir}/doc/attr
-%{_bindir}/attr
-%{_bindir}/getfattr
-%{_bindir}/setfattr
-%{_includedir}/attr/
-%{_libdir}/libattr.*
-%{_libexecdir}/libattr.*
-%{_mandir}/man1/attr.1.gz
-%{_mandir}/man1/getfattr.1.gz
-%{_mandir}/man1/setfattr.1.gz
-%{_mandir}/man2/fgetxattr.2.gz
-%{_mandir}/man2/flistxattr.2.gz
-%{_mandir}/man2/fremovexattr.2.gz
-%{_mandir}/man2/fsetxattr.2.gz
-%{_mandir}/man2/getxattr.2.gz
-%{_mandir}/man2/lgetxattr.2.gz
-%{_mandir}/man2/listxattr.2.gz
-%{_mandir}/man2/llistxattr.2.gz
-%{_mandir}/man2/lremovexattr.2.gz
-%{_mandir}/man2/lsetxattr.2.gz
-%{_mandir}/man2/removexattr.2.gz
-%{_mandir}/man2/setxattr.2.gz
-%{_mandir}/man3/attr_get.3.gz
-%{_mandir}/man3/attr_getf.3.gz
-%{_mandir}/man3/attr_list.3.gz
-%{_mandir}/man3/attr_listf.3.gz
-%{_mandir}/man3/attr_multi.3.gz
-%{_mandir}/man3/attr_multif.3.gz
-%{_mandir}/man3/attr_remove.3.gz
-%{_mandir}/man3/attr_removef.3.gz
-%{_mandir}/man3/attr_set.3.gz
-%{_mandir}/man3/attr_setf.3.gz
-%{_mandir}/man5/attr.5.gz
+	%defattr(-, root, root)
+	%doc README VERSION doc 
+	/bin/attr
+	/bin/getfattr
+	/bin/setfattr
+	%{_includedir}/attr/
+	/%{_lib}/libattr.*
+	%{_libexecdir}/libattr.*
+	%doc %{_mandir}/man1/attr.1.gz
+	%doc %{_mandir}/man1/getfattr.1.gz
+	%doc %{_mandir}/man1/setfattr.1.gz
+	%doc %{_mandir}/man2/fgetxattr.2.gz
+	%doc %{_mandir}/man2/flistxattr.2.gz
+	%doc %{_mandir}/man2/fremovexattr.2.gz
+	%doc %{_mandir}/man2/fsetxattr.2.gz
+	%doc %{_mandir}/man2/getxattr.2.gz
+	%doc %{_mandir}/man2/lgetxattr.2.gz
+	%doc %{_mandir}/man2/listxattr.2.gz
+	%doc %{_mandir}/man2/llistxattr.2.gz
+	%doc %{_mandir}/man2/lremovexattr.2.gz
+	%doc %{_mandir}/man2/lsetxattr.2.gz
+	%doc %{_mandir}/man2/removexattr.2.gz
+	%doc %{_mandir}/man2/setxattr.2.gz
+	%doc %{_mandir}/man3/attr_get.3.gz
+	%doc %{_mandir}/man3/attr_getf.3.gz
+	%doc %{_mandir}/man3/attr_list.3.gz
+	%doc %{_mandir}/man3/attr_listf.3.gz
+	%doc %{_mandir}/man3/attr_multi.3.gz
+	%doc %{_mandir}/man3/attr_multif.3.gz
+	%doc %{_mandir}/man3/attr_remove.3.gz
+	%doc %{_mandir}/man3/attr_removef.3.gz
+	%doc %{_mandir}/man3/attr_set.3.gz
+	%doc %{_mandir}/man3/attr_setf.3.gz
+	%doc %{_mandir}/man5/attr.5.gz
