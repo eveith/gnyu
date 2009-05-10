@@ -1,15 +1,14 @@
 Name: pinentry
 Version: 0.7.5
-Release: 1ev
+Release: 2ev
 Summary: A Ncurses TUI to read passphrases and PIN number in a secure manner
 URL: http://www.gnupg.org/related_software/pinentry/index.en.html
 Group: Applications/Text
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/pinentry/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires(build,install): coreutils, make
-BuildRequires(build): gcc, gtk2, qt3, ncurses, libcap2, libstdc++, libgcc_s
+BuildRequires(build,install): make
+BuildRequires(build): gcc, gtk2, qt3, ncurses, libcap2, libstdc++
 
 %description
 "Pinentry" is a simple dialogue program that allows GnuPG to read passphrases
@@ -46,42 +45,36 @@ on Ncurses for the console.
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--enable-pinentry-curses \
-	--disable-pinentry-gtk \
-	--disable-pinentry-gtk2 \
-	--enable-pinentry-qt
-%{__make} %{?_smp_mflags}
+	%configure \
+		--enable-pinentry-curses \
+		--disable-pinentry-gtk \
+		--disable-pinentry-gtk2 \
+		--enable-pinentry-qt
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+	%{__make_install} DESTDIR='%{buildroot}'
 
 
 %files
-%defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
-%{_bindir}/pinentry-curses
-%doc %{_infodir}/pinentry.info*
+	%defattr(-, root, root)
+	%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
+	%{_bindir}/pinentry-curses
+	%doc %{_infodir}/pinentry.info*
+
 
 %files qt
-%defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
-%{_bindir}/pinentry
-%{_bindir}/pinentry-qt
+	%defattr(-, root, root)
+	%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
+	%{_bindir}/pinentry
+	%{_bindir}/pinentry-qt
+
 
 %files gtk2
-%defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
+	%defattr(-, root, root)
+	%doc AUTHORS ChangeLog COPYING NEWS README* THANKS TODO
