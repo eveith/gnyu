@@ -1,6 +1,6 @@
 Name: vim
 Version: 7.2
-Release: 2ev
+Release: 3ev
 Summary: The VIM (VIsual editor iMproved)
 URL: http://www.vim.org/
 Group: Applications/Editors
@@ -176,7 +176,7 @@ Patch164: vim-7.2.165.diff
 Patch165: vim-7.2.166.diff
 BuildRequires: make, pkg-config, gcc, gettext
 BuildRequires: libX11, libICE, libXdmcp, libXpm
-BuildRequires: ncurses, gpm, gtk2
+BuildRequires: ncurses, gtk2 #,gpm
 BuildRequires: perl, python, ruby, libattr, libacl
 Requires: %{name}-common = %{version}-%{release}
 Obsoletes: vim-minimal, vim-enhanced
@@ -399,6 +399,7 @@ vim-common package.
 		--enable-multibyte \
 		--enable-gtk2-check \
 		--enable-gui=gtk2 \
+		--disable-gpm \
 		--with-compiledby='%{packager}' \
 		--enable-rubyinterp \
 		--enable-perlinterp \
@@ -416,6 +417,7 @@ vim-common package.
 		--without-x \
 		--disable-gui \
 		--disable-xim \
+		--disable-gpm \
 		--enable-multibyte \
 		--with-compiledby='%{packager}' \
 		--enable-rubyinterp \
