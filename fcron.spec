@@ -1,6 +1,6 @@
 Name: fcron
 Version: 3.0.4
-Release: 1ev
+Release: 2ev
 Summary: An enhanced cron daemon to schedule the execution of commands
 URL: http://fcron.free.fr/
 Group: System Environment/Base
@@ -12,7 +12,6 @@ Source2: %{name}-fcron.pamd
 Source3: %{name}-fcrontab.pamd
 Patch0: fcron-fcrontab_shell_error.diff
 BuildRequires: make >= 3.79.1, libpam, gcc
-Requires: %{_bindir}/sendmail, %{_bindir}/vim
 %define cron_uid 16
 %define cron_gid 29
 
@@ -26,51 +25,51 @@ run it depending on the system load average, and much more.
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--with-editor='%{_bindir}/vim' \
-	--with-piddir='%{_localstatedir}/run' \
-	--with-spooldir='%{_localstatedir}/spool/cron' \
-	--with-pam \
-	--without-selinux \
-	--without-boot-install \
-	--with-fifodir='%{_localstatedir}/tmp' \
-	--with-sendmail='%{_bindir}/sendmail' \
-	--with-username=cron \
-	--with-groupname=cron
-%{__make} %{?_smp_mflags}
+	%configure \
+		--with-editor='%{_bindir}/vim' \
+		--with-piddir='%{_localstatedir}/run' \
+		--with-spooldir='%{_localstatedir}/spool/cron' \
+		--with-pam \
+		--without-selinux \
+		--without-boot-install \
+		--with-fifodir='%{_localstatedir}/tmp' \
+		--with-sendmail='%{_bindir}/sendmail' \
+		--with-username=cron \
+		--with-groupname=cron
+	%{__make} %{?_smp_mflags}
 
 
 %install
-%{__make_install} DESTDIR='%{buildroot}'
+	%{__make_install} DESTDIR='%{buildroot}'
 
-pushd %{buildroot}
+	pushd '%{buildroot}'
 
-# Install service file for fcron
-%{__mkdir_p} etc/initng/daemon
-%{__cat} < '%{SOURCE1}' | \
-	%{__sed} -e 's,@fcron@,%{_sbindir}/fcron,g' \
-	> etc/initng/daemon/fcron.i
+	# Install service file for fcron
+	%{__mkdir_p} etc/initng/daemon
+	%{__cat} < '%{SOURCE1}' | \
+		%{__sed} -e 's,@fcron@,%{_sbindir}/fcron,g' \
+		> etc/initng/daemon/fcron.i
 
-# We also need pam files, install them here.
-%{__mkdir_p} etc/pam.d
-[[ etc/pam.conf ]] && %{__rm} -f etc/pam.conf
-%{__cat} < '%{SOURCE2}' > etc/pam.d/fcron
-%{__cat} < '%{SOURCE3}' > etc/pam.d/fcrontab
+	# We also need pam files, install them here.
+	%{__mkdir_p} etc/pam.d
+	[[ etc/pam.conf ]] && %{__rm} -f etc/pam.conf
+	%{__cat} < '%{SOURCE2}' > etc/pam.d/fcron
+	%{__cat} < '%{SOURCE3}' > etc/pam.d/fcrontab
 
-# Create the fcron spool directory
-%{__mkdir_p} ./%{_localstatedir}/spool/cron
+	# Create the fcron spool directory
+	%{__mkdir_p} ./%{_localstatedir}/spool/cron
 
-# Link fcrontab to the traditional name to avoid confusion with scripts.
-( cd ./%{_bindir}; %{__ln_s} fcrontab crontab; cd - )
+	# Link fcrontab to the traditional name to avoid confusion with scripts.
+	( cd ./%{_bindir}; %{__ln_s} fcrontab crontab; cd - )
 
 
-# Install fcron config file.
+	# Install fcron config file.
 
-%{__cat} << __EOF__ > etc/fcron.conf
+	%{__cat} << __EOF__ > etc/fcron.conf
 # fcron.conf - Configuration file for fcron(8) and fcrontab(1).
 #   See fcron.conf(5) for syntax and explanations.
 #
@@ -97,8 +96,8 @@ editor      =   %{_bindir}/vim
 __EOF__
 
 
-# Create /etc/cron.* directories
-%{__mkdir_p} ./%{_sysconfdir}/cron.{hourly,daily,weekly}
+	# Create /etc/cron.* directories
+	%{__mkdir_p} ./%{_sysconfdir}/cron.{hourly,daily,weekly}
 
 
 # Finished. :-)
@@ -106,64 +105,66 @@ popd
 
 
 %pre
-if [[ "${1}" -eq 1 ]]
-then
-	userdel cron
-	groupdel cron
-	groupadd \
-		-g '%{cron_gid}' \
-		cron
-	useradd \
-		-g cron \
-		-u '%{cron_uid}' \
-		-s /sbin/nologin  \
-		-d '%{_localstatedir}/spool/cron' \
+	if [[ "${1}" -eq 1 ]]
+	then
+		userdel cron
+		groupdel cron
+		groupadd \
+			-g '%{cron_gid}' \
+			cron
+		useradd \
+			-g cron \
+			-u '%{cron_uid}' \
+			-s /sbin/nologin  \
+			-d '%{_localstatedir}/spool/cron' \
 	  	cron
-fi > /dev/null 2>&1
-exit 0
+	fi > /dev/null 2>&1
+	exit 0
+
 
 %preun
-if [[ "${1}" -eq 0 ]]
-then
-	ngc -d daemon/fcron > /dev/null 2>&1
-	ng-update del daemon/fcron > /dev/null 2>&1
-fi
-exit 0
+	if [[ "${1}" -eq 0 ]]
+	then
+		ngc -d daemon/fcron > /dev/null 2>&1
+		ng-update del daemon/fcron default > /dev/null 2>&1
+	fi
+	exit 0
+
 
 %postun
-if [[ "${1}" -eq 0 ]]
-then
-	userdel cron 
-	groupdel cron
-fi > /dev/null 2>&1
-exit 0
+	if [[ "${1}" -eq 0 ]]
+	then
+		userdel cron 
+		groupdel cron
+	fi > /dev/null 2>&1
+	exit 0
 
 
 %files
-%defattr(-, root, root)
-%doc MANIFEST VERSION doc/en doc/fr
-%doc %{_datadir}/doc/%{name}-%{version}
-%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.allow
-%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.conf
-%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.deny
-%config(noreplace) %{_sysconfdir}/pam.d/fcron*
-%attr(0750, root, root) %{_sysconfdir}/initng/daemon/fcron.i
-%attr(6111, cron, cron) %{_bindir}/fcrondyn
-%attr(4110, root, cron) %{_bindir}/fcronsighup
-%attr(6111, cron, cron) %{_bindir}/fcrontab
-%attr(6111, cron, cron) %{_bindir}/crontab
-%attr(110, root, root) %{_sbindir}/fcron
-%doc %{_mandir}/fr/man1/fcrondyn.1*
-%doc %{_mandir}/fr/man1/fcrontab.1*
-%doc %{_mandir}/fr/man3/bitstring.3*
-%doc %{_mandir}/fr/man5/fcron.conf.5*
-%doc %{_mandir}/fr/man5/fcrontab.5*
-%doc %{_mandir}/fr/man8/fcron.8*
-%doc %{_mandir}/man1/fcrondyn.1*
-%doc %{_mandir}/man1/fcrontab.1*
-%doc %{_mandir}/man3/bitstring.3*
-%doc %{_mandir}/man5/fcron.conf.5*
-%doc %{_mandir}/man5/fcrontab.5*
-%doc %{_mandir}/man8/fcron.8*
-%dir %attr(0770, cron, cron) %{_localstatedir}/spool/cron
-%dir %{_sysconfdir}/cron.*
+	%defattr(-, root, root)
+	%doc MANIFEST VERSION doc/en doc/fr
+	%doc %{_datadir}/doc/%{name}-%{version}
+	%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.allow
+	%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.conf
+	%config(noreplace) %attr(0640, root, cron) %{_sysconfdir}/fcron.deny
+	%config(noreplace) %{_sysconfdir}/pam.d/fcron*
+	%attr(0750, root, root) %{_sysconfdir}/initng/daemon/fcron.i
+	%attr(6111, cron, cron) %{_bindir}/fcrondyn
+	%attr(4110, root, cron) %{_bindir}/fcronsighup
+	%attr(6111, cron, cron) %{_bindir}/fcrontab
+	%attr(6111, cron, cron) %{_bindir}/crontab
+	%attr(110, root, root) %{_sbindir}/fcron
+	%doc %{_mandir}/fr/man1/fcrondyn.1*
+	%doc %{_mandir}/fr/man1/fcrontab.1*
+	%doc %{_mandir}/fr/man3/bitstring.3*
+	%doc %{_mandir}/fr/man5/fcron.conf.5*
+	%doc %{_mandir}/fr/man5/fcrontab.5*
+	%doc %{_mandir}/fr/man8/fcron.8*
+	%doc %{_mandir}/man1/fcrondyn.1*
+	%doc %{_mandir}/man1/fcrontab.1*
+	%doc %{_mandir}/man3/bitstring.3*
+	%doc %{_mandir}/man5/fcron.conf.5*
+	%doc %{_mandir}/man5/fcrontab.5*
+	%doc %{_mandir}/man8/fcron.8*
+	%dir %attr(0770, cron, cron) %{_localstatedir}/spool/cron
+	%dir %{_sysconfdir}/cron.*
