@@ -1,6 +1,6 @@
 Name: freetype
-Version: 2.3.8
-Release: 3ev
+Version: 2.3.9
+Release: 4ev
 Summary: An open-source font renderer
 URL: http://www.freetype.org/
 Group: System Environment/Libraries
@@ -22,32 +22,33 @@ well.
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure
-%{__make} %{?_smp_mflags}
+	%configure
+	%{__make} %{?_smp_mflags}
 
 
 %install
-%{__make_install} DESTDIR='%{buildroot}'
+	%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-%{__ldconfig}
+	%{__ldconfig}
+
 
 %postun
-%{__ldconfig}
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc ChangeLog* README* docs/*
-%{_bindir}/freetype-config
-%dir %{_includedir}/freetype2
-%{_includedir}/freetype2/*
-%{_includedir}/ft2build.h
-%{_libdir}/libfreetype.*
-%{_libdir}/pkgconfig/freetype2.pc
-%{_datadir}/aclocal/freetype2.m4
+	%defattr(-, root, root)
+	%doc ChangeLog* README* docs/*
+	%{_bindir}/freetype-config
+	%dir %{_includedir}/freetype2
+	%{_includedir}/freetype2/*
+	%{_includedir}/ft2build.h
+	%{_libdir}/libfreetype.*
+	%{_libdir}/pkgconfig/freetype2.pc
+	%{_datadir}/aclocal/freetype2.m4
