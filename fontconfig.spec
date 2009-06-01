@@ -1,14 +1,15 @@
 Name: fontconfig
-Version: 2.4.2
+Version: 2.6.0
 Release: 2ev
 Summary: A font access configuration and customization library
 URL: http://www.freedesktop.org/wiki/Software/fontconfig
 Group: System Environment/Libraries
-License: Public Domain
+License: BSD
 Vendor: GNyU-Linux
 Source: http://fontconfig.org/release/fontconfig-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc, make >= 3.79.1, docbook-utils, expat
+BuildRequires: make >= 3.79.1, gcc, pkg-config >= 0.9.0
+BuildRequires: freetype, docbook-utils, expat, freetype
 
 %description
 Fontconfig can: 
@@ -31,58 +32,52 @@ Fontconfig does not:
    applications do not have such dependencies
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--with-cache-dir='%{_localstatedir}/cache/fontconfig' \
-	--with-confdir='%{_sysconfdir}/fonts' \
-	--with-docdir='%{_docdir}/%{name}-%{version}'
-%{__make} %{?_smp_mflags}
+	%configure \
+		--with-cache-dir='%{_localstatedir}/cache/fontconfig' \
+		--with-confdir='%{_sysconfdir}/fonts' \
+		--with-docdir='%{_docdir}/%{name}-%{version}'
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-pushd '%{buildroot}'
-%{__mkdir_p} -m 0755 \
-	'./%{_localstatedir}/cache/fontconfig' \
-	'./%{_datadir}/fonts'
-%{__rm} -f './%{_infodir}/dir'
-popd
+	%{__make} install DESTDIR='%{buildroot}'
+	%{__mkdir_p} '%{buildroot}/%{_localstatedir}/cache/fontconfig'
+	%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/fonts'
 
 
 %post
-%{_bindir}/fc-cache -r -f -v
-/sbin/ldconfig
+	%{_bindir}/fc-cache -r -f -v
+	%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README
-%dir %{_datadir}/fonts
-%dir %{_sysconfdir}/fonts
-%{_sysconfdir}/fonts/conf.avail/
-%{_sysconfdir}/fonts/conf.d/
-%{_sysconfdir}/fonts/fonts.conf
-%{_sysconfdir}/fonts/fonts.dtd
-%dir %{_localstatedir}/cache/fontconfig
-%{_bindir}/fc-cache
-%{_bindir}/fc-cat
-%{_bindir}/fc-list
-%{_bindir}/fc-match
-%{_includedir}/fontconfig/
-%{_libdir}/libfontconfig.*
-%{_libdir}/pkgconfig/fontconfig.pc
-%{_mandir}/man1/fc-*.1.gz
-%{_mandir}/man3/Fc*.3*
-%{_mandir}/man5/fonts-conf.5.gz
+	%defattr(-, root, root)
+	%doc AUTHORS COPYING ChangeLog NEWS README
+	%doc doc/fontconfig-devel
+	%dir %{_sysconfdir}/fonts
+	%dir %{_sysconfdir}/fonts/conf.avail
+	%config %{_sysconfdir}/fonts/conf.avail/*.conf
+	%dir %{_sysconfdir}/fonts/conf.d
+	%config %{_sysconfdir}/fonts/conf.d/*.conf
+	%doc %{_sysconfdir}/fonts/conf.d/README
+	%{_sysconfdir}/fonts/fonts.conf
+	%{_sysconfdir}/fonts/fonts.dtd
+	%dir %{_localstatedir}/cache/fontconfig
+	%{_bindir}/fc-cache
+	%{_bindir}/fc-cat
+	%{_bindir}/fc-list
+	%{_bindir}/fc-match
+	%{_includedir}/fontconfig/
+	%{_libdir}/libfontconfig.*
+	%{_libdir}/pkgconfig/fontconfig.pc
+	%doc %{_mandir}/man1/fc-*.1*
+	%doc %{_mandir}/man3/Fc*.3*
+	%doc %{_mandir}/man5/fonts-conf.5*
