@@ -1,16 +1,16 @@
 Name: cairo
-Version: 1.4.12
-Release: 1ev
+Version: 1.8.6
+Release: 2ev
 Summary: A vector graphics library with cross-device output support
 URL: http://www.cairographics.org/
 Group: System Environment/Libraries
 License: LGPL, MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://cairographics.org/releases/cairo-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: freetype >= 2.1.4, zlib, make, gcc-core, libpng, pkg-config
-BuildRequires: libX11, libXrender, fontconfig
-Provides: libtool(%{_libdir}/libcairo.la)
+BuildRequires: make, pkg-config >= 0.9.0, gcc
+BuildRequires: zlib, libpng, librsvg >= 2.15.0, poppler >= 0.9.2
+BuildRequires: libX11, libXrender >= 0.6, pixman >= 0.12.0
+BuildRequires: freetype >= 2.1.9, fontconfig, ghostscript
 
 %description
 Cairo is a vector graphics library with cross-device output support. It
@@ -28,36 +28,27 @@ compositing translucent images, and antialiased text rendering.
 
 
 %build
-if [ -d %{_prefix}/X11R6/lib/pkgconfig ]
-then
-	export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:%{_prefix}/X11R6/lib/pkgconfig"
-fi
-%configure 
-%__make # %{_smp_mflags} does not work.
+	%configure 
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[ "$RPM_BUILD_ROOT" != '/' ] && %__rm -rf "${RPM_BUILD_ROOT}"
-%__make_install DESTDIR="$RPM_BUILD_ROOT"
-%__rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+	%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+	%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != '/' ] && %__rm -rf "${RPM_BUILD_ROOT}"
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc AUTHORS BUGS COPYING* CODING_STYLE NEWS PORTING_GUIDE README RELEASING TODO
-%doc ROADMAP 
-%doc %{_datadir}/gtk-doc/html/%{name}/
-%{_libdir}/libcairo.*
-%{_libdir}/pkgconfig/cairo*.pc
-%{_includedir}/cairo/
+	%defattr(-, root, root)
+	%doc AUTHORS BIBLIOGRAPHY BUGS COPYING* ChangeLog* CODING_STYLE NEWS
+	%doc PORTING_GUIDE README RELEASING HACKING
+	%doc %{_datadir}/gtk-doc/html/%{name}/
+	%{_libdir}/libcairo.*
+	%{_libdir}/pkgconfig/cairo*.pc
+	%{_includedir}/cairo/
