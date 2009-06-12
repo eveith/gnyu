@@ -1,14 +1,13 @@
 Name: pam_ldap
 Version: 184
-Release: 1ev
+Release: 2ev
 Summary: A PAM module that allows authentication against a LDAP service
 URL: http://www.padl.com/OSS/pam_ldap.html
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: LGPL-2, GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.padl.com/pub/pam_ldap.tgz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libpam, openldap-libs, openssl
+BuildRequires: make, gcc, libpam, openldap-libs, cyrus-sasl
 
 %description
 The pam_ldap module provides the means for Solaris and Linux servers 
@@ -27,31 +26,22 @@ Key Benefits
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--libdir=/%{_lib}
-%{__make} %{_smp_mflags}
+	%configure \
+		--libdir='/%{_lib}'
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-
-[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
+	%{__fakeroot} %{__make} install DESTDIR='%{buildroot}'
 
 
 %files
-%defattr(-, root, root)
-%doc AUTHORS ChangeLog COPYING* NEWS README
-%attr(0644, root, root) %config(noreplace) /etc/ldap.conf
-/%{_lib}/security/pam_ldap.so*
-%{_mandir}/man5/pam_ldap.5*
+	%defattr(-, root, root)
+	%doc AUTHORS ChangeLog COPYING* NEWS README
+	%attr(0644, root, root) %config(noreplace) %{_sysconfdir}/ldap.conf
+	/%{_lib}/security/pam_ldap.so*
+	%doc %{_mandir}/man5/pam_ldap.5*
