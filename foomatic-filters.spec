@@ -7,7 +7,6 @@ Group: System Environment/Base
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://www.openprinting.org/download/foomatic/%{name}-%{version}.tar.gz
-BuildArch: noarch
 BuildRequires: make, gcc, cups, enscript
 Requires: cups
 
