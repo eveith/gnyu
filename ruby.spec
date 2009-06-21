@@ -1,12 +1,13 @@
 Name: ruby
 Version: 1.8.7
-Release: 4ev
+%define patchlevel 173
+Release: 5ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p160.tar.bz2
+Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.gz
 BuildRequires: make, gcc, groff, openssl
 BuildRequires: libtermcap, ncurses, zlib, db, libX11, readline, zlib
 
@@ -29,8 +30,18 @@ Features of Ruby:
     Windows, Mac, BeOS etc.)
 
 
+%package -n libruby1.8
+Summary: Ruby language library
+Group: System Environment/Libraries
+
+%description -n libruby1.8
+This is the Ruby language's core library. It contains the standard language
+features which are required to run Ruby script. libruby is often linked to by
+programs that want to embed Ruby or parse the language.
+
+
 %prep
-	%setup -q -n '%{name}-%{version}-p160'
+	%setup -q -n '%{name}-%{version}-p%{patchlevel}'
 
 
 %build
@@ -64,7 +75,6 @@ Features of Ruby:
 	#%{_bindir}/rake
 	%{_bindir}/ri
 	%{_bindir}/irb
-	%{_libdir}/*ruby*.*
 	%dir %{_libdir}/ruby
 	%{_libdir}/ruby/?.?/
 	#%dir %{_includedir}/ruby-?.?
@@ -77,3 +87,7 @@ Features of Ruby:
 	#%doc %{_mandir}/man1/irb.1*
 	#%doc %{_mandir}/man1/rake.1*
 	#%doc %{_mandir}/man1/ri.1*
+
+
+%files -n libruby1.8
+	%{_libdir}/*ruby*.*
