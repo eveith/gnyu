@@ -1,6 +1,6 @@
 Name: kdeutils4
 Version: 4.2.4
-Release: 1ev
+Release: 2ev
 Summary: A compilation of various utilities for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktop
@@ -11,7 +11,7 @@ BuildRequires: cmake, make, gcc-g++, qt4 >= 4.4.2, libstdc++, automoc4 >= 0.8.86
 BuildRequires: kdelibs4, kdebase4
 BuildRequires: libX11, libICE
 BuildRequires: qimageblitz, gmp, zlib, libzip, libarchive
-BuildRequires: python, PyQt4, PyKDE, PyCups
+BuildRequires: python, PyQt4, PyKDE, pycups
 
 %description
 The package contains various utilties for the KDE 4 desktop:
