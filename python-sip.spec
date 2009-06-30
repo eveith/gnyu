@@ -46,6 +46,7 @@ C++.
 
 %install
 	%{__make} install DESTDIR='%{buildroot}'
+	%{__mkdir_p} '%{buildroot}/%{_datadir}/sip'
 
 
 %files
@@ -56,3 +57,4 @@ C++.
 	%{python_sitelib}/sip.so
 	%{python_sitelib}/sipconfig.py
 	%{python_sitelib}/sipdistutils.py
+	%dir %{_datadir}/sip
