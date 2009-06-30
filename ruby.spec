@@ -1,13 +1,13 @@
 Name: ruby
-Version: 1.8.7
-%define patchlevel 173
-Release: 5ev
+Version: 1.9.1
+%define patchlevel 129
+Release: 6ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
 Vendor: GNyU-Linux
-Source: ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.gz
+Source: ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{version}-p%{patchlevel}.tar.gz
 BuildRequires: make, gcc, groff, openssl
 BuildRequires: libtermcap, ncurses, zlib, db, libX11, readline, zlib
 
@@ -30,11 +30,13 @@ Features of Ruby:
     Windows, Mac, BeOS etc.)
 
 
-%package -n libruby1.8
+%package -n libruby1.9
 Summary: Ruby language library
 Group: System Environment/Libraries
+Provides: libruby = %{version}
+Obsoletes: libruby < %{version}
 
-%description -n libruby1.8
+%description -n libruby1.9
 This is the Ruby language's core library. It contains the standard language
 features which are required to run Ruby script. libruby is often linked to by
 programs that want to embed Ruby or parse the language.
@@ -71,23 +73,24 @@ programs that want to embed Ruby or parse the language.
 	%{_bindir}/testrb
 	%{_bindir}/rdoc
 	%{_bindir}/erb
-	#%{_bindir}/gem
-	#%{_bindir}/rake
+	%{_bindir}/gem
+	%{_bindir}/rake
 	%{_bindir}/ri
 	%{_bindir}/irb
 	%dir %{_libdir}/ruby
-	%{_libdir}/ruby/?.?/
-	#%dir %{_includedir}/ruby-?.?
-	#%{_includedir}/ruby-?.?/*
+	%dir %{_libdir}/ruby/%{version}
+	%{_libdir}/ruby/%{version}/*
+	%dir %{_includedir}/ruby-%{version}
+	%{_includedir}/ruby-%{version}/*
 	%dir %{_datadir}/ri
-	%dir %{_datadir}/ri/?.?/
-	%{_datadir}/ri/?.?/*
+	%dir %{_datadir}/ri/%{version}/
+	%doc %{_datadir}/ri/%{version}/*
 	%doc %{_mandir}/man1/ruby.1*
-	#%doc %{_mandir}/man1/erb.1*
-	#%doc %{_mandir}/man1/irb.1*
-	#%doc %{_mandir}/man1/rake.1*
-	#%doc %{_mandir}/man1/ri.1*
+	%doc %{_mandir}/man1/erb.1*
+	%doc %{_mandir}/man1/irb.1*
+	%doc %{_mandir}/man1/rake.1*
+	%doc %{_mandir}/man1/ri.1*
 
 
-%files -n libruby1.8
+%files -n libruby1.9
 	%{_libdir}/*ruby*.*
