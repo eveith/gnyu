@@ -1,6 +1,6 @@
 Name: vim
 Version: 7.2
-Release: 3ev
+Release: 4ev
 Summary: The VIM (VIsual editor iMproved)
 URL: http://www.vim.org/
 Group: Applications/Editors
@@ -176,8 +176,8 @@ Patch164: vim-7.2.165.diff
 Patch165: vim-7.2.166.diff
 BuildRequires: make, pkg-config, gcc, gettext
 BuildRequires: libX11, libICE, libXdmcp, libXpm
-BuildRequires: ncurses, gtk2 #,gpm
-BuildRequires: perl, python, ruby, libattr, libacl
+BuildRequires: ncurses, gtk2
+BuildRequires: perl, python, libattr, libacl
 Requires: %{name}-common = %{version}-%{release}
 Obsoletes: vim-minimal, vim-enhanced
 
@@ -226,129 +226,129 @@ vim-common package.
 %prep
 	%setup -q -c -a1
 	pushd vim??
-	%patch0 -p0                                                                                   
-	%patch1 -p0                                                                                   
-	%patch2 -p0                                                                                   
-	%patch3 -p0                                                                                   
-	%patch4 -p0                                                                                   
-	%patch5 -p0                                                                                   
-	%patch7 -p0                                                                                   
-	%patch8 -p0                                                                                   
-	%patch9 -p0                                                                                   
-	%patch10 -p0                                                                                  
-	%patch11 -p0                                                                                  
-	%patch12 -p0                                                                                  
-	%patch13 -p0                                                                                  
-	%patch14 -p0                                                                                  
-	%patch15 -p0                                                                                  
-	%patch16 -p0                                                                                  
-	%patch17 -p0                                                                                  
-	%patch18 -p0                                                                                  
-	%patch19 -p0                                                                                  
-	%patch20 -p0                                                                                  
-	%patch21 -p0                                                                                  
-	%patch22 -p0                                                                                  
-	%patch23 -p0                                                                                  
-	%patch24 -p0                                                                                  
-	%patch25 -p0                                                                                  
-	%patch26 -p0                                                                                  
-	%patch27 -p0                                                                                  
-	%patch28 -p0                                                                                  
-	%patch29 -p0                                                                                  
-	%patch30 -p0                                                                                  
-	%patch31 -p0                                                                                  
-	%patch32 -p0                                                                                  
-	%patch33 -p0                                                                                  
-	%patch34 -p0                                                                                  
-	%patch36 -p0                                                                                  
-	%patch37 -p0                                                                                  
-	%patch38 -p0                                                                                  
-	%patch39 -p0                                                                                  
-#	%patch40 -p0                                                                                  
-	%patch41 -p0                                                                                  
-	%patch42 -p0                                                                                  
-	%patch43 -p0                                                                                  
-	%patch44 -p0                                                                                  
-	%patch45 -p0                                                                                  
-	%patch46 -p0                                                                                  
-	%patch47 -p0                                                                                  
-	%patch49 -p0                                                                                  
-	%patch50 -p0                                                                                  
-	%patch51 -p0                                                                                  
-	%patch52 -p0                                                                                  
-	%patch53 -p0                                                                                  
-	%patch54 -p0                                                                                  
-	%patch55 -p0                                                                                  
-	%patch56 -p0                                                                                  
-	%patch57 -p0                                                                                  
-	%patch58 -p0                                                                                  
-	%patch59 -p0                                                                                  
-	%patch60 -p0                                                                                  
-	%patch61 -p0                                                                                  
-	%patch62 -p0                                                                                  
-	%patch63 -p0                                                                                  
-	%patch64 -p0                                                                                  
-	%patch65 -p0                                                                                  
-	%patch66 -p0                                                                                  
-	%patch67 -p0                                                                                  
-	%patch68 -p0                                                                                  
-	%patch69 -p0                                                                                  
-#	%patch71 -p0                                                                                  
-	%patch72 -p0                                                                                  
-	%patch74 -p0                                                                                  
-	%patch75 -p0                                                                                  
-	%patch76 -p0                                                                                  
-	%patch77 -p0                                                                                  
-	%patch78 -p0                                                                                  
-	%patch79 -p0                                                                                  
-	%patch80 -p0                                                                                  
-	%patch81 -p0                                                                                  
-	%patch82 -p0                                                                                  
-	%patch83 -p0                                                                                  
-	%patch84 -p0                                                                                  
-	%patch85 -p0                                                                                  
-	%patch86 -p0                                                                                  
-	%patch89 -p0                                                                                  
-	%patch90 -p0                                                                                  
-	%patch91 -p0                                                                                  
-	%patch93 -p0                                                                                  
-	%patch94 -p0                                                                                  
-	%patch95 -p0                                                                                  
-	%patch96 -p0                                                                                  
-	%patch97 -p0                                                                                  
-	%patch98 -p0                                                                                  
-	%patch99 -p0                                                                                  
-	%patch101 -p0                                                                                 
-	%patch102 -p0                                                                                 
-	%patch103 -p0                                                                                 
-	%patch104 -p0                                                                                 
-	%patch105 -p0                                                                                 
-	%patch106 -p0                                                                                 
-	%patch107 -p0                                                                                 
-	%patch108 -p0                                                                                 
-	%patch109 -p0                                                                                 
-	%patch110 -p0                                                                                 
-	%patch111 -p0                                                                                 
-	%patch112 -p0                                                                                 
-	%patch113 -p0                                                                                 
-	%patch114 -p0                                                                                 
-	%patch115 -p0                                                                                 
-	%patch116 -p0                                                                                 
-	%patch117 -p0                                                                                 
-	%patch118 -p0                                                                                 
-	%patch119 -p0                                                                                 
-	%patch120 -p0                                                                                 
-	%patch121 -p0                                                                                 
-	%patch122 -p0                                                                                 
-	%patch123 -p0                                                                                 
-	%patch124 -p0                                                                                 
-	%patch125 -p0                                                                                 
-	%patch126 -p0                                                                                 
-	%patch127 -p0                                                                                 
-	%patch128 -p0                                                                                 
-	%patch129 -p0                                                                                 
-	%patch130 -p0                                                                                 
-	%patch131 -p0                                                                                 
+	%patch0 -p0
+	%patch1 -p0
+	%patch2 -p0
+	%patch3 -p0
+	%patch4 -p0
+	%patch5 -p0
+	%patch7 -p0
+	%patch8 -p0
+	%patch9 -p0
+	%patch10 -p0
+	%patch11 -p0
+	%patch12 -p0
+	%patch13 -p0
+	%patch14 -p0
+	%patch15 -p0
+	%patch16 -p0
+	%patch17 -p0
+	%patch18 -p0
+	%patch19 -p0
+	%patch20 -p0
+	%patch21 -p0
+	%patch22 -p0
+	%patch23 -p0
+	%patch24 -p0
+	%patch25 -p0
+	%patch26 -p0
+	%patch27 -p0
+	%patch28 -p0
+	%patch29 -p0
+	%patch30 -p0
+	%patch31 -p0
+	%patch32 -p0
+	%patch33 -p0
+	%patch34 -p0
+	%patch36 -p0
+	%patch37 -p0
+	%patch38 -p0
+	%patch39 -p0
+#	%patch40 -p0
+	%patch41 -p0
+	%patch42 -p0
+	%patch43 -p0
+	%patch44 -p0
+	%patch45 -p0
+	%patch46 -p0
+	%patch47 -p0
+	%patch49 -p0
+	%patch50 -p0
+	%patch51 -p0
+	%patch52 -p0
+	%patch53 -p0
+	%patch54 -p0
+	%patch55 -p0
+	%patch56 -p0
+	%patch57 -p0
+	%patch58 -p0
+	%patch59 -p0
+	%patch60 -p0
+	%patch61 -p0
+	%patch62 -p0
+	%patch63 -p0
+	%patch64 -p0
+	%patch65 -p0
+	%patch66 -p0
+	%patch67 -p0
+	%patch68 -p0
+	%patch69 -p0
+#	%patch71 -p0
+	%patch72 -p0
+	%patch74 -p0
+	%patch75 -p0
+	%patch76 -p0
+	%patch77 -p0
+	%patch78 -p0
+	%patch79 -p0
+	%patch80 -p0
+	%patch81 -p0
+	%patch82 -p0
+	%patch83 -p0
+	%patch84 -p0
+	%patch85 -p0
+	%patch86 -p0
+	%patch89 -p0
+	%patch90 -p0
+	%patch91 -p0
+	%patch93 -p0
+	%patch94 -p0
+	%patch95 -p0
+	%patch96 -p0
+	%patch97 -p0
+	%patch98 -p0
+	%patch99 -p0
+	%patch101 -p0
+	%patch102 -p0
+	%patch103 -p0
+	%patch104 -p0
+	%patch105 -p0
+	%patch106 -p0
+	%patch107 -p0
+	%patch108 -p0
+	%patch109 -p0
+	%patch110 -p0
+	%patch111 -p0
+	%patch112 -p0
+	%patch113 -p0
+	%patch114 -p0
+	%patch115 -p0
+	%patch116 -p0
+	%patch117 -p0
+	%patch118 -p0
+	%patch119 -p0
+	%patch120 -p0
+	%patch121 -p0
+	%patch122 -p0
+	%patch123 -p0
+	%patch124 -p0
+	%patch125 -p0
+	%patch126 -p0
+	%patch127 -p0
+	%patch128 -p0
+	%patch129 -p0
+	%patch130 -p0
+	%patch131 -p0
 	%patch132 -p0
 	%patch133 -p0
 	%patch134 -p0
@@ -401,9 +401,9 @@ vim-common package.
 		--enable-gui=gtk2 \
 		--disable-gpm \
 		--with-compiledby='%{packager}' \
-		--enable-rubyinterp \
 		--enable-perlinterp \
 		--enable-pythoninterp \
+		--disable-rubyinterp \
 		--disable-tclinterp
 	%{__make} %{?_smp_mflags}
 	cd src && %{__mv} -v vim gvim && cd ..
@@ -420,7 +420,7 @@ vim-common package.
 		--disable-gpm \
 		--enable-multibyte \
 		--with-compiledby='%{packager}' \
-		--enable-rubyinterp \
+		--disable-rubyinterp \
 		--enable-perlinterp \
 		--enable-pythoninterp \
 		--disable-tclinterp
