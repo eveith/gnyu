@@ -1,14 +1,13 @@
 Name: tar
-Version: 1.16.1
-Release: 1ev
+Version: 1.22
+Release: 2ev
 Summary: A utility for storing, backing up, and transporting files
 URL: http://www.gnu.org/software/tar/
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/tar/tar-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc-core, make
+BuildRequires: make, gcc, gettext
 
 %description
 GNU `tar' saves many files together into a single tape or disk archive, and
@@ -20,45 +19,41 @@ remote tape server (the `mt' tape drive control program is in GNU `cpio').
 
 
 %prep
-%setup -q
+	%setup -q
 
 
 %build
-%configure \
-	--enable-backup-scripts
-%{__make} %{_smp_mflags}
+	%configure \
+		--enable-backup-scripts
+	%{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-%{__rm} -f %{buildroot}/%{_infodir}/dir
-%find_lang tar
+	%{__make} install DESTDIR='%{buildroot}'
+	%{__rm} -f '%{buildroot}/%{_infodir}/dir'
+	%find_lang tar
 
-# Move tar binary.
-%{__mv} %{buildroot}/%{_bindir} %{buildroot}/bin 
+	# Move tar binary.
+	%{__mv} '%{buildroot}/%{_bindir}' '%{buildroot}/bin'
 
 
 %post
-/sbin/ldconfig
-update-info-dir
-exit 0
+	update-info-dir
+	exit 0
+
 
 %postun
-/sbin/ldconfig
-update-info-dir
-exit 0
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__rm} -f tar.lang || :
+	update-info-dir
+	exit 0
 
 
 %files -f tar.lang
-%defattr(-, root, root)
-%doc ABOUT-NLS AUTHORS COPYING ChangeLog* NEWS README PORTS THANKS TODO
-/bin/tar
-%{_sbindir}/*
-%{_infodir}/tar.info*
-%{_libexecdir}/*
+	%defattr(-, root, root)
+	%doc ABOUT-NLS AUTHORS COPYING ChangeLog* NEWS README PORTS THANKS TODO
+	/bin/tar
+	%{_sbindir}/backup
+	%{_sbindir}/restore
+	%doc %{_infodir}/tar.info*
+	%{_libexecdir}/backup.sh
+	%{_libexecdir}/dump-remind
+	%{_libexecdir}/rmt
