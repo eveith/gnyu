@@ -1,14 +1,13 @@
 Name: cpio
-Version: 2.7
-Release: 1ev
+Version: 2.9
+Release: 2ev
 Summary: A tool to copy files into or out of a cpio or tar archive
 URL: http://www.gnu.org/software/cpio/
 Group: System Environment/Base
 License: GPL
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, tar, sed
+BuildRequires: make, gcc, tar
 Requires: tar
 
 %description
@@ -29,35 +28,29 @@ and can read archives created on machines with a different byte-order.
 %build
 %configure \
 	--enable-mt \
-	--with-rmt=%{_libexecdir}/rmt
-make
+	--with-rmt='%{_libexecdir}/rmt'
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 %find_lang cpio
-
-mv "${RPM_BUILD_ROOT}/%{_bindir}" "${RPM_BUILD_ROOT}/bin"
-
-rm -rf "${RPM_BUILD_ROOT}/%{_libexecdir}"
+%{__mv} "${RPM_BUILD_ROOT}/%{_bindir}" "${RPM_BUILD_ROOT}/bin"
+%{__rm} -rf "${RPM_BUILD_ROOT}/%{_libexecdir}"
 
 [ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
     && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
 
 
 %post
-/sbin/ldconfig
-/sbin/install-info --info-dir=%{_infodir} %{_infodir}/cpio.info*
+%{__ldconfig}
+update-info-dir
+exit 0
+
 
 %postun
-/sbin/ldconfig
-/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/cpio.info*
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
+update-info-dir
 
 
 %files -f cpio.lang
@@ -65,5 +58,5 @@ rm -rf "${RPM_BUILD_ROOT}/%{_libexecdir}"
 %doc ABOUT-NLS AUTHORS COPYING ChangeLog NEWS README THANKS TODO
 /bin/cpio
 /bin/mt
-%{_mandir}/man1/*
-%{_infodir}/cpio*.info*
+%doc %{_mandir}/man1/*.1*
+%doc %{_infodir}/cpio*.info*
