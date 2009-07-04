@@ -1,6 +1,6 @@
 Name: akonadi
-Version: 1.1.1
-Release: 1ev
+Version: 1.1.2
+Release: 2ev
 Summary: KDE 4 PIM storage service
 URL: http://pim.kde.org/akonadi/
 Group: User Interface/Desktops
@@ -37,6 +37,7 @@ provide unique desktop wide object identification and retrieval.
 %{__ldconfig}
 update-mime-database > /dev/null 2>&1
 exit 0
+
 
 %postun
 %{__ldconfig}
