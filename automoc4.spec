@@ -1,6 +1,6 @@
 Name: automoc4
-Version: 0.9.87
-Release: 2ev
+Version: 0.9.88
+Release: 3ev
 Summary: CMake automatic MOC generation
 URL: http://www.kde.org/
 Group: Development/Tools
