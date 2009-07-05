@@ -1,6 +1,6 @@
 Name: neon
-Version: 0.28.4
-Release: 2ev
+Version: 0.28.5
+Release: 3ev
 Summary: A HTTP and WebDAV client library
 URL: http://www.webdav.org/neon/
 Group: System Environment/Libraries
