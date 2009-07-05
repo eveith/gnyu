@@ -7,7 +7,7 @@ Group: System Environment/Tools
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://labix.org/download/smart/smart-%{version}.tar.bz2
-BuildRequires: python, gcc
+BuildRequires: python, gcc, rpm5-python
 
 %description
 The Smart Package Manager project has the ambitious objective of creating 
