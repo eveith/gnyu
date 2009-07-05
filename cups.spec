@@ -1,6 +1,6 @@
 Name: cups
-Version: 1.3.10
-Release: 5ev
+Version: 1.3.11
+Release: 7ev
 Summary: Common Unix Printing System
 URL: http://www.cups.org/
 Group: System Environment/Daemons
@@ -30,8 +30,8 @@ Patch32: cups-pid.patch
 Patch41: cups-relro.patch
 BuildRequires: make >= 3.80, gcc, gcc-g++, pkg-config, libstdc++
 BuildRequires: libjpeg, libpng, libtiff, libpam, heimdal-libs, openldap-libs
-BuildRequires: pcre, perl, dbus >= 0.60, openslp, gnutls, zlib
-Requires: perl, %{name}-libs = %{version}
+BuildRequires: pcre, perl, dbus >= 0.60, openslp, gnutls, zlib, ghostscript
+Requires: perl, %{name}-libs = %{version}, %{_bindir}/gs
 Provides: %{_bindir}/lpq, /usr/bin/lpr, /usr/bin/lp, /usr/bin/cancel 
 Provides: %{_bindir}/lprm, /usr/bin/lpstat
 Provides: lpd, lpr, LPRng = 3.8.15-3
@@ -69,6 +69,7 @@ some other packages.
 %configure \
 	--enable-raw-printing \
 	--enable-pdftops \
+	--with-pdftops=gs \
 	--with-cups-user=lp \
 	--with-cups-group=lp \
 	--with-logdir='%{_localstatedir}/log/cups' \
@@ -87,8 +88,8 @@ some other packages.
 %{__make} install BUILDROOT='%{buildroot}'
 %{install_ifile '%{SOURCE1}' daemon/cupsd.i}
 
-%{__install} -c -m 0644 '%{SOURCE13}' \
-	'%{buildroot}/%{_sysconfdir}/cups/pdftops.conf'
+#%{__install} -c -m 0644 '%{SOURCE13}' \
+#	'%{buildroot}/%{_sysconfdir}/cups/pdftops.conf'
 
 # Ship a generic postscript PPD file (#73061)
 %{__install} -c -m 0644 '%{SOURCE8}' '%{buildroot}/%{_datadir}/cups/model'
@@ -124,6 +125,7 @@ touch '%{buildroot}/%{_sysconfdir}/cups/printers.conf' \
 } > /dev/null 2>&1
 exit 0
 
+
 %preun
 if [[ "${1}" -eq 0 ]]
 then
@@ -132,8 +134,10 @@ then
 fi > /dev/null 2>&1
 exit 0
 
+
 %post libs
 %{__ldconfig}
+
 
 %postun libs
 %{__ldconfig}
@@ -152,7 +156,7 @@ exit 0
 %attr(0640, root, lp) %{_sysconfdir}/cups/cupsd.conf.default
 %config(noreplace) %attr(0644, root, lp) %{_sysconfdir}/cups/client.conf
 %config(noreplace) %attr(0600, root, lp) %{_sysconfdir}/cups/printers.conf
-%config(noreplace) %attr(0644, root, lp) %{_sysconfdir}/cups/pdftops.conf
+#%config(noreplace) %attr(0644, root, lp) %{_sysconfdir}/cups/pdftops.conf
 %config(noreplace) %attr(0644, root, lp) %{_sysconfdir}/cups/snmp.conf
 %config(noreplace) %{_sysconfdir}/cups/mime.types
 %config(noreplace) %{_sysconfdir}/cups/mime.convs
