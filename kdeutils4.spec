@@ -8,10 +8,10 @@ License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/kdeutils-%{version}.tar.bz2
 BuildRequires: cmake, make, gcc-g++, qt4 >= 4.4.2, libstdc++, automoc4 >= 0.8.86
-BuildRequires: kdelibs4, kdebase4
+BuildRequires: kdelibs4, kdebase4, kdebindings4 = %{version}
 BuildRequires: libX11, libICE
 BuildRequires: qimageblitz, gmp, zlib, libzip, libarchive
-BuildRequires: python, PyQt4, PyKDE, pycups
+BuildRequires: python, python-PyQt4, python-PyKDE4, pycups
 
 %description
 The package contains various utilties for the KDE 4 desktop:
