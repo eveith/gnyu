@@ -1,6 +1,6 @@
 Name: cups
 Version: 1.3.11
-Release: 7ev
+Release: 8ev
 Summary: Common Unix Printing System
 URL: http://www.cups.org/
 Group: System Environment/Daemons
@@ -69,7 +69,7 @@ some other packages.
 %configure \
 	--enable-raw-printing \
 	--enable-pdftops \
-	--with-pdftops=gs \
+	--with-pdftops=pdftops \
 	--with-cups-user=lp \
 	--with-cups-group=lp \
 	--with-logdir='%{_localstatedir}/log/cups' \
@@ -82,10 +82,10 @@ some other packages.
 
 
 %install
-%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
+%{__fakeroot} %{__make} install BUILDROOT='%{buildroot}'
 
 # Install init file
-%{__make} install BUILDROOT='%{buildroot}'
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
 %{install_ifile '%{SOURCE1}' daemon/cupsd.i}
 
 #%{__install} -c -m 0644 '%{SOURCE13}' \
