@@ -1,6 +1,6 @@
 Name: docbook-xml4.5
 Version: 4.5
-Release: 1ev
+Release: 2ev
 Summary: Document Type Definitions for Docbook (XML format)
 URL: http://www.docbook.org/
 Group: Applications/Text
@@ -9,6 +9,7 @@ Vendor: GNyU-Linux
 Source: ftp://ftp.linux.ee/pub/gentoo/distfiles/distfiles/docbook-xml-%{version}.zip
 BuildArch: noarch
 Requires: libxml2
+Provides: docbook-xml = %{version}
 
 %description
 The DocBook XML DTD-4.5 package contains document type definitions for
