@@ -1,6 +1,6 @@
 Name: sgml-common
 Version: 0.6.3
-Release: 2ev
+Release: 3ev
 Summary: Base ISO character entities and utilities for SGML and XML
 URL: ftp://sources.redhat.com/pub/docbook-tools/
 Group: Applications/Text 
@@ -37,17 +37,23 @@ very basic utilities to allow manipulation of SGML
 
 
 %post
-install-catalog --add %{_sysconfdir}/sgml/sgml-ent.cat \
-    %{_datadir}/sgml/sgml-iso-entities-8879.1986/catalog
-install-catalog --add %{_sysconfdir}/sgml/sgml-docbook.cat \
-    %{_sysconfdir}/sgml/sgml-ent.cat
+if [[ "${1}" -eq 1 ]]
+then
+	install-catalog --add '%{_sysconfdir}/sgml/sgml-ent.cat' \
+		'%{_datadir}/sgml/sgml-iso-entities-8879.1986/catalog'
+	install-catalog --add '%{_sysconfdir}/sgml/sgml-docbook.cat' \
+		'%{_sysconfdir}/sgml/sgml-ent.cat'
+fi
 
 
 %preun
-install-catalog --remove %{_sysconfdir}/sgml/sgml-ent.cat \
-    %{_datadir}/sgml/sgml-iso-entities-8879.1986/catalog
-install-catalog --remove %{_sysconfdir}/sgml/sgml-docbook.cat \
-    %{_sysconfdir}/sgml/sgml-ent.cat
+if [[ "${1}" -eq 0 ]]
+then
+	install-catalog --remove '%{_sysconfdir}/sgml/sgml-ent.cat' \
+		'%{_datadir}/sgml/sgml-iso-entities-8879.1986/catalog'
+	install-catalog --remove '%{_sysconfdir}/sgml/sgml-docbook.cat' \
+		'%{_sysconfdir}/sgml/sgml-ent.cat'
+fi
 
 
 %files
