@@ -9,6 +9,7 @@ Vendor: GNyU-Linux
 Source: https://fedorahosted.org/releases/x/m/xmlto/xmlto-%{version}.tar.bz2
 BuildRequires: make, flex, libxml2, libxslt, gcc
 BuildRequires: docbook-xml >= 4.2, docbook-xsl
+Requires: docbook-xml >= 4.2, docbook-xsl
 
 %description
 xmlto is a front-end to an XSL toolchain. It chooses an appropriate stylesheet
