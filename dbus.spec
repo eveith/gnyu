@@ -1,17 +1,17 @@
 Name: dbus
-Version: 1.2.3
-Release: 7ev
+Version: 1.2.16
+Release: 8ev
 Summary: An IPC framework: D-BUS message bus
 URL: http://www.freedesktop.org/software/dbus/
 Source0: http://dbus.freedesktop.org/releases/dbus/%{name}-%{version}.tar.gz
-Source1: %{name}-dbus.i
-Patch0: %{name}-1.2.3-panic-from-dbus_signature_validate.patch
+Source1: %{name}-dbus.ii
 License: AFL-2.1/GPL-2
 Group: System Environment/Libraries
 Vendor: GNyU-Linux
-BuildRequires: make, gcc, expat, libxml2, libX11, libSM, libXau, libICE
-BuildRequires: libXdmcp, pkg-config
-%define _dbus_uid 81
+BuildRequires: make, pkg-config, gcc, expat
+BuildRequires: libX11, libICE, libSM, libXdmcp, libXau
+BuildRequires: gettext, doxygen, xmlto
+%define dbus_uid 81
 
 %description
 D-BUS is a system for sending messages between applications. It is
@@ -21,11 +21,10 @@ per-user-login-session messaging facility.
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %build
-CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
+#CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
 %configure \
 	--enable-dnotify \
 	--enable-inotify \
@@ -42,36 +41,32 @@ CPPFLAGS='-D_BSD_SOURCE -include %{_includedir}/syslog.h'; export CPPFLAGS
 
 
 %install
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/dbus-1/session.d'
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/run'
 
 %{__mkdir_p} '%{buildroot}/%{_datadir}/dbus-1/interfaces'
 
-touch '%{buildroot}/%{_localstatedir}/run/system_bus_socket'
-touch '%{buildroot}/%{_localstatedir}/run/dbus.pid'
+%{__touch} '%{buildroot}/%{_localstatedir}/run/system_bus_socket'
+%{__touch} '%{buildroot}/%{_localstatedir}/run/dbus.pid'
 
 # Remove rc.d script and install InitNG service file.
 %{__rm} -rf '%{buildroot}/%{_sysconfdir}/rc.d'
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
-%{__cat} < '%{SOURCE1}' \
-	| %{__sed} \
-		-e 's,@dbus-daemon@,%{_bindir}/dbus-daemon,g' \
-		-e 's,@localstatedir@,%{_localstatedir},g' \
-	> '%{buildroot}/%{_sysconfdir}/initng/daemon/dbus.i'
+%{install_ifile '%{SOURCE1}' 'daemon/dbus.i'}
 
 # Install a service directory.
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/lib/dbus'
-touch %{buildroot}/%{_localstatedir}/lib/dbus/machine-id
+%{__touch} %{buildroot}/%{_localstatedir}/lib/dbus/machine-id
 
 
 %pre
 if [[ "${1}" -eq 1 ]]
 then
-	userdel dbus
+	userdel dbus ||:
 	useradd \
 		-c 'System Message Bus' \
-		-u %{_dbus_uid} \
+		-u %{dbus_uid} \
 		-g nogroup \
 		-s /sbin/nologin \
 		-d '%{_localstatedir}/lib/dbus' \
@@ -79,6 +74,7 @@ then
 	ng-update add daemon/dbus default
 fi > /dev/null 2>&1
 exit 0
+
 
 %post
 %{__ldconfig}
@@ -89,6 +85,7 @@ then
 fi
 exit 0
 
+
 %preun
 if [[ "${1}" -eq 0 ]]
 then
@@ -96,6 +93,7 @@ then
 	ng-update delete daemon/dbus default
 fi > /dev/null 2>&1
 exit 0
+
 
 %postun
 %{__ldconfig}
