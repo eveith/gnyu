@@ -1,14 +1,15 @@
 Name: hal-info
-Version: 20081219
-Release: 2ev
+Version: 20090716
+Release: 3ev
 Summary: Device information for HAL
 URL: http://www.freedesktop.org/wiki/Software/hal
 Group: System Environment/Daemons
 License: AFL-2.1/GPL-2
 Vendor: GNyU-Linux
 Source: http://hal.freedesktop.org/releases/hal-info-%{version}.tar.gz
-BuildRequires: make, hal
+BuildRequires: make
 BuildArch: noarch
+Conflicts: hal < 0.5.11
 
 %description
 FDI files a basically XML-based device information files. They are used to
