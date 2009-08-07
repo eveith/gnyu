@@ -1,16 +1,14 @@
 Name: pkg-config
-Version: 0.21
-Release: 1ev
+Version: 0.23
+Release: 2ev
 Summary: A tool that transparently manages compile/link flags
 URL: http://pkgconfig.freedesktop.org/wiki/
 Group: Development/Tools
 License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+Vendor: GNyU-Linux
 Source: http://pkgconfig.freedesktop.org/releases/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1
-BuildRequires: gcc-core
+BuildRequires: make >= 3.79.1, gcc
+Provides: pkgconfig
 
 %description
 pkg-config is a helper tool used when compiling applications and libraries. It
@@ -29,22 +27,18 @@ be installed on every system. :-)
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-%makeinstall
-mkdir -p ${RPM_BUILD_ROOT}/%{_libdir}/pkgconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__make} install DESTDIR='%{buildroot}'
+%{__mkdir_p} "${RPM_BUILD_ROOT}/%{_libdir}/pkgconfig"
 
 
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog* INSTALL README* NEWS
 %{_bindir}/pkg-config
-%{_mandir}/man1/pkg-config.1.gz
+%doc %{_mandir}/man1/pkg-config.1*
 %{_datadir}/aclocal/pkg.m4
 %dir %{_libdir}/pkgconfig
