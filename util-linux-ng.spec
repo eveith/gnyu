@@ -1,29 +1,27 @@
 Name: util-linux-ng
-Version: 2.13.0.1 
-Release: 2ev
+Version: 2.16 
+Release: 3ev
 Summary: A random colleciton of important linux utilities
 URL: http://userweb.kernel.org/~kzak/util-linux-ng/
 Group: System Environment/Base
-License: GPL/BSD
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: ftp.kernel.org:/pub/linux/utils/%{name}/v2.13/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make, gcc-core, sed, e2fsprogs, gettext, ncurses, zlib, perl
+License: GPL-2
+Vendor: GNyU-Linux
+Source0: ftp://ftp.kernel.org:/pub/linux/utils/%{name}/v2.16/%{name}-%{version}.tar.gz
+BuildRequires: make, gcc, pkg-config >= 0.9.0, gettext
+BuildRequires: libuuid1, libblkid1, zlib, ncurses
 Provides: util-linux = %{version}
 
 %description
-A collection of very important linux utilities, such as:
-adjtimex agetty arch blockdev cal cfdisk chkdupexe clear clock col
-colcrt colrm column ctrlaltdel cytune ddate dmesg dnsdomainname
-domainname elvtune fdformat fdisk fsck.cramfs fsck.minix getopt
-getoptprog hexdump hostname hwclock ipcrm ipcs isosize jaztool line
-logger look losetup mcookie mesg mkfs mkfs.bfs mkfs.cramfs
-mkfs.minix mkswap more mount namei nisdomainname pg pivot_root ramsize raw
-rdev readprofile rename renice reset rev rootflags script setfdprm
-setserial setsid setterm sfdisk sln strings swapoff swapon tput
-tunelp ul umount update vidmode wall whereis write ypdomainname ziptool
-
+A collection of very important linux utilities, such as: arch, dmesg, more,
+mount, umount, agetty, blockdev, cfdisk, ctrlaltdel, fdisk, fsck, fsck.cramfs,
+fsck.minix, hwclock, losetup, mkfs, mkfs.bfs, mkfs.cramfs, mkfs.minix, mkswap,
+pivot_root, raw, sfdisk, swapoff, swapon, switch_root, cal, chkdupexe, chrt,
+col, colcrt, colrm, column, cytune, ddate, flock, getopt, hexdump, i386,
+ionice, ipcmk, ipcrm, ipcs, isosize, last, line, linux32, linux64, logger,
+look, lscpu, mcookie, mesg, namei, pg, rename, renice, rev, script,
+scriptreplay, setarch, setsid, setterm, tailf, taskset, ul, wall, whereis,
+write, addpart, delpart, fdformat, ldattach, partx, readprofile, rtcwake, and
+tunelp
 
 
 %prep
@@ -31,42 +29,41 @@ tunelp ul umount update vidmode wall whereis write ypdomainname ziptool
 
 
 %build
+# We provide libuuid, uuidd, and libblkid through e2fsprogs.
 %configure \
 	--bindir=/bin \
 	--sbindir=/sbin \
+	--disable-libuuid \
+	--disable-uuidd \
+	--disable-libblkid \
 	--enable-arch \
-	--enable-init \
 	--disable-kill \
 	--enable-last \
 	--enable-mesg \
+	--enable-partx \
 	--enable-raw \
-	--enable-rdev \
 	--enable-write \
 	--without-selinux \
-	--without-audit \
-	--with-fsprobe=blkid
-make %{_smp_mflags}
+	--without-audit 
+%{__make} %{?_smp_mflags}
 
 
 %install
-[[ "$RPM_BUILD_ROOT" != "/" ]] && rm -rf "$RPM_BUILD_ROOT"
-
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
 %find_lang util-linux-ng
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__rm_rf} ${RPM_BUILD_ROOT}/%{_infodir}/dir
+
+# Make sure the examples for getopt don't count in for dependencies
+%{__chmod} 0644 '%{buildroot}/%{_datadir}/getopt'/*
 
 
 %post
-/sbin/ldconfig
-/sbin/install-info %{_infodir}/ipc.info.gz %{_infodir}/dir
+%{__ldconfig}
+update-info-dir
 
 %postun
-/sbin/ldconfig
-/sbin/install-info --delete %{_infodir}/ipc.info.gz %{_infodir}/dir
-
-
-%clean
-[[ "$RPM_BUILD_ROOT" != "/" ]] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
+update-info-dir
 
 
 %files -f util-linux-ng.lang
@@ -81,25 +78,17 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 /sbin/blockdev
 /sbin/cfdisk
 /sbin/ctrlaltdel
-/sbin/display-services
-/sbin/fastboot
-/sbin/fasthalt
 /sbin/fdisk
 /sbin/fsck.cramfs
 /sbin/fsck.minix
-/sbin/halt
+/sbin/fsck
 /sbin/hwclock
-/sbin/initctl
 /sbin/losetup
 /sbin/mkfs*
-/sbin/need
 /sbin/pivot_root
-/sbin/provide
 /sbin/raw
-/sbin/reboot
 /sbin/sfdisk
-/sbin/shutdown
-/sbin/simpleinit
+/sbin/switch_root
 /sbin/*swap*
 %{_bindir}/cal
 %{_bindir}/chkdupexe
@@ -110,12 +99,12 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %{_bindir}/column
 %{_bindir}/cytune
 %{_bindir}/ddate
-%{_bindir}/fdformat
 %{_bindir}/flock
 %{_bindir}/getopt
 %{_bindir}/hexdump
 %{_bindir}/i386
 %{_bindir}/ionice
+%{_bindir}/ipcmk
 %{_bindir}/ipcrm
 %{_bindir}/ipcs
 %{_bindir}/isosize
@@ -125,6 +114,7 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %{_bindir}/linux64
 %{_bindir}/logger
 %{_bindir}/look
+%{_bindir}/lscpu
 %{_bindir}/mcookie
 %{_bindir}/mesg
 %{_bindir}/namei
@@ -143,13 +133,90 @@ rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %{_bindir}/wall
 %{_bindir}/whereis
 %{_bindir}/write
-%{_sbindir}/ramsize
-%{_sbindir}/rdev
+%{_sbindir}/addpart
+%{_sbindir}/delpart
+%{_sbindir}/fdformat
+%{_sbindir}/ldattach
+%{_sbindir}/partx
 %{_sbindir}/readprofile
-%{_sbindir}/rootflags
 %{_sbindir}/rtcwake
 %{_sbindir}/tunelp
-%{_sbindir}/vidmode
-%{_infodir}/ipc.info*
-%{_mandir}/*/*
-%{_datadir}/getopt/
+%doc %{_infodir}/ipc.info*
+%doc %{_mandir}/man1/arch.1*
+%doc %{_mandir}/man1/cal.1*
+%doc %{_mandir}/man1/chkdupexe.1*
+%doc %{_mandir}/man1/chrt.1*
+%doc %{_mandir}/man1/col.1*
+%doc %{_mandir}/man1/colcrt.1*
+%doc %{_mandir}/man1/colrm.1*
+%doc %{_mandir}/man1/column.1*
+%doc %{_mandir}/man1/ddate.1*
+%doc %{_mandir}/man1/dmesg.1*
+%doc %{_mandir}/man1/flock.1*
+%doc %{_mandir}/man1/getopt.1*
+%doc %{_mandir}/man1/hexdump.1*
+%doc %{_mandir}/man1/ionice.1*
+%doc %{_mandir}/man1/ipcmk.1*
+%doc %{_mandir}/man1/ipcrm.1*
+%doc %{_mandir}/man1/ipcs.1*
+%doc %{_mandir}/man1/last.1*
+%doc %{_mandir}/man1/line.1*
+%doc %{_mandir}/man1/logger.1*
+%doc %{_mandir}/man1/look.1*
+%doc %{_mandir}/man1/lscpu.1*
+%doc %{_mandir}/man1/mcookie.1*
+%doc %{_mandir}/man1/mesg.1*
+%doc %{_mandir}/man1/more.1*
+%doc %{_mandir}/man1/namei.1*
+%doc %{_mandir}/man1/pg.1*
+%doc %{_mandir}/man1/readprofile.1*
+%doc %{_mandir}/man1/rename.1*
+%doc %{_mandir}/man1/renice.1*
+%doc %{_mandir}/man1/rev.1*
+%doc %{_mandir}/man1/script.1*
+%doc %{_mandir}/man1/scriptreplay.1*
+%doc %{_mandir}/man1/setsid.1*
+%doc %{_mandir}/man1/setterm.1*
+%doc %{_mandir}/man1/tailf.1*
+%doc %{_mandir}/man1/taskset.1*
+%doc %{_mandir}/man1/ul.1*
+%doc %{_mandir}/man1/wall.1*
+%doc %{_mandir}/man1/whereis.1*
+%doc %{_mandir}/man1/write.1*
+%doc %{_mandir}/man5/fstab.5*
+%doc %{_mandir}/man8/addpart.8*
+%doc %{_mandir}/man8/agetty.8*
+%doc %{_mandir}/man8/blockdev.8*
+%doc %{_mandir}/man8/cfdisk.8*
+%doc %{_mandir}/man8/ctrlaltdel.8*
+%doc %{_mandir}/man8/cytune.8*
+%doc %{_mandir}/man8/delpart.8*
+%doc %{_mandir}/man8/fdformat.8*
+%doc %{_mandir}/man8/fdisk.8*
+%doc %{_mandir}/man8/fsck.8*
+%doc %{_mandir}/man8/fsck.minix.8*
+%doc %{_mandir}/man8/hwclock.8*
+%doc %{_mandir}/man8/i386.8*
+%doc %{_mandir}/man8/isosize.8*
+%doc %{_mandir}/man8/ldattach.8*
+%doc %{_mandir}/man8/linux32.8*
+%doc %{_mandir}/man8/linux64.8*
+%doc %{_mandir}/man8/losetup.8*
+%doc %{_mandir}/man8/mkfs.8*
+%doc %{_mandir}/man8/mkfs.bfs.8*
+%doc %{_mandir}/man8/mkfs.minix.8*
+%doc %{_mandir}/man8/mkswap.8*
+%doc %{_mandir}/man8/mount.8*
+%doc %{_mandir}/man8/partx.8*
+%doc %{_mandir}/man8/pivot_root.8*
+%doc %{_mandir}/man8/raw.8*
+%doc %{_mandir}/man8/rtcwake.8*
+%doc %{_mandir}/man8/setarch.8*
+%doc %{_mandir}/man8/sfdisk.8*
+%doc %{_mandir}/man8/swapoff.8*
+%doc %{_mandir}/man8/swapon.8*
+%doc %{_mandir}/man8/switch_root.8*
+%doc %{_mandir}/man8/tunelp.8*
+%doc %{_mandir}/man8/umount.8*
+%dir %{_datadir}/getopt
+%doc %{_datadir}/getopt/getopt*
