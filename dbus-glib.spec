@@ -1,15 +1,15 @@
 Name: dbus-glib
-Version: 0.74
-Release: 1ev
-Summary: Glib bindings for DBUS
+Version: 0.82
+Release: 2ev
+Summary: Glib2 bindings for DBUS
 URL: http://www.freedesktop.org/wiki/Software_2fdbus
 Group: System Environment/Libraries
-License: Academic Free License
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: AFL-2.1
+Vendor: GNyU-Linux
 Source: http://dbus.freedesktop.org/releases/%{name}/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: dbus, make >= 3.79.1, gcc-core, glib2 >= 2.6, doxygen, expat
+BuildRequires: make, pkg-config, gcc
+BuildRequires: dbus, glib2 >= 2.6, expat
+BuildRequires: doxygen, gettext
 
 %description
 A core concept of the D-BUS implementation is that "libdbus" is
@@ -25,31 +25,31 @@ whatever. These bindings have varying levels of completeness.
 %build
 %configure \
 	--enable-doxygen-docs
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
+%{__make} check
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING HACKING README NEWS ChangeLog
 %doc %{_datadir}/gtk-doc/html/dbus-glib/
+%doc %{_mandir}/man1/dbus-binding-tool.1*
+%{_sysconfdir}/bash_completion.d/dbus-bash-completion.sh
 %{_libdir}/libdbus-glib-1.*
 %{_libdir}/pkgconfig/dbus-glib-1.pc
+%{_libexecdir}/dbus-bash-completion-helper
 %{_bindir}/dbus-binding-tool
 %{_includedir}/dbus-1.0/dbus/dbus-gtype-specialized.h
 %{_includedir}/dbus-1.0/dbus/dbus-glib.h
