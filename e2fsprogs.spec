@@ -1,17 +1,15 @@
 Name: e2fsprogs
-Version: 1.41.0
-Release: 2ev
-Summary: Ext2 Filesystem Utilities
+Version: 1.41.8
+Release: 3ev
+Summary: Ext[234] Filesystem Utilities
 URL: http://e2fsprogs.sourceforge.net/
 Group: System Environment/Base
 License: GPL-2, LGPL-2, MIT, BSD
 Vendor: GNyU-Linux
-Source: http://downloads.sourceforge.net/e2fsprogs/e2fsprogs-%{version}.tar.gz
+Source: http://sourceforge.net/projects/%{name}/files/%{name}/%{version}/%{name}-%{version}.tar.gz
 Source1: %{name}-uuidd.ii
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires(build,install): make, pkg-config, gettext
 BuildRequires(build): gcc
-Requires: libblkid1, uuid1, libcom_err2
 
 %description
 The ext2fsprogs package contains essential ext2 filesystem utilities which
@@ -19,23 +17,39 @@ consists of e2fsck, mke2fs, debugfs, dumpe2fs, tune2fs, and most of the other
 core ext2 filesystem utilities.
 
 
-%package -n uuid1
-Version: %{version}
+%package -n libuuid1
+Summary: Universally Unique Identifier library
+Version: 1.2.0
 Group: System Environment/Libraries
-Summary: A subsystem to generate UUIDs
 Conflicts: e2fsprogs < 1.41.0
 
-%description -n uuid1
-A library to generate universally unique identifiers (UUIDs), along with a
-daemon that ensures time-based UUIDs to be guaranteed unique, even in the
-face of threads trying to grab UUIDs running on different CPUs.
+%description -n libuuid1
+The libuuid library generates and parses 128-bit universally unique ids
+(UUIDs). A UUID is an identifier that is unique across both space and time,
+with respect to the space of all UUIDs. A UUID can be used for multiple
+purposes, from tagging objects with an extremely short lifetime, to reliably
+identifying very persistent objects across a network.
+
+
+%package -n uuidd
+Summary: Universally Unique Identifier generation daemon
+Group: System Environment/Daemons
+Conflicts: e2fsprogs < 1.41.0
+Obsoletes: uuid1
+
+%description -n uuidd
+The uuidd daemon is used by the UUID library to generate universally unique
+identifiers (UUIDs), especially time-based UUID's in a secure and
+guaranteed-unique fashion, even in the face of large numbers of threads trying
+to grab UUID's running on different CPU's.
 
 
 %package -n libblkid1
-Version: %{version}
+Version: 1.0
 Group: System Environment/Libraries
 Summary: A filesystem detection library
 Conflicts: e2fsprogs < 1.41.0
+
 
 %description -n libblkid1
 A Library for filesystem detection by the means of the `blkid' program or
@@ -44,7 +58,7 @@ a file systems type, UUID and label (if any).
 
 
 %package -n libcom_err2
-Version: %{version}
+Version: 2.1
 Group: System Environment/Libraries
 Summary: e2fsprogs common error reporting library
 Conflicts: e2fsprogs < 1.41.0
@@ -65,6 +79,8 @@ the format string and any following arguments, in the same style as fprintf(3).
 
 %build
 %configure \
+	--sbindir=/sbin \
+	--libdir='/%{_lib}' \
 	--enable-fsck \
 	--enable-e2initrd-helper \
 	--enable-elf-shlibs 
@@ -73,27 +89,22 @@ the format string and any following arguments, in the same style as fprintf(3).
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__make_install} install-libs DESTDIR='%{buildroot}'
 
 # Libraries and utilites are sometimes needed at boot time, move them to /
 # instead of /usr.
-%{__mv} '%{buildroot}/%{_sbindir}' '%{buildroot}/sbin'
-%{__mkdir_p} '%{buildroot}/%{_lib}'
-%{__mv} '%{buildroot}/%{_libdir}'/*.* \
-	'%{buildroot}/%{_lib}'
+%{__mv} '%{buildroot}/%{_sbindir}' '%{buildroot}/sbin' ||:
+%{__mkdir_p} '%{buildroot}/%{_libdir}'
+%{__mv} '%{buildroot}/%{_lib}/pkgconfig' '%{buildroot}/%{_libdir}'
 
 # Make sure socket and PID files are catalogized:
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/lib/libuuid'
-touch  '%{buildroot}/%{_localstatedir}/lib/libuuid/uuidd.pid'
-touch  '%{buildroot}/%{_localstatedir}/lib/libuuid/request'
+%{__touch} '%{buildroot}/%{_localstatedir}/lib/libuuid/uuidd.pid'
+%{__touch} '%{buildroot}/%{_localstatedir}/lib/libuuid/request'
 
 # uuidd service file
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
-%{__cat} < '%{SOURCE1}' | %{__sed} \
-	-e 's,@uuidd@,/sbin/uuidd,g' \
-	-e 's,@localstatedir@,%{_localstatedir},g' \
-	> '%{buildroot}/%{_sysconfdir}/initng/daemon/uuidd.i'
+%{install_ifile '%{SOURCE1}' 'daemon/uuidd.i'}
 
 %{find_lang} 'e2fsprogs'
 
@@ -102,16 +113,30 @@ touch  '%{buildroot}/%{_localstatedir}/lib/libuuid/request'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir
+
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir
 
 
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%post -n libuuid1
+%{__ldconfig}
+
+
+%postun -n libuuid1
+%{__ldconfig}
+
+
+%preun -n uuidd
+if [[ "${1}" -eq 0 ]]
+then
+	ngc -d daemon/uuidd
+	ng-update delete daemon/uuidd default
+fi > /dev/null 2>&1
+exit 0
 
 
 %files -f e2fsprogs.lang
@@ -123,7 +148,7 @@ update-info-dir
 /%{_lib}/libe2p.*
 /%{_lib}/libext2fs.*
 /%{_lib}/libss.*
-%{_libdir}/e2initrd_helper
+/%{_lib}/e2initrd_helper
 %{_libdir}/pkgconfig/e2p.pc
 %{_libdir}/pkgconfig/ext2fs.pc
 %{_libdir}/pkgconfig/ss.pc
@@ -165,26 +190,34 @@ update-info-dir
 %doc %{_mandir}/man8/resize2fs.8*
 %doc %{_mandir}/man8/tune2fs.8*
 
+
 %files -n libcom_err2
 %defattr(-, root, root)
 %doc %{_mandir}/man3/com_err.3*
 /%{_lib}/libcom_err.*
 %{_libdir}/pkgconfig/com_err.pc
 
-%files -n uuid1
+
+%files -n libuuid1
 %defattr(-, root, root)
 %doc lib/uuid/COPYING
-%{_sysconfdir}/initng/daemon/uuidd.i
-/%{_lib}/libuuid.*
-%{_libdir}/pkgconfig/uuid.pc
-%{_includedir}/uuid/
-/sbin/uuidd
-%doc %{_mandir}/man1/uuidgen.1*
 %doc %{_mandir}/man3/uuid*.3*
+%{_includedir}/uuid/
+/%{_lib}/libuuid.*
+
+
+%files -n uuidd
+%defattr(-, root, root)
+%doc COPYING
+%attr(0700, root, root) %{_sysconfdir}/initng/daemon/uuidd.i
+%{_libdir}/pkgconfig/uuid.pc
+%attr(0700, root, root) /sbin/uuidd
+%doc %{_mandir}/man1/uuidgen.1*
 %doc %{_mandir}/man8/uuidd.8*
 %dir %{_localstatedir}/lib/libuuid
 %ghost %config(missingok,noreplace) %{_localstatedir}/lib/libuuid/request
 %ghost %config(missingok,noreplace) %{_localstatedir}/lib/libuuid/uuidd.pid
+
 
 %files -n libblkid1
 %defattr(-, root, root)
