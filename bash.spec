@@ -164,7 +164,7 @@ pushd %{buildroot}/bin
 %{__ln_s} bash sh
 popd
 
-%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/bash_completition.d'
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/bash_completion.d'
 
 
 
@@ -182,7 +182,7 @@ update-info-dir 2>/dev/null 2>&1 ||:
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS CHANGES COMPAT COPYING CWRU INSTALL MANIFEST* NEWS
 %doc NOTES POSIX RBASH README* Y2K 
-%dir %{_sysconfdir}/bash_completition.d
+%dir %{_sysconfdir}/bash_completion.d
 /bin/sh
 /bin/bash
 /bin/bashbug
