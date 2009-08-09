@@ -1,6 +1,6 @@
 Name: bash
 Version: 3.2
-Release: 3ev
+Release: 4ev
 Summary: The Bourne Again SHell
 URL: http://www.gnu.org/software/bash
 Group: System Environment/Shells
@@ -164,11 +164,14 @@ pushd %{buildroot}/bin
 %{__ln_s} bash sh
 popd
 
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/bash_completition.d'
+
 
 
 %post
 %{__ldconfig}
 update-info-dir > /dev/null 2>&1 ||:
+
 
 %postun
 %{__ldconfig}
@@ -179,6 +182,7 @@ update-info-dir 2>/dev/null 2>&1 ||:
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS CHANGES COMPAT COPYING CWRU INSTALL MANIFEST* NEWS
 %doc NOTES POSIX RBASH README* Y2K 
+%dir %{_sysconfdir}/bash_completition.d
 /bin/sh
 /bin/bash
 /bin/bashbug
