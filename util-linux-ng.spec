@@ -7,6 +7,7 @@ Group: System Environment/Base
 License: GPL-2
 Vendor: GNyU-Linux
 Source0: ftp://ftp.kernel.org:/pub/linux/utils/%{name}/v2.16/%{name}-%{version}.tar.gz
+Source1: %{name}-uuidd.ii
 BuildRequires: make, gcc, pkg-config >= 0.9.0, gettext
 BuildRequires: libuuid1, libblkid1, zlib, ncurses
 Provides: util-linux = %{version}
@@ -24,6 +25,46 @@ write, addpart, delpart, fdformat, ldattach, partx, readprofile, rtcwake, and
 tunelp
 
 
+%package -n libuuid1
+Summary: Universally Unique Identifier library
+Version: 1.3.0
+Group: System Environment/Libraries
+Conflicts: e2fsprogs < 1.41.0
+
+%description -n libuuid1
+The libuuid library generates and parses 128-bit universally unique ids
+(UUIDs). A UUID is an identifier that is unique across both space and time,
+with respect to the space of all UUIDs. A UUID can be used for multiple
+purposes, from tagging objects with an extremely short lifetime, to reliably
+identifying very persistent objects across a network.
+
+
+%package -n uuidd
+Summary: Universally Unique Identifier generation daemon
+Group: System Environment/Daemons
+Conflicts: e2fsprogs < 1.41.0
+Obsoletes: uuid1
+
+%description -n uuidd
+The uuidd daemon is used by the UUID library to generate universally unique
+identifiers (UUIDs), especially time-based UUID's in a secure and
+guaranteed-unique fashion, even in the face of large numbers of threads trying
+to grab UUID's running on different CPU's.
+
+
+%package -n libblkid1
+Version: 1.1.0
+Group: System Environment/Libraries
+Summary: A filesystem detection library
+Conflicts: e2fsprogs < 1.41.0
+
+
+%description -n libblkid1
+A Library for filesystem detection by the means of the `blkid' program or
+other, similar commands. This library provides an interface that allows to get
+a file systems type, UUID and label (if any).
+
+
 %prep
 %setup -q
 
@@ -33,9 +74,7 @@ tunelp
 %configure \
 	--bindir=/bin \
 	--sbindir=/sbin \
-	--disable-libuuid \
-	--disable-uuidd \
-	--disable-libblkid \
+	--libdir='/%{_lib}' \
 	--enable-arch \
 	--disable-kill \
 	--enable-last \
@@ -56,6 +95,21 @@ tunelp
 # Make sure the examples for getopt don't count in for dependencies
 %{__chmod} 0644 '%{buildroot}/%{_datadir}/getopt'/*
 
+# Make sure socket and PID files are catalogized:
+%{__mkdir_p} '%{buildroot}/%{_localstatedir}/lib/libuuid'
+%{__touch} '%{buildroot}/%{_localstatedir}/lib/libuuid/uuidd.pid'
+%{__touch} '%{buildroot}/%{_localstatedir}/lib/libuuid/request'
+
+# uuidd service file
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
+%{install_ifile '%{SOURCE1}' 'daemon/uuidd.i'}
+
+# Move libuuid and libblkid
+%{__mkdir_p} '%{buildroot}/%{_lib}'
+%{__mv} '%{buildroot}/%{_libdir}'/libblkid.* '%{buildroot}/%{_lib}'
+%{__mv} '%{buildroot}/%{_libdir}'/libuuid.* '%{buildroot}/%{_lib}'
+%{__rm} '%{buildroot}/%{_lib}'/lib{blk,uu}id.la
+
 
 %post
 %{__ldconfig}
@@ -64,6 +118,31 @@ update-info-dir
 %postun
 %{__ldconfig}
 update-info-dir
+
+
+%post -n libblkid1
+%{__ldconfig}
+
+
+%postun -n libblkid1
+%{__ldconfig}
+
+
+%post -n libuuid1
+%{__ldconfig}
+
+
+%postun -n libuuid1
+%{__ldconfig}
+
+
+%preun -n uuidd
+if [[ "${1}" -eq 0 ]]
+then
+	ngc -d daemon/uuidd
+	ng-update delete daemon/uuidd default
+fi > /dev/null 2>&1
+exit 0
 
 
 %files -f util-linux-ng.lang
@@ -76,9 +155,11 @@ update-info-dir
 /bin/*mount
 /sbin/agetty
 /sbin/blockdev
+/sbin/blkid
 /sbin/cfdisk
 /sbin/ctrlaltdel
 /sbin/fdisk
+/sbin/findfs
 /sbin/fsck.cramfs
 /sbin/fsck.minix
 /sbin/fsck
@@ -186,6 +267,7 @@ update-info-dir
 %doc %{_mandir}/man5/fstab.5*
 %doc %{_mandir}/man8/addpart.8*
 %doc %{_mandir}/man8/agetty.8*
+%doc %{_mandir}/man8/blkid.8*
 %doc %{_mandir}/man8/blockdev.8*
 %doc %{_mandir}/man8/cfdisk.8*
 %doc %{_mandir}/man8/ctrlaltdel.8*
@@ -193,6 +275,7 @@ update-info-dir
 %doc %{_mandir}/man8/delpart.8*
 %doc %{_mandir}/man8/fdformat.8*
 %doc %{_mandir}/man8/fdisk.8*
+%doc %{_mandir}/man8/findfs.8*
 %doc %{_mandir}/man8/fsck.8*
 %doc %{_mandir}/man8/fsck.minix.8*
 %doc %{_mandir}/man8/hwclock.8*
@@ -220,3 +303,33 @@ update-info-dir
 %doc %{_mandir}/man8/umount.8*
 %dir %{_datadir}/getopt
 %doc %{_datadir}/getopt/getopt*
+
+
+%files -n libuuid1
+%defattr(-, root, root)
+%doc COPYING
+%doc %{_mandir}/man3/uuid*.3*
+%{_includedir}/uuid/
+/%{_lib}/libuuid.*
+
+
+%files -n uuidd
+%defattr(-, root, root)
+%doc COPYING
+%attr(0700, root, root) %{_sysconfdir}/initng/daemon/uuidd.i
+%{_libdir}/pkgconfig/uuid.pc
+%attr(0700, root, root) %{_sbindir}/uuidd
+%{_bindir}/uuidgen
+%doc %{_mandir}/man1/uuidgen.1*
+%doc %{_mandir}/man8/uuidd.8*
+%dir %{_localstatedir}/lib/libuuid
+%ghost %config(missingok,noreplace) %{_localstatedir}/lib/libuuid/request
+%ghost %config(missingok,noreplace) %{_localstatedir}/lib/libuuid/uuidd.pid
+
+
+%files -n libblkid1
+%defattr(-, root, root)
+%doc %{_mandir}/man3/libblkid.3*
+/%{_lib}/libblkid.*
+%{_libdir}/pkgconfig/blkid.pc
+%{_includedir}/blkid/
