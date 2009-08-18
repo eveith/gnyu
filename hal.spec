@@ -1,23 +1,23 @@
 Name: hal
-Version: 0.5.11
-Release: 5ev
-Summary: The Linux hardware abstraction layer
+Version: 0.5.13
+Release: 6ev
+Summary: The Linux Hardware Abstraction Layer
 License: GPL-2
 Group: System Environment/Daemons
 Source: http://hal.freedesktop.org/releases/hal-%{version}.tar.gz
-Source1: %{name}-hald.i
-Patch0: %{name}-dbus_close.patch
-Patch1: %{name}-kernel-headers-26.patch
+Source1: %{name}-hald.ii
 Patch2: %{name}-allow-plugdev-group-on-volumes-and-power-management.patch
 URL: http://www.freedesktop.org/wiki/Software/hal
 Vendor: GNyU-Linux
-BuildRequires: make, gcc, dbus >= 0.60, udev >= 089, glib2 >= 2.6.0
-BuildRequires: expat >= 1.95.8, dbus-glib, util-linux >= 2.12,
-BuildRequires: perl-XML-Parser, gettext, pkg-config
-Requires: hal-info, %{_bindir}/udevinfo
-%define _hald_uid 82
-%define _hal_gid 28
-%define _hal_hardware_groups console,tty,uucp,floppy,disk,cdrom,plugdev,tape,usb,lp,audio,video,scanner
+BuildRequires: make, pkg-config, gcc, gettext, xmlto
+BuildRequires: dbus >= 0.61, udev >= 125, glib2 >= 2.10.0
+BuildRequires: libusb, pciutils
+BuildRequires: expat >= 1.95.8, libxml2, dbus-glib, util-linux-ng >= 2.15
+BuildRequires: hal-info >= 20080310
+Requires: hal-info >= 20080310, %{_bindir}/udevinfo
+%define hald_uid 82
+%define hal_gid 28
+%define hal_hardware_groups console,tty,uucp,floppy,disk,cdrom,plugdev,tape,usb,lp,audio,video,scanner
 
 %description
 The point of HAL is to merge information from various sources such that desktop
@@ -40,7 +40,8 @@ Stuff like this is important to the major desktop environments.
 
 %build
 %configure \
-	--enable-manpages \
+	--enable-man-pages \
+	--enable-docbook-docs \
 	--disable-gtk-doc \
 	--disable-policy-kit \
 	--disable-console-kit \
@@ -49,44 +50,46 @@ Stuff like this is important to the major desktop environments.
 	--with-hwdata='%{_datadir}' \
 	--with-dbus-sys='%{_sysconfdir}/dbus-1/system.d' \
 	--with-hal-user=hald \
-	--with-hal-group=hal \
-	--with-doc-dir=%{_docdir}/%{name}-%{version}
+	--with-hal-group=hal
 %{__make} %{?_smp_mflags}
 
 
 %install
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Install HAL service file for InitNG 
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
-%{__cat} < '%{SOURCE1}' \
-	| %{__sed} \
-		-e 's,@rm@,%{__rm},g' \
-		-e 's,@localstatedir@,%{_localstatedir},g' \
-		-e 's,@hald@,%{_sbindir}/hald,g' \
-		-e 's,@udevinfo@,%{_bindir}/udevinfo,g' \
-	> '%{buildroot}/%{_sysconfdir}/initng/daemon/hald.i'
+%{install_ifile '%{SOURCE1}' 'daemon/hald.i'}
 
 # Create ghost cache file; hald will create it at first run.
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/cache/hald'
-touch '%{buildroot}/%{_localstatedir}/cache/hald/fdi-cache'
+%{__touch} '%{buildroot}/%{_localstatedir}/cache/hald/fdi-cache'
+
+# Move udev rules
+%{__mkdir_p} '%{buildroot}/%{_lib}'
+%{__mv} '%{buildroot}/%{_libdir}/udev' '%{buildroot}/%{_lib}'
+
+# Pid file ghost
+%{__mkdir_p} '%{buildroot}/%{_localstatedir}/run'
+%{__touch} '%{buildroot}/%{_localstatedir}/run/hald.pid'
 
 
 %pre
 if [[ "${1}" -eq 1 ]]
 then
-	groupadd -g '%{_hal_gid}' hal
+	groupadd -g '%{hal_gid}' hal
 	useradd \
-		-u '%{_hald_uid}' \
-		-g '%{_hal_gid}' \
-		-G '%{_hal_hardware_groups}' \
+		-u '%{hald_uid}' \
+		-g '%{hal_gid}' \
+		-G '%{hal_hardware_groups}' \
 		-c 'Hardware Abstraction Layer' \
 		-s /sbin/nologin \
-		-d %{_sysconfdir}/hal \
+		-d '%{_sysconfdir}/hal' \
 		hald
 fi > /dev/null 2>&1
 kill -HUP $(< %{_localstatedir}/run/dbus.pid)
 exit 0
+
 
 %postun
 if [[ "${1}" -eq 0 ]]
@@ -99,6 +102,7 @@ fi > /dev/null 2>&1
 %{__ldconfig}
 exit 0
 
+
 %post
 %{__ldconfig}
 
@@ -106,17 +110,21 @@ exit 0
 %files
 %defattr(-, root, root)
 %doc README AUTHORS ChangeLog COPYING HACKING NEWS
-%doc %{_datadir}/gtk-doc/html/libhal
-%doc %{_datadir}/gtk-doc/html/libhal-storage
-%{_sysconfdir}/udev/rules.d/*
+%dir %{_datadir}/doc/hal
+%dir %{_datadir}/doc/hal/spec
+%doc %{_datadir}/doc/hal/spec/*.*
+%dir %{_datadir}/gtk-doc/html/libhal
+%dir %{_datadir}/gtk-doc/html/libhal-storage
+%doc %{_datadir}/gtk-doc/html/libhal/*.*
+%doc %{_datadir}/gtk-doc/html/libhal-storage/*.*
 %{_sysconfdir}/initng/daemon/hald.i
-%{_sysconfdir}/hal/
+%dir %{_sysconfdir}/hal
 %config %{_sysconfdir}/dbus-1/system.d/hal.conf
 /sbin/umount.hal
+/%{_lib}/udev/rules.d/90-hal.rules
 %{_bindir}/hal-*
 %{_bindir}/lshal
 %{_includedir}/hal/
-%{_libdir}/hal/
 %{_libdir}/libhal*
 %{_libdir}/pkgconfig/hal*.pc
 %{_libexecdir}/hal*
@@ -133,3 +141,8 @@ exit 0
 %{_datadir}/hal
 %dir %{_localstatedir}/cache/hald
 %ghost %{_localstatedir}/cache/hald/fdi-cache
+%dir %{_libexecdir}/scripts
+%{_libexecdir}/scripts/hal-*
+%dir %{_libexecdir}/scripts/linux
+%{_libexecdir}/scripts/linux/hal-*
+%ghost %config %{_localstatedir}/run/hald.pid
