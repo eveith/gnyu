@@ -1,6 +1,6 @@
 Name: hal
 Version: 0.5.13
-Release: 6ev
+Release: 7ev
 Summary: The Linux Hardware Abstraction Layer
 License: GPL-2
 Group: System Environment/Daemons
@@ -10,9 +10,9 @@ Patch2: %{name}-allow-plugdev-group-on-volumes-and-power-management.patch
 URL: http://www.freedesktop.org/wiki/Software/hal
 Vendor: GNyU-Linux
 BuildRequires: make, pkg-config, gcc, gettext, xmlto
-BuildRequires: dbus >= 0.61, udev >= 125, glib2 >= 2.10.0
-BuildRequires: libusb, pciutils
-BuildRequires: expat >= 1.95.8, libxml2, dbus-glib, util-linux-ng >= 2.15
+BuildRequires: dbus >= 0.61, policykit, glib2 >= 2.10.0, dbus-glib
+BuildRequires: libusb, pciutils, udev >= 125
+BuildRequires: expat >= 1.95.8, libxml2, util-linux-ng >= 2.15
 BuildRequires: hal-info >= 20080310
 Requires: hal-info >= 20080310, %{_bindir}/udevinfo
 %define hald_uid 82
@@ -43,7 +43,7 @@ Stuff like this is important to the major desktop environments.
 	--enable-man-pages \
 	--enable-docbook-docs \
 	--disable-gtk-doc \
-	--disable-policy-kit \
+	--enable-policy-kit \
 	--disable-console-kit \
 	--enable-umount-helper \
 	--with-pid-file='%{_localstatedir}/run/hald.pid' \
@@ -129,6 +129,7 @@ exit 0
 %{_libdir}/pkgconfig/hal*.pc
 %{_libexecdir}/hal*
 %doc %{_mandir}/man1/hal-disable-polling.1*
+%doc %{_mandir}/man1/hal-is-caller-privileged.1*
 %doc %{_mandir}/man1/hal-find-by-capability.1*
 %doc %{_mandir}/man1/hal-find-by-property.1*
 %doc %{_mandir}/man1/hal-get-property.1*
@@ -139,6 +140,7 @@ exit 0
 %doc %{_mandir}/man8/hald.8*
 %{_sbindir}/hald
 %{_datadir}/hal
+%{_datadir}/PolicyKit/policy/org.freedesktop.hal.*policy
 %dir %{_localstatedir}/cache/hald
 %ghost %{_localstatedir}/cache/hald/fdi-cache
 %dir %{_libexecdir}/scripts
