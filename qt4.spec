@@ -1,6 +1,6 @@
 Name: qt4
-Version: 4.5.1
-Release: 9ev
+Version: 4.5.2
+Release: 10ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
@@ -14,7 +14,7 @@ BuildRequires: libtiff, libjpeg, libpng, libmng, zlib
 BuildRequires: glib2 >= 2.8.3, clucene-core, dbus
 BuildRequires: fontconfig >= 2.0, freetype >= 1.7
 BuildRequires: libXrender >= 0.9.0, libXrandr >= 1.0.2, libXcursor >= 1.1.4
-BuildRequires: libXfixes >= 3.0.0, libXinerama
+BuildRequires: libXfixes >= 3.0.0
 #BuildRequires: libXfixes >= 3.0.0, libXinerama >= 1.1.0
 BuildRequires: libXi, libXt >= 0.99, libXext
 #BuildRequires: libXi >= 1.3.0, libXt >= 0.99, libXext
@@ -105,7 +105,7 @@ examples.
 
 %files
 	%defattr(-, root, root)
-	%doc LGPL_EXCEPTION.txt LICENSE.* KNOWN.ISSUES README changes*
+	%doc LGPL_EXCEPTION.txt LICENSE.* README changes*
 	/etc/ld.so.conf.d/%{name}-%{_arch}
 	%attr(0755, root, root) %{_sysconfdir}/profile.d/qt4.sh
 	%dir %{_libdir}/qt4/
@@ -176,6 +176,7 @@ examples.
 	%{_libdir}/qt4/translations/qt_help_??_??.qm
 	%{_libdir}/qt4/translations/qtconfig_*.qm
 	%{_libdir}/qt4/translations/qvfb*.qm
+	%{_libdir}/qt4/translations/qt_*untranslated.qm
 	%{_libdir}/qt4/mkspecs/
 	%{_libdir}/qt4/plugins/
 	%{_libdir}/qt4/phrasebooks/
