@@ -1,6 +1,6 @@
 Name: qt4
 Version: 4.5.2
-Release: 10ev
+Release: 11ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
