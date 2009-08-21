@@ -1,14 +1,13 @@
 Name: xorg-kbproto
 %define _src_name %(echo %{name} | sed 's,^xorg-,,')
 Version: 1.0.3
-Release: 1ev
+Release: 2ev
 Summary: Protocol information and development headers for X11 XKB extension
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/proto/%{_src_name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc, pkg-config
 Requires: xorg-fslayout
 BuildArch: noarch
@@ -30,15 +29,10 @@ this is done with the XINPUT extension.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 # Make sure %doc files are there, even if they're empty.
 touch README COPYING ChangeLog TODO AUTHORS NEWS
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
