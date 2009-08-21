@@ -1,6 +1,6 @@
 Name: kdebase4-runtime
 Version: 4.2.4
-Release: 4ev
+Release: 5ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -62,7 +62,8 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%config %{_sysconfdir}/kde4/icons.knsrc
 	%config %{_sysconfdir}/kde4/khotnewstuff.knsrc
 	%config %{_sysconfdir}/kde4/kshorturifilterrc
-	%dir %{_sysconfdir}//kde4/xdg/menus
+	%dir %{_sysconfdir}/kde4/xdg
+	%dir %{_sysconfdir}/kde4/xdg/menus
 	%config %{_sysconfdir}/kde4/xdg/menus/kde-information.menu
 	%{_bindir}/kcmshell4
 	%{_bindir}/kde-cp
