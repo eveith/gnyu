@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
 Version: 4.2.4
-Release: 5ev
+Release: 6ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -11,7 +11,7 @@ Source1: %{name}-kde.pamd
 Source2: %{name}-kdm.ii
 BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
 BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
-BuildRequires: kdebase4-runtime = %{version}
+BuildRequires: kdebase4-runtime = %{version}, kdebindings4 = %{version}
 BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
 BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
 BuildRequires: libXScrnSaver, libXft, libxklavier >= 3.0
@@ -163,6 +163,7 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_libdir}/kde4/libexec/krunner_lock
 	%{_libdir}/kde4/libexec/test_kcm_xinerama
 	%{_libdir}/kde4/plugins/designer/*.so
+	%{python_sitelib}/PyKDE4/plasmascript.py*
 	%{_libdir}/libkephal.so*
 	%{_libdir}/libplasmaclock.so*
 	%{_libdir}/libsolidcontrol.so*
@@ -316,6 +317,8 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_datadir}/apps/doc/kdm
 	%doc %{_datadir}/apps/doc/kdm/README
 	%{_datadir}/apps/doc/kdm/greeter.dtd
+	%dir %{_datadir}/apps/plasma_scriptengine_python
+	%{_datadir}/apps/plasma_scriptengine_python/*.py*
 	%{_datadir}/autostart/*.desktop
 	%{_datadir}/config.kcfg/*.kcfg
 	%{_datadir}/dbus-1/interfaces/*.xml
