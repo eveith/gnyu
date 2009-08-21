@@ -1,14 +1,13 @@
 Name: setxkbmap
 Version: 1.0.4
-Release: 1ev
+Release: 2ev
 Summary: X11 utility to set the keyboard map
 URL: http://www.x.org/
 Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/archive/individual/app/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, xorg-proto, pkg-config, libX11, libxkbfile
+BuildRequires: make, gcc, pkg-config, libX11, libxkbfile
 
 %description
 The setxkbmap command maps the keyboard to use the layout determined by
@@ -25,12 +24,7 @@ the options specified on the command line.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
