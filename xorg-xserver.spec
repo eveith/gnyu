@@ -1,6 +1,6 @@
 Name: xorg-xserver
 Version: 1.5.3
-Release: 8ev
+Release: 9ev
 Summary: The X Server
 URL: http://www.x.org/
 Group: User Interface/X
