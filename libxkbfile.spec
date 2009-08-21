@@ -7,7 +7,7 @@ Group: User Interface/X
 License: MIT
 Vendor: GNyU-Linux
 Source: http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
-BuildRequires: make, gcc, pkg-config, libX11
+BuildRequires: make, gcc, pkg-config, xorg-kbproto, libX11
 
 %description
 XKBD is the X implementation of kbd, which is responsible for load keymaps
