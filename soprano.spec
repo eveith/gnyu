@@ -1,15 +1,15 @@
 Name: soprano
-Version: 2.2.1
-Release: 2ev
+Version: 2.3.0
+Release: 3ev
 Summary: An interface library between Qt 4 and RDF storage solutions
 URL: http://soprano.sourceforge.net/
 Group: System Environment/Libraries
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/soprano/soprano-%{version}.tar.bz2
-BuildRequires: cmake >= 2.6.2, make, gcc-g++, qt4 >= 4.4.0, redland >= 1.0.6
-BuildRequires: clucene-core >= 0.9.19
-BuildRequires: libX11, libXext, libICE, dbus, pkg-config, libstdc++
+BuildRequires: cmake >= 2.6.2, pkg-config, make, gcc-g++
+BuildRequires: qt4 >= 4.4.0, dbus
+BuildRequires: redland >= 1.0.5, clucene-core >= 0.9.19
 
 %description
 Soprano (formally known as QRDF) is a library which provides a nice Qt
@@ -86,3 +86,4 @@ Soprano has the following features:
 %{_datadir}/dbus-1/interfaces/org.soprano.StatementIterator.xml
 %dir %{_datadir}/soprano
 %{_datadir}/soprano/*
+%{_datadir}/apps/cmake/modules/SopranoAddOntology.cmake
