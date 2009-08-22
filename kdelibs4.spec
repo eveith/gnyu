@@ -1,18 +1,20 @@
 Name: kdelibs4
-Version: 4.2.4
-Release: 4ev
+Version: 4.3.0
+Release: 5ev
 Summary: Base libraries for KDE-based applcations
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2, BSD
 Vendor: GNyU-Linux
 Source: http://download.kde.org/stable/%{version}/src/kdelibs-%{version}.tar.bz2
-BuildRequires: cmake >= 2.6, make, gcc-g++, qt4 >= 4.4.2, automoc4 >= 0.9.86
-BuildRequires: libICE, libX11, libSM
-BuildRequires: perl,  bzip2, openssl, zlib, strigi >= 0.6.3, gettext, mesalib
-BuildRequires: libacl, libattr, pcre, libxslt, libxml2, hal, heimdal-libs
-BuildRequires: hal, shared-mime-info >= 0.23, aspell, openexr, flex, bison
-BuildRequires: bzip2, libutempter
+BuildRequires: cmake >= 2.6, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender
+BuildRequires: qt4 >= 4.4.2, automoc4 >= 0.9.88
+BuildRequires: zlib, bzip2, openssl, mesalib, libacl, libutempter 
+BuildRequires: strigi >= 0.6.3, soprano >= 2.1.68
+BuildRequires: pcre, libxslt, libxml2, hal, heimdal-libs
+BuildRequires: shared-mime-info >= 0.23, enchant, aspell
+BuildRequires: openexr, libpng, libjpeg, libungif
 Requires: hicolor-icon-theme, shared-mime-info >= 0.23
 
 %description
@@ -348,10 +350,7 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 	%{_datadir}/apps/katepart/script/*.js
 	%dir %{_datadir}/apps/ktexteditor_insertfile
 	%dir %{_datadir}/apps/ktexteditor_kdatatool
-	%dir %{_datadir}/apps/ktexteditor_docwordcompletion
 	%{_datadir}/apps/ktexteditor_*/*.rc
-	%dir %{_datadir}/apps/kcertpart
-	%{_datadir}/apps/kcertpart/kcertpart.rc
 	%dir %{_datadir}/apps/nepomuk
 	%dir %{_datadir}/apps/nepomuk/pics
 	%{_datadir}/apps/nepomuk/pics/rating.png
@@ -365,6 +364,7 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 	%{_datadir}/dbus-1/interfaces/org.kde.KIMIface.xml
 	%{_datadir}/dbus-1/interfaces/org.kde.KLauncher.xml
 	%{_datadir}/dbus-1/interfaces/org.kde.KMediaPlayer.xml
+	%{_datadir}/dbus-1/interfaces/org.kde.KPasswdServer.xml
 	%{_datadir}/dbus-1/interfaces/org.kde.KSpeech.xml
 	%{_datadir}/dbus-1/interfaces/org.kde.KWallet.xml
 	%{_datadir}/dbus-1/interfaces/org.kde.Solid.Networking.Client.xml
