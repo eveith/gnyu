@@ -1,13 +1,15 @@
 Name: raptor
-Version: 1.4.18
-Release: 1ev
+Version: 1.4.19
+Release: 2ev
 Summary: A RDF parser library for Redland
 URL: http://www.librdf.org/
 Group: System Environment/Libraries
 License: LGPL-2.1/Apache-2
 Vendor: GNyU-Linux
 Source: http://download.librdf.org/source/raptor-%{version}.tar.gz
-BuildRequires: make, gcc, pkg-config, zlib, libxml2, curl
+BuildRequires: make, pkg-config, flex, bison, gcc
+BuildRequires: zlib, curl
+BuildRequires: libxml2 >= 2.6.8, libxslt >= 1.0.18
 
 %description
 Raptor is the RDF Parser Toolkit for Redland that provides a set of
@@ -51,4 +53,6 @@ N-Triples, XMP, Turtle, GraphViz DOT and JSON.
 %doc %{_mandir}/man1/raptor-config.1*
 %doc %{_mandir}/man1/rapper.1*
 %doc %{_mandir}/man3/libraptor.3*
+%dir %{_datadir}/gtk-doc/html/raptor
 %doc %{_datadir}/gtk-doc/html/raptor/*
+
