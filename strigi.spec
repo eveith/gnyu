@@ -1,14 +1,16 @@
 Name: strigi
 Version: 0.6.4
-Release: 1ev
+Release: 2ev
 Summary: A desktop search program
 URL: http://strigi.sourceforge.net/
 Group: System Environment/Daemons
 License: LGPL-2
 Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/strigi/strigi-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.2, make, gcc-g++, clucene-core >= 0.9.16, file
-BuildRequires: libxml2, bzip2, zlib, perl, dbus, qt4, pkg-config, java-jdk
+BuildRequires: cmake >= 2.4.2, pkg-config >= 0.9.0, make, gcc-g++, perl
+BuildRequires: clucene-core >= 0.9.19, file, exiv2 >= 0.12
+BuildRequires: expat, libxml2, zlib, bzip2
+BuildRequires: dbus >= 1.0, qt4 >= 4.3.0, java-jdk
 
 %description
 Strigi is a daemon which uses a very fast and efficient crawler that can 
@@ -46,6 +48,7 @@ It has been written focusing on portability and extendability.
 
 %post
 %{__ldconfig}
+
 
 %postun
 %{__ldconfig}
