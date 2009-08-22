@@ -1,14 +1,17 @@
 Name: redland
-Version: 1.0.8
-Release: 1ev
+Version: 1.0.9
+Release: 2ev
 Summary: Provides a RDF API and triple stores
 URL: http://librdf.org/
 Group: System Environment/Libraries
 License: LGPL-2.1/Apache-2.0
 Vendor: GNyU-Linux
 Source: http://download.librdf.org/source/redland-%{version}.tar.gz
-BuildRequires: make, gcc, pkg-config, raptor, rasqal, db, openssl, mysql-libs
-BuildRequires: sqlite
+BuildRequires: pkg-config, make, gcc
+BuildRequires: db >= 4.7, mysql-libs >= 3.23.56, sqlite >= 3.0
+BuildRequires: raptor >= 1.4.17, rasqal >= 0.9.16
+BuildRequires: openssl
+BuildConflicts: rasqual > 0.9.99
 
 %description
 Redland is a set of free software C libraries that provide support for the 
@@ -51,7 +54,8 @@ Resource Description Framework (RDF).
 %files
 %defattr(-, root, root)
 %doc README LICENSE*.txt COPYING* AUTHORS ChangeLog NOTICE NEWS TODO
-%doc %{_datadir}/gtk-doc/html/redland
+%doc %{_datadir}/gtk-doc/html/redland/*
+%dir %{_datadir}/gtk-doc/html/redland
 %{_bindir}/rdfproc
 %{_bindir}/redland-config
 %{_bindir}/redland-db-upgrade
@@ -59,6 +63,9 @@ Resource Description Framework (RDF).
 %{_includedir}/redland.h
 %{_includedir}/rdf_*.h
 %{_libdir}/librdf.*
+%dir %{_libdir}/redland
+%{_libdir}/redland/librdf_storage_mysql.*
+%{_libdir}/redland/librdf_storage_sqlite.*
 %{_libdir}/pkgconfig/redland.pc
 %doc %{_mandir}/man1/rdfproc.1*
 %doc %{_mandir}/man1/redland-config.1*
