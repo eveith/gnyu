@@ -1,14 +1,15 @@
 Name: rasqal
 Version: 0.9.16
-Release: 1ev
+Release: 2ev
 Summary: A library for executing RDF queries
 URL: http://www.librdf.org/rasqal
 Group: System Environment/Libraries
 License: LGPL-2.1/Apache-2.0
 Vendor: GNyU-Linux
 Source: http://download.librdf.org/source/rasqal-%{version}.tar.gz
-BuildRequires: make, gcc, pkg-config, raptor, libxml2, pcre, gmp
-Requires: pkg-config
+BuildRequires: pkg-config, make, gcc, flex >= 2.5.33, bison >= 1.28, perl
+BuildRequires: raptor >= 1.4.17
+BuildRequires: libxml2 >= 2.6.8, pcre >= 3.9, gmp
 
 %description
 Rasqal is a free software / Open Source C library that handles Resource
@@ -25,15 +26,13 @@ entirely separate.
 
 
 %build
-%configure
+%configure \
+	--with-redland=internal
 %{__make} %{?_smp_mflags}
 
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
-
-[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
 %post
@@ -46,7 +45,8 @@ entirely separate.
 %files
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog* COPYING* LICENSE.txt NEWS NOTICE README
-%doc %{_datadir}/gtk-doc/html/rasqal
+%dir %{_datadir}/gtk-doc/html/rasqal
+%doc %{_datadir}/gtk-doc/html/rasqal/*
 %{_bindir}/rasqal-config
 %{_bindir}/roqet
 %{_includedir}/rasqal
