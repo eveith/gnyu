@@ -1,13 +1,15 @@
 Name: curl
-Version: 7.19.4
-Release: 2ev
+Version: 7.19.6
+Release: 3ev
 Summary: A command line tool and library for client-side URL transfers
 URL: http://curl.haxx.se/
 Group: Applications/Internet
 License: MIT
 Vendor: GNyU-Linux
 Source: http://curl.haxx.se/download/curl-%{version}.tar.bz2
-BuildRequires: make, pkg-config, gcc, openssl, zlib, openldap-libs
+BuildRequires: make, pkg-config, gcc
+BuildRequires: zlib, openldap-libs
+BuildRequires: openssl, heimdal-libs
 
 %description
 curl and libcurl is a tool for transferring files using URL syntax. It
@@ -24,7 +26,10 @@ to libcurl for over 30 languages and environments.
 
 %build
 %configure \
-	--enable-thread
+	--enable-thread \
+	--enable-ldaps \
+	--enable-manual \
+	--with-gssapi
 %{__make} %{?_smp_mflags}
 
 
@@ -44,8 +49,8 @@ to libcurl for over 30 languages and environments.
 %doc CHANGES COPYING README RELEASE-NOTES 
 %{_bindir}/curl*
 %{_includedir}/curl/
-%{_libdir}/*.*
+%{_libdir}/libcurl.*
 %{_libdir}/pkgconfig/libcurl.pc
-%{_mandir}/man1/curl.1*
-%{_mandir}/man1/curl-config.1*
+%doc %{_mandir}/man1/curl.1*
+%doc %{_mandir}/man1/curl-config.1*
 %doc %{_mandir}/man3/*curl*.3*
