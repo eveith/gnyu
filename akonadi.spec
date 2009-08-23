@@ -1,15 +1,16 @@
 Name: akonadi
-Version: 1.1.2
-Release: 2ev
+Version: 1.2.0
+Release: 3ev
 Summary: KDE 4 PIM storage service
 URL: http://pim.kde.org/akonadi/
 Group: User Interface/Desktops
 License: LGPL-2.1
 Vendor: GNyU-Linux
-Source: http://akonadi.omat.nl/akonadi-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.86
-BuildRequires: libX11, libXext, libICE, mysql-libs, shared-mime-info
-BuildRequires: boost >= 1.33.1, pkg-config
+Source: http://download.akonadi-project.org/akonadi-%{version}.tar.bz2
+BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++
+BuildRequires: qt4 >= 4.5.0, libQtSql.so.4, automoc4, soprano
+BuildRequires: shared-mime-info >= 0.20
+BuildRequires: libxslt, boost
 Requires: shared-mime-info
 
 %description
@@ -52,6 +53,10 @@ exit 0
 %{_bindir}/akonadictl
 %{_bindir}/akonadiserver
 %{_includedir}/akonadi/
+%dir %{_libdir}/Akonadi
+%dir %{_libdir}/Akonadi/cmake
+%{_libdir}/Akonadi/cmake/AkonadiConfig.cmake
+%{_libdir}/Akonadi/cmake/AkonadiConfigVersion.cmake
 %{_libdir}/libakonadi*.*
 %{_libdir}/pkgconfig/akonadi.pc
 %dir %{_datadir}/config/akonadi
