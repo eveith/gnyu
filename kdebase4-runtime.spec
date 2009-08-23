@@ -1,20 +1,20 @@
 Name: kdebase4-runtime
-Version: 4.2.4
-Release: 5ev
+Version: 4.3.0
+Release: 6ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-runtime-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
-BuildRequires: kdelibs4 = %{version}
-BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
-BuildRequires: phonon >= 4.3.0, openexr, clucene-core, samba-libs, bzip2
-BuildRequires: xine-lib
-BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
-BuildRequires: libXScrnSaver, libXft
-Requires: dbus
+BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0 make, gcc-g++, perl
+# kdelibs BuildRequires will make this build require qt4, automoc4 & others,
+# too.
+BuildRequires: kdelibs4 = %{version}, kdelibs4-experimental = %{version}
+BuildRequires: strigi, soprano >= 2.2.69, qimageblitz, phonon >= 4.2.96
+BuildRequires: clucene-core, bzip2, lzma, samba-libs, xine-lib, alsa-lib
+BuildRequires: shared-mime-info, libjpeg, openexr
+Requires: dbus, shared-mime-info
 
 %description
 KDE Workspace consisting of what is the desktop. This means it includes
@@ -72,7 +72,9 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_bindir}/kde4
 	%{_bindir}/kde4-menu
 	%{_bindir}/kdebugdialog
+	%{_bindir}/keditfiletype
 	%{_bindir}/kfile4
+	%{_bindir}/kglobalaccel
 	%{_bindir}/khelpcenter
 	%{_bindir}/khotnewstuff4
 	%{_bindir}/kiconfinder
@@ -90,6 +92,7 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_bindir}/kwriteconfig
 	%{_bindir}/nepomukserver
 	%{_bindir}/nepomukservicestub
+	%{_bindir}/plasmapkg
 	%{_bindir}/solid-hardware
 	%{_libdir}/kde4/*.so
 	%{_libdir}/kde4/libexec/*
@@ -98,13 +101,27 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_libdir}/kde4/plugins/styles
 	%{_libdir}/kde4/plugins/styles/oxygen.so
 	%{_libdir}/libkdeinit4*.so*
+	%{_libdir}/libmolletnetwork.so*
 	%{_libdir}/libkwalletbackend.so*
 	%dir %{_libdir}/kconf_update_bin
 	%dir %{_libdir}/kconf_update_bin/*_update
 	%{_libdir}/strigi/strigiindex_sopranobackend.so
 	%doc %{_mandir}/man1/kdesu.1*
+	%doc %{_mandir}/man8/nepomukserver.8*
+	%doc %{_mandir}/man8/nepomukservicestub.8*
 	%{_datadir}/applications/kde4/*.desktop
 	%{_datadir}/apps/cmake/modules/*.cmake
+	%dir %{_datadir}/apps/desktoptheme
+	%dir %{_datadir}/apps/desktoptheme/oxygen
+	%{_datadir}/apps/desktoptheme/oxygen/metadata.desktop
+	%{_datadir}/apps/desktoptheme/oxygen/*/*.svgz
+	%{_datadir}/apps/desktoptheme/oxygen/opaque/*/*.svgz
+	%dir %{_datadir}/apps/desktoptheme/oxygen/colors
+	%dir %{_datadir}/apps/desktoptheme/oxygen/dialogs
+	%dir %{_datadir}/apps/desktoptheme/oxygen/opaque
+	%dir %{_datadir}/apps/desktoptheme/oxygen/opaque/dialogs
+	%dir %{_datadir}/apps/desktoptheme/oxygen/opaque/widgets
+	%dir %{_datadir}/apps/desktoptheme/oxygen/widgets
 	%dir %{_datadir}/apps/kde
 	%{_datadir}/apps/kde/kde.notifyrc
 	%dir %{_datadir}/apps/nepomuk/ontologies
@@ -119,29 +136,30 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_datadir}/apps/ksmserver/windowmanagers
 	%{_datadir}/apps/ksmserver/windowmanagers/*.desktop
 	%dir %{_datadir}/apps/kio_bookmarks
-	%dir %{_datadir}/apps/kio_info
-	%{_datadir}/apps/kio_info/kde-info2html
 	%dir %{_datadir}/apps/kio_desktop
 	%{_datadir}/apps/kio_desktop/DesktopLinks/Home.desktop
 	%dir %{_datadir}/apps/kio_desktop/DesktopLinks
+	%dir %{_datadir}/apps/kio_docfilter
+	%dir %{_datadir}/apps/kio_finger
+	%dir %{_datadir}/apps/kio_info
+	%{_datadir}/apps/kio_info/kde-info2html
 	%dir %{_datadir}/apps/kio_thumbnail
 	%dir %{_datadir}/apps/kio_thumbnail/pics
 	%{_datadir}/apps/kio_thumbnail/pics/thumbnailfont_7x4.png
-	%dir %{_datadir}/apps/kio_finger
-	%dir %{_datadir}/apps/kio_man
 	%{_datadir}/apps/kio_*/*.*
 	%dir %{_datadir}/apps/konqueror/dirtree
 	%dir %{_datadir}/apps/konqueror/dirtree/remote
 	%{_datadir}/apps/konqueror/dirtree/remote/smb-network.desktop
 	%dir %{_datadir}/apps/remoteview
+	%{_datadir}/apps/remoteview/network.desktop
 	%dir %{_datadir}/apps/libphonon
 	%dir %{_datadir}/apps/phonon
 	%dir %{_datadir}/apps/kcm_phonon
 	%{_datadir}/apps/kcm_phonon/listview-background.png
 	%dir %{_datadir}/apps/drkonqi
-	%dir %{_datadir}/apps/drkonqi/presets
+	%dir %{_datadir}/apps/drkonqi/mappings
 	%dir %{_datadir}/apps/drkonqi/pics
-	%{_datadir}/apps/drkonqi/pics/konqi.png
+	%{_datadir}/apps/drkonqi/pics/crash.png
 	%dir %{_datadir}/apps/drkonqi/debuggers
 	%{_datadir}/apps/drkonqi/*/*rc
 	%{_datadir}/apps/kcm_componentchooser/*.desktop
@@ -156,6 +174,8 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_datadir}/apps/khelpcenter/searchhandlers/htdig
 	%{_datadir}/apps/khelpcenter/searchhandlers/htdig/htdig_long.html
 	%{_datadir}/apps/kstyle/themes/oxygen.themerc
+	%dir %{_datadir}/apps/kwalletd
+	%{_datadir}/apps/kwalletd/kwalletd.notifyrc
 	%{_datadir}/apps/libphonon/hardwaredatabase
 	%{_datadir}/apps/phonon/phonon.notifyrc
 	%{_datadir}/apps/remoteview/smb-network.desktop
@@ -170,6 +190,10 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_datadir}/apps/khelpcenter/plugins/Tutorials/*.desktop
 	%{_datadir}/apps/khelpcenter/plugins/*.desktop
 	%{_datadir}/apps/khelpcenter/searchhandlers/*.desktop
+	%dir %{_datadir}/apps/konqsidebartng
+	%dir %{_datadir}/apps/konqsidebartng/virtual_folders
+	%dir %{_datadir}/apps/konqsidebartng/virtual_folders/remote
+	%{_datadir}/apps/konqsidebartng/virtual_folders/remote/virtualfolder_network.desktop
 	%{_datadir}/apps/desktoptheme/default/colors
 	%{_datadir}/apps/desktoptheme/default/metadata.desktop
 	%dir %{_datadir}/apps/desktoptheme/default/dialogs
@@ -191,7 +215,6 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_datadir}/kde4/services/searchproviders
 	%{_datadir}/kde4/services/searchproviders/*.desktop
 	%{_datadir}/icons/default.kde4
-	%{_datadir}/icons/oxygen/
 	%{_datadir}/icons/hicolor/*/apps/knetattach.*
 	%dir %{_datadir}/locale/l10n
 	%dir %{_datadir}/locale/l10n/C
@@ -428,4 +451,5 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_datadir}/locale/en_US/entry.desktop
 	%{_datadir}/locale/l10n/*.desktop
 	%{_datadir}/locale/l10n/*/*.*
+	%{_datadir}/mime/packages/network.xml
 	%{_datadir}/sounds/*.*
