@@ -255,6 +255,8 @@ libraries, misc HTML documentation, theme modules, and regression tests.
 	%dir %{_datadir}/apps/ksgmltools2/customization/ko/entities
 	%dir %{_datadir}/apps/ksgmltools2/customization/lt
 	%dir %{_datadir}/apps/ksgmltools2/customization/lt/entities
+	%dir %{_datadir}/apps/ksgmltools2/customization/nds
+	%dir %{_datadir}/apps/ksgmltools2/customization/nds/entities
 	%dir %{_datadir}/apps/ksgmltools2/customization/nl
 	%dir %{_datadir}/apps/ksgmltools2/customization/nl/entities
 	%dir %{_datadir}/apps/ksgmltools2/customization/nn
