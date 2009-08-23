@@ -1,16 +1,16 @@
 Name: kdepimlibs4
-Version: 4.2.4
-Release: 5ev
+Version: 4.3.0
+Release: 6ev
 Summary: Libraries common to all KDE 4 PIM applications
 URL: http://www.kde.org/
 Group: System Environment/Libraries
 License: LGPL-2.1, GPL-2, BSD
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdepimlibs-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.86
-BuildRequires: kdelibs4 = %{version}, phonon >= 4.3.0, boost >= 1.33.1
-BuildRequires: cyrus-sasl, gpgme >= 1.1.8, akonadi >= 0.80, libical >= 0.33
-BuildRequires: openldap-libs, pkg-config
+BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++
+BuildRequires: qt4 >= 4.2.0, kdelibs4 = %{version}, automoc4 >= 0.8.88
+BuildRequires: gpgme >= 1.1.8, cyrus-sasl >= 2.0, openldap-libs
+BuildRequires: akonadi >= 1.1.91, shared-mime-info >= 0.30, libical >= 0.42
 
 %description
 This module includes libraries that are central to the development and
@@ -57,18 +57,21 @@ scheduling and even sticky notes.
 	%{_libdir}/libkabc*.so*
 	%{_libdir}/libkblog.so*
 	%{_libdir}/libkcal.so*
+	%{_libdir}/libkholidays.so*
 	%{_libdir}/libkimap.so*
 	%{_libdir}/libkldap.so*
 	%{_libdir}/libkpimidentities.so*
 	%{_libdir}/libkpimutils.so*
+	%{_libdir}/libkpimtextedit.so*
 	%{_libdir}/libkresources.so*
 	%{_libdir}/libktnef.so*
 	%{_libdir}/libkxmlrpcclient.so*
 	%{_libdir}/libmailtransport.so*
+	%{_libdir}/libmicroblog.so*
 	%{_libdir}/libsyndication.so*
-	%dir %{_libdir}/KdepimLibs-%{version}
-	%dir %{_libdir}/KdepimLibs-%{version}/cmake
-	%{_libdir}/KdepimLibs-%{version}/cmake/*.cmake
+	%dir %{_libdir}/KdepimLibs
+	%dir %{_libdir}/KdepimLibs/cmake
+	%{_libdir}/KdepimLibs/cmake/*.cmake
 	%dir %{_libdir}/gpgmepp
 	%{_libdir}/gpgmepp/*.cmake
 	%{_libdir}/kde4/*.so
@@ -83,6 +86,34 @@ scheduling and even sticky notes.
 	%dir %{_datadir}/kde4/services/kresources
 	%dir %{_datadir}/kde4/services/kresources/kabc
 	%dir %{_datadir}/kde4/services/kresources/kcal
+	%dir %{_includedir}/KDE/Akonadi
+	%{_includedir}/KDE/Akonadi/*
+	%dir %{_includedir}/KDE/KABC
+	%{_includedir}/KDE/KABC/*
+	%dir %{_includedir}/KDE/KBlog
+	%{_includedir}/KDE/KBlog/*
+	%dir %{_includedir}/KDE/KCal
+	%{_includedir}/KDE/KCal/*
+	%dir %{_includedir}/KDE/KHolidays
+	%{_includedir}/KDE/KHolidays/*
+	%dir %{_includedir}/KDE/KLDAP
+	%{_includedir}/KDE/KLDAP/*
+	%dir %{_includedir}/KDE/KPIMIdentities
+	%{_includedir}/KDE/KPIMIdentities/*
+	%dir %{_includedir}/KDE/KPIMTextEdit
+	%{_includedir}/KDE/KPIMTextEdit/*
+	%dir %{_includedir}/KDE/KPIMUtils
+	%{_includedir}/KDE/KPIMUtils/*
+	%dir %{_includedir}/KDE/KResources
+	%{_includedir}/KDE/KResources/*
+	%dir %{_includedir}/KDE/Syndication
+	%{_includedir}/KDE/Syndication/*
+	%dir %{_includedir}/kholidays
+	%{_includedir}/kholidays/*.h
+	%dir %{_includedir}/kpimtextedit
+	%{_includedir}/kpimtextedit/*.h
+	%dir %{_includedir}/microblog
+	%{_includedir}/microblog/*.h
 	%dir %{_includedir}/gpgme++
 	%dir %{_includedir}/gpgme++/interfaces
 	%{_includedir}/gpgme++/*.h
@@ -123,6 +154,8 @@ scheduling and even sticky notes.
 	%{_includedir}/syndication/*/*.h
 	%dir %{_includedir}/ktnef
 	%{_includedir}/ktnef/*.h
+	%dir %{_datadir}/apps/libkholidays
+	%{_datadir}/apps/libkholidays/holiday*
 	%{_datadir}/apps/cmake/modules/*.cmake
 	%{_datadir}/config.kcfg/mailtransport.kcfg
 	%{_datadir}/dbus-1/interfaces/org.kde.KResourcesManager.xml
@@ -131,3 +164,4 @@ scheduling and even sticky notes.
 	%{_datadir}/kde4/services/kresources/*.*
 	%{_datadir}/kde4/services/kresources/*/*.desktop
 	%{_datadir}/kde4/servicetypes/*.*
+	%{_datadir}/mime/packages/kdepimlibs-mime.xml
