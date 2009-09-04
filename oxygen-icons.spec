@@ -27,6 +27,13 @@ It is unobstrusive and carfully designed for a coherent look and feel.
 
 %install
 	%{__make} install DESTDIR='%{buildroot}'
+	
+	# Create scalable dirs, even if just for reference
+	for i in mimetypes intl animations apps emotes places categories emblems \
+			actions devices status
+	do
+		%{__mkdir_p} "%{buildroot}/%{_datadir}/icons/oxygen/scalable/${i}"
+	done
 
 
 %files
