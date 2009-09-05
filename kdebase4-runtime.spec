@@ -1,19 +1,19 @@
 Name: kdebase4-runtime
-Version: 4.3.0
-Release: 6ev
+Version: 4.3.1
+Release: 7ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-runtime-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0 make, gcc-g++, perl
-# kdelibs BuildRequires will make this build require qt4, automoc4 & others,
-# too.
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
 BuildRequires: kdelibs4 = %{version}, kdelibs4-experimental = %{version}
-BuildRequires: strigi, soprano >= 2.2.69, qimageblitz, phonon >= 4.2.96
+BuildRequires: strigi, soprano >= 2.3.0, qimageblitz, phonon >= 4.2.96
 BuildRequires: clucene-core, bzip2, lzma, samba-libs, xine-lib, alsa-lib
-BuildRequires: shared-mime-info, libjpeg, openexr
+BuildRequires: shared-mime-info >= 0.40, libjpeg, openexr
 Requires: dbus, shared-mime-info
 
 %description
