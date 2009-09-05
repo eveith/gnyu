@@ -1,21 +1,17 @@
 Name: kdebase4
-Version: 4.2.4
-Release: 5ev
+Version: 4.3.0
+Release: 6ev
 Summary: KDE Base Applications: "What Runs The Desktop"
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.4.2, automoc4 >= 0.9.86
-BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
-BuildRequires: kdebase4-workspace = %{version}, kdebase4-runtime = %{version}
-BuildRequires: libX11, libICE, libXau, libXcomposite
-BuildRequires: libXcursor, libXdamage, libXdmcp, libXext, libXfixes, libXft
-BuildRequires: libXinerama, libxkbfile, libXpm, libXrandr, libXv, libXt
-BuildRequires: libXrender, libXxf86misc, dbus, libstdc++
-BuildRequires: perl, strigi, zlib, qimageblitz >= 0.0.4, pciutils, mesalib
-BuildRequires: soprano, glib2, phonon >= 4.3.0
+BuildRequires: cmake >= 2.6, pkg-config >= 0.9.0 make, gcc-g++
+BuildRequires: kdelibs4 = %{version}
+BuildRequires: strigi
+BuildRequires: glib2, zlib, mesalib, pciutils
+BuildRequires: libXt, libxkbfile
 Requires: dbus, kdebase4-workspace >= %{version}, kdebase4-runtime >= %{version}
 Obsoletes: kdebase < %{version}
 
@@ -70,7 +66,6 @@ applications beyond the workspace that KDE applications can assume are installed
 	%{_bindir}/kdepasswd
 	%{_bindir}/kdialog
 	%{_bindir}/keditbookmarks
-	%{_bindir}/keditfiletype
 	%{_bindir}/kfind
 	%{_bindir}/kfmclient
 	%{_bindir}/kinfocenter
@@ -93,6 +88,7 @@ applications beyond the workspace that KDE applications can assume are installed
 	%{_libdir}/libdolphinprivate.so*
 	%{_libdir}/libkdeinit4_*.so
 	%{_libdir}/libkonq*.so*
+	%{_libdir}/libkonsoleprivate.so*
 	%doc %{_mandir}/man1/kappfinder.1*
 	%doc %{_mandir}/man1/kfind.1*
 	%doc %{_mandir}/man1/kbookmarkmerger.1*
