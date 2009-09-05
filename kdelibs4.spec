@@ -1,15 +1,15 @@
 Name: kdelibs4
-Version: 4.3.0
-Release: 5ev
+Version: 4.3.1
+Release: 6ev
 Summary: Base libraries for KDE-based applcations
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2, BSD
 Vendor: GNyU-Linux
-Source: http://download.kde.org/stable/%{version}/src/kdelibs-%{version}.tar.bz2
-BuildRequires: cmake >= 2.6, make, flex, bison, gcc-g++, perl, gettext
+Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdelibs-%{version}.tar.bz2
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
 BuildRequires: libX11, libSM, libICE, libXrender
-BuildRequires: qt4 >= 4.4.2, automoc4 >= 0.9.88
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
 BuildRequires: zlib, bzip2, openssl, mesalib, libacl, libutempter 
 BuildRequires: strigi >= 0.6.3, soprano >= 2.1.68
 BuildRequires: pcre, libxslt, libxml2, hal, heimdal-libs
