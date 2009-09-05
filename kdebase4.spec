@@ -1,17 +1,17 @@
 Name: kdebase4
-Version: 4.3.0
-Release: 6ev
+Version: 4.3.1
+Release: 7ev
 Summary: KDE Base Applications: "What Runs The Desktop"
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-%{version}.tar.bz2
-BuildRequires: cmake >= 2.6, pkg-config >= 0.9.0 make, gcc-g++
-BuildRequires: kdelibs4 = %{version}
-BuildRequires: strigi
-BuildRequires: glib2, zlib, mesalib, pciutils
-BuildRequires: libXt, libxkbfile
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender, libXt, libxkbfile
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
+BuildRequires: kdelibs4 = %{version}, kdebase4-workspace = %{version}
+BuildRequires: strigi, glib2, zlib, mesalib, pciutils
 Requires: dbus, kdebase4-workspace >= %{version}, kdebase4-runtime >= %{version}
 Obsoletes: kdebase < %{version}
 
