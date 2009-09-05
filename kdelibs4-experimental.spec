@@ -1,13 +1,15 @@
 Name: kdelibs4-experimental
-Version: 4.3.0
-Release: 1ev
+Version: 4.3.1
+Release: 2ev
 Summary: Experimental KDE modules intended for internal use only
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1
 Vendor: GNyU-Linux
-Source: ftp://ftp.kde.org/pub/kde/stable/4.3.0/src/kdelibs-experimental-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++
+Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdelibs-experimental-%{version}.tar.bz2
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
 BuildRequires: kdelibs4 = %{version}
 
 %description
