@@ -1,14 +1,14 @@
 Name: kdepimlibs4
-Version: 4.3.0
-Release: 6ev
+Version: 4.3.1
+Release: 7ev
 Summary: Libraries common to all KDE 4 PIM applications
 URL: http://www.kde.org/
 Group: System Environment/Libraries
 License: LGPL-2.1, GPL-2, BSD
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdepimlibs-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++
-BuildRequires: qt4 >= 4.2.0, kdelibs4 = %{version}, automoc4 >= 0.8.88
+BuildRequires: cmake >= 2.6.2, pkg-config >= 0.9.0, make, gcc-g++
+BuildRequires: qt4 >= 4.5.0, kdelibs4 = %{version}, automoc4 >= 0.8.88
 BuildRequires: gpgme >= 1.1.8, cyrus-sasl >= 2.0, openldap-libs
 BuildRequires: akonadi >= 1.1.91, shared-mime-info >= 0.30, libical >= 0.42
 
