@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
-Version: 4.2.4
-Release: 6ev
+Version: 4.3.0
+Release: 7ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -9,14 +9,17 @@ Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-workspace-%{version}.tar.bz2
 Source1: %{name}-kde.pamd
 Source2: %{name}-kdm.ii
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.2.0, automoc4 >= 0.8.87
+BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++, perl
 BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
-BuildRequires: kdebase4-runtime = %{version}, kdebindings4 = %{version}
-BuildRequires: glib2, soprano, perl, qimageblitz >= 0.0.4
-BuildRequires: libX11, libICE, libSM, libXext, libXcomposite, libxkbfile,
-BuildRequires: libXScrnSaver, libXft, libxklavier >= 3.0
-BuildRequires: freetype, fontconfig, libusb, libpam, phonon >= 4.3.0, bluez
-Requires: dbus, kdebase4-runtime >= %{version}
+BuildRequires: kdebase4-runtime = %{version}
+BuildRequires: qt4 >= 4.2.0, qimageblitz, strigi, phonon >= 4.3.0
+BuildRequires: libpam, libusb, zlib, glib2, freetype, fontconfig
+BuildRequires: bluez, soprano
+BuildRequires: python, python-sip >= 4.7.1, python-PyQt4 >= 4.4.0
+BuildRequires: python-PyKDE4
+BuildRequires: libXScrnSaver, libXext, libXau, libXdmcp, libXrandr,
+BuildRequires: libXcomposite, libxklavier >= 3.0, libxkbfile, libXft
+Requires: dbus, kdebase4-runtime >= %{version}, oxygen-icons >= %{version}
 
 %description
 KDE Workspace consisting of what is the desktop. This means it includes
@@ -81,14 +84,12 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%config %{_sysconfdir}/kde4/kdm/Xwilling
 	%config %{_sysconfdir}/kde4/kdm/backgroundrc
 	%config %{_sysconfdir}/kde4/kdm/kdmrc
-	%config %{_sysconfdir}/kde4/klipperrc
 	%config %{_sysconfdir}/kde4/ksplash.knsrc
 	%config %{_sysconfdir}/kde4/ksysguard.knsrc
 	%config %{_sysconfdir}/kde4/plasma-overlayrc
 	%config %{_sysconfdir}/kde4/plasma-themes.knsrc
 	%config %{_sysconfdir}/kde4/wallpaper.knsrc
 	%config %{_sysconfdir}/kde4/ksysguarddrc
-	%config %{_sysconfdir}/kde4/systemsettingsrc
 	%config(noreplace) %{_sysconfdir}/pam.d/kde
 	%{_bindir}/genkdmconf
 	%{_bindir}/kaccess
@@ -120,13 +121,14 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_bindir}/kwin_killer_helper
 	%{_bindir}/kwin_rules_dialog
 	%{_bindir}/kxkb
-	%{_bindir}/plasma
+	%{_bindir}/plasma-desktop
 	%{_bindir}/plasma-overlay
 	%{_bindir}/plasmaengineexplorer
-	%{_bindir}/plasmapkg
 	%{_bindir}/plasmoidviewer
+	%{_bindir}/plasmawallpaperviewer
 	%{_bindir}/safestartkde
 	%{_bindir}/setscheduler
+	%{_bindir}/solid-action-desktop-gen
 	%{_bindir}/solid-bluetooth
 	%{_bindir}/solid-network
 	%{_bindir}/solid-powermanagement
@@ -135,6 +137,8 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_includedir}/KDE/Plasma/Weather
 	%{_includedir}/KDE/Plasma/Weather/*
 	%dir %{_includedir}/kephal
+	%dir %{_includedir}/plasma/geolocation
+	%{_includedir}/plasma/geolocation/geolocation*.h
 	%dir %{_includedir}/plasmaclock
 	%dir %{_includedir}/solid/control
 	%dir %{_includedir}/solid/control/ifaces
@@ -143,6 +147,7 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_includedir}/kworkspace
 	%dir %{_includedir}/ksgrd
 	%dir %{_includedir}/plasma/weather
+	%dir %{_includedir}/systemsettingsview
 	%{_includedir}/plasma/weather/*.h
 	%{_includedir}/solid/control/*.h
 	%{_includedir}/solid/control/ifaces/*.h
@@ -160,11 +165,12 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_libdir}/kde4/libexec/kfontprint
 	%{_libdir}/kde4/libexec/kio_fonts_helper
 	%{_libdir}/kde4/libexec/krootimage
-	%{_libdir}/kde4/libexec/krunner_lock
+	%{_libdir}/kde4/libexec/kscreenlocker
 	%{_libdir}/kde4/libexec/test_kcm_xinerama
 	%{_libdir}/kde4/plugins/designer/*.so
 	%{python_sitelib}/PyKDE4/plasmascript.py*
 	%{_libdir}/libkephal.so*
+	%{_libdir}/libkickoff.so*
 	%{_libdir}/libplasmaclock.so*
 	%{_libdir}/libsolidcontrol.so*
 	%{_libdir}/libsolidcontrolifaces.so*
@@ -184,19 +190,22 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_libdir}/libkdeinit4_ksmserver.so*
 	%{_libdir}/libkdeinit4_kcminit.so*
 	%{_libdir}/libkdeinit4_kcminit_startup.so*
+	%{_libdir}/libkdeinit4_plasma-desktop.so
 	%{_libdir}/libkhotkeysprivate.so*
 	%{_libdir}/libkdeinit4_klipper.so*
 	%{_libdir}/libkdeinit4_ksysguard.so*
 	%{_libdir}/libksgrd.so*
 	%{_libdir}/libkdeinit4_krunner.so*
 	%{_libdir}/libkdeinit4_kmenuedit.so*
-	%{_libdir}/libplasma_applet-system-monitor.so*
 	%{_libdir}/libweather_ion.so*
-	%{_libdir}/libkdeinit4_plasma.so*
 	%{_libdir}/libkdeinit4_kaccess.so*
 	%{_libdir}/libkdeinit4_kxkb.so
 	%{_libdir}/libkfontinst.so*
 	%{_libdir}/libkfontinstui.so*
+	%{_libdir}/libplasma_applet-system-monitor.so*
+	%{_libdir}/libplasma-geolocation-interface.so*
+	%{_libdir}/libsystemsettingsview.so
+	%{_libdir}/libtime_solar.so*
 	%{_libdir}/strigi/strigita_font.so
 	%{_datadir}/applications/kde4/*.desktop
 	%{_datadir}/apps/cmake/modules/*.cmake
@@ -205,10 +214,19 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_datadir}/icons/hicolor/*/*/*.*
 	%{_datadir}/apps/kcontrol/pics/*.png
 	%{_datadir}/apps/kconf_update/*.*
+	%dir %{_datadir}/apps/kcmsolidactions
+	%{_datadir}/apps/kcmsolidactions/solid-action-template.desktop
+	%dir %{_datadir}/apps/solid
+	%dir %{_datadir}/apps/solid/actions
+	%{_datadir}/apps/solid/actions/test-predicate-openinwindow.desktop
+	%dir %{_datadir}/apps/solid/devices
+	%{_datadir}/apps/solid/devices/solid-device*.desktop
 	%dir %{_datadir}/apps/solidfakenetbackend
 	%{_datadir}/apps/solidfakenetbackend/fakenetworking.xml
 	%dir %{_datadir}/apps/systemsettings
 	%{_datadir}/apps/systemsettings/systemsettingsui.rc
+	%dir %{_datadir}/apps/systemsettings/classic
+	%{_datadir}/apps/systemsettings/classic/*.*
 	%dir %{_datadir}/apps/kwin
 	%{_datadir}/apps/kwin/*.*
 	%dir %{_datadir}/apps/kwin/default_rules
@@ -251,9 +269,6 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_datadir}/apps/desktoptheme/default/*/*.svgz
 	%dir %{_datadir}/apps/desktoptheme/default/calendar
 	%dir %{_datadir}/apps/desktoptheme/default/system-monitor
-	%dir %{_datadir}/apps/solid
-	%dir %{_datadir}/apps/solid/actions
-	%{_datadir}/apps/solid/actions/test-predicate-openinwindow.desktop
 	%dir %{_datadir}/apps/plasma
 	%dir %{_datadir}/apps/plasma/services
 	%{_datadir}/apps/plasma/services/*.operations
@@ -273,6 +288,7 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%dir %{_datadir}/apps/kdm/themes
 	%dir %{_datadir}/apps/kdm/themes/circles
 	%dir %{_datadir}/apps/kdm/themes/oxygen
+	%dir %{_datadir}/apps/kdm/themes/oxygen-air
 	%{_datadir}/apps/kdm/themes/*/*.*
 	%dir %{_datadir}/apps/kdm/sessions
 	%{_datadir}/apps/kdm/*/*.*
@@ -331,3 +347,4 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_datadir}/kde4/servicetypes/*.desktop
 	%{_datadir}/sounds/pop.wav
 	%{_datadir}/wallpapers
+	%doc %{_mandir}/man1/plasmaengineexplorer.1*
