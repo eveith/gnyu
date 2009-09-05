@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
-Version: 4.3.0
-Release: 7ev
+Version: 4.3.1
+Release: 8ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -9,16 +9,19 @@ Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdebase-workspace-%{version}.tar.bz2
 Source1: %{name}-kde.pamd
 Source2: %{name}-kdm.ii
-BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++, perl
+BuildRequires: cmake >= 2.6.2, pkg-config >= 0.9.0, make, gcc-g++, perl
 BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
 BuildRequires: kdebase4-runtime = %{version}
-BuildRequires: qt4 >= 4.2.0, qimageblitz, strigi, phonon >= 4.3.0
+BuildRequires: qt4 >= 4.5.0, qimageblitz, strigi, phonon >= 4.3.0
 BuildRequires: libpam, libusb, zlib, glib2, freetype, fontconfig
 BuildRequires: bluez, soprano
 BuildRequires: python, python-sip >= 4.7.1, python-PyQt4 >= 4.4.0
 BuildRequires: python-PyKDE4
-BuildRequires: libXScrnSaver, libXext, libXau, libXdmcp, libXrandr,
+BuildRequires: dbus >= 1.1.20, policykit >= 0.8
+BuildRequires: libXScrnSaver, libXext, libXau, libXdmcp, libXrandr >= 1.2,
 BuildRequires: libXcomposite, libxklavier >= 3.0, libxkbfile, libXft
+BuildRequires: libXrender
+BuildRequires: mesalib
 Requires: dbus, kdebase4-runtime >= %{version}, oxygen-icons >= %{version}
 
 %description
