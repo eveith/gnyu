@@ -1,6 +1,6 @@
 Name: qmmp
 Version: 0.3.0
-Release: 1ev
+Release: 2ev
 Summary: A WinAmp-like audio player based on Qt
 URL: http://code.google.com/p/qmmp
 Group: Applications/Multimedia
@@ -11,6 +11,7 @@ BuildRequires: cmake >= 2.4.8, pkg-config >= 0.9.0, make, gcc-g++
 BuildRequires: qt4 >= 4.3
 BuildRequires: alsa-lib >= 1.0.1, libogg, libvorbis, libmad >= 0.15.1b-3ev
 BuildRequires: taglib >= 1.4, curl >= 7.16, libsndfile >= 1.0.17
+BuildRequires: libflac >= 1.1.3
 
 %description
 
