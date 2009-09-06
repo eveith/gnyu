@@ -1,17 +1,16 @@
-Name: libflac
+Name: libflac8
 Version: 1.2.1
 Release: 2ev
 Summary: Cross-Platform Audio Output Library: Free Lossless Audio Codec
 URL: http://www.vorbis.com/
 Group: System Environment/Libraries
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: LGPL-2.1, GPL-2
+Vendor: GNyU-Linux
 Source: http://downloads.xiph.org/releases/flac/flac-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc, gcc-g++, nasm >= 0.98.30, pkg-config
-BuildRequires: libogg >= 1.1.2
+BuildRequires: pkgconfig >= 0.9.0, make, gcc, gcc-g++, nasm >= 0.98.30
+BuildRequires: libogg >= 1.1.2, libvorbis
 Requires: pkg-config
+Provides: libflac = %{version}
 
 %description
 Libao is a cross-platform audio output library.  It currently supports
