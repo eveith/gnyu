@@ -1,20 +1,42 @@
 Name: kde4-l10n-de
-Version: 4.2.2
-Release: 3ev
+Version: 4.3.1
+Release: 4ev
 Summary: German translations for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: FDL-1.2
 Vendor: GNyU-Linux
-Source: ftp://ftp.kde.org/pub/kde/stable/4.2.0/src/kde-l10n/kde-l10n-de-%{version}.tar.bz2
+Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kde-l10n/kde-l10n-de-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, make, kdelibs4, kdebase4, qt4 >= 4.4.2
 BuildRequires: automoc4 >= 0.8.86, libICE, libX11, gettext, phonon >= 4.3.0
 BuildArch: noarch
-Requires: kdelibs4, kdebase4, kdegames4, kdeedu4
+Requires: kdelibs4, kdebase4
 
 %description
 This package provides German translations for all programs that are part of
-the original kde source.
+the original kde source. Some subpackages also provide localized sounds or
+wordlists for games and educational programs; you might want to install them,
+too.
+
+
+%package games
+Summary: Localized files KDE's games (German)
+Group: User Interface/Desktops
+Requires: kdegames4
+
+%description games
+This is a supplemant to the kde4-l10n-de package. It contains speech files and
+wordlists for KDE's games.
+
+
+%package edu
+Summary: Localized files for KDE's educational programs (German)
+Group: User Interface/Desktops
+Requires: kdeedu4
+
+%description edu
+This is a supplemant to the kde4-l10n-de package. It contains localizations
+for KDE's educational programs.
 
 
 %prep
@@ -71,6 +93,7 @@ the original kde source.
 %doc %{_mandir}/de/man1/kross.1*
 %doc %{_mandir}/de/man1/ktouch.1*
 %doc %{_mandir}/de/man1/makekdewidgets.1*
+%doc %{_mandir}/de/man1/plasmaengineexplorer.1*
 %doc %{_mandir}/de/man1/po2xml.1*
 %doc %{_mandir}/de/man1/preparetips.1*
 %doc %{_mandir}/de/man1/pruneemptydirs.1*
@@ -92,12 +115,22 @@ the original kde source.
 %doc %{_mandir}/de/man8/kded4.8*
 %doc %{_mandir}/de/man8/kdeinit4.8*
 %doc %{_mandir}/de/man8/meinproc4.8*
-%{_datadir}/apps/khangman/de.txt
-%{_datadir}/apps/klettres/de/
-%{_datadir}/apps/ktuberling/sounds/de.soundtheme
-%{_datadir}/apps/ktuberling/sounds/de/
-%{_datadir}/apps/kvtml/de/
-%{_datadir}/apps/step/objinfo/l10n/de/
+%doc %{_mandir}/de/man8/nepomukserver.8*
+%doc %{_mandir}/de/man8/nepomukservicestub.8*
 %lang(de) %{_datadir}/locale/de/*/*.mo
 %{_datadir}/locale/de/LC_SCRIPTS/
 %{_datadir}/locale/de/entry.desktop
+
+
+%files games
+%defattr(-, root, root)
+%lang(de) %{_datadir}/apps/khangman/de.txt
+%{_datadir}/apps/ktuberling/sounds/de.soundtheme
+%{_datadir}/apps/ktuberling/sounds/de/
+
+
+%files edu
+%defattr(-, root, root)
+%{_datadir}/apps/klettres/de/
+%{_datadir}/apps/kvtml/de/
+%{_datadir}/apps/step/objinfo/l10n/de/
