@@ -1,14 +1,13 @@
 Name: libmad
 Version: 0.15.1b
-Release: 1ev
-Summary: A high-quality MPEG audio decoder
+Release: 2ev
+Summary: An high-quality MPEG audio decoder
 URL: http://www.underbit.com/products/mad/
 Group: System Environment/Libraries
-License: GPL
-Vendor: MSP Slackware
+License: GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.mars.org/pub/mpeg/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core
+BuildRequires: make, gcc
 
 %description
 MAD is a high-quality MPEG audio decoder capable of 24-bit output. All
@@ -23,28 +22,21 @@ entirely new, based on the ISO/IEC standards.
 
 %build
 %configure \
-	--enable-accuracy
-make %{_smp_mflags}
+	--enable-accuracy \
+	--enable-sso
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
