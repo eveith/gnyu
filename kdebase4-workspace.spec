@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
 Version: 4.3.1
-Release: 8ev
+Release: 9ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -14,7 +14,7 @@ BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
 BuildRequires: kdebase4-runtime = %{version}
 BuildRequires: qt4 >= 4.5.0, qimageblitz, strigi, phonon >= 4.3.0
 BuildRequires: libpam, libusb, zlib, glib2, freetype, fontconfig
-BuildRequires: bluez, soprano
+BuildRequires: bluez, soprano, polkit-qt >= 0.9.0
 BuildRequires: python, python-sip >= 4.7.1, python-PyQt4 >= 4.4.0
 BuildRequires: python-PyKDE4
 BuildRequires: dbus >= 1.1.20, policykit >= 0.8
@@ -124,6 +124,7 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_bindir}/kwin_killer_helper
 	%{_bindir}/kwin_rules_dialog
 	%{_bindir}/kxkb
+	%{_bindir}/polkit-kde-authorization
 	%{_bindir}/plasma-desktop
 	%{_bindir}/plasma-overlay
 	%{_bindir}/plasmaengineexplorer
@@ -169,12 +170,14 @@ Plasma, i. e. desktop and panels, the KDM login manager, and so on.
 	%{_libdir}/kde4/libexec/kio_fonts_helper
 	%{_libdir}/kde4/libexec/krootimage
 	%{_libdir}/kde4/libexec/kscreenlocker
+	%{_libdir}/kde4/libexec/polkit-kde-manager
 	%{_libdir}/kde4/libexec/test_kcm_xinerama
 	%{_libdir}/kde4/plugins/designer/*.so
 	%{python_sitelib}/PyKDE4/plasmascript.py*
 	%{_libdir}/libkephal.so*
 	%{_libdir}/libkickoff.so*
 	%{_libdir}/libplasmaclock.so*
+	%{_libdir}/libpolkitkdeprivate.so*
 	%{_libdir}/libsolidcontrol.so*
 	%{_libdir}/libsolidcontrolifaces.so*
 	%{_libdir}/libtaskmanager.so*
