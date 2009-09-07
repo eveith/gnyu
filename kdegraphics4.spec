@@ -1,16 +1,18 @@
 Name: kdegraphics4
-Version: 4.2.4
-Release: 4ev
+Version: 4.3.1
+Release: 5ev
 Summary: A collection of graphic oriented applications for KDE 4.2
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdegraphics-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.4.2, automoc4 >= 0.8.86
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender, libXxf86vm
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
 BuildRequires: perl, phonon >= 4.3.0, kdelibs4 = %{version}, strigi, qimageblitz
-BuildRequires: sane-backends, lcms, libjpeg, libtiff, poppler-qt4, zlib, freetype
-BuildRequires: libX11, libICE, libXxf86vm, exiv2, pkg-config
+BuildRequires: sane-backends, lcms, libjpeg, libtiff, poppler-qt4 >= 0.8, zlib
+BuildRequires: exiv2 >= 0.17, freetype
 Obsoletes: kdegraphics < %{version}
 
 %description
@@ -68,6 +70,7 @@ kdegraphics is a collection of graphic oriented applications:
 %{_libdir}/libksane.so*
 %{_libdir}/libokularcore.so*
 %{_libdir}/strigi/strigita_dvi.so
+%{_libdir}/strigi/strigila_mobi.so
 %{_libdir}/pkgconfig/libkdcraw.pc
 %{_libdir}/pkgconfig/libkipi.pc
 %{_libdir}/pkgconfig/libksane.pc
