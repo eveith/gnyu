@@ -1,7 +1,7 @@
 Name: x264
-Version: 20090213
+Version: 20090906
 %define rev 2245
-Release: 2ev
+Release: 3ev
 Summary: A library for de- or encoding H.264 video
 URL: http://www.videolan.org/developers/x264.html
 Group: System Environment/Libraries
@@ -42,6 +42,7 @@ License.
 
 %post
 %{__ldconfig}
+
 
 %postun
 %{__ldconfig}
