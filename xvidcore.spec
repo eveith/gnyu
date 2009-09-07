@@ -1,14 +1,14 @@
 Name: xvidcore
-Version: 1.1.3
-Release: 1ev
+Version: 1.2.2
+Release: 2ev
 Summary: A DivX-like MPEG-4 video codec
 URL: http://www.xvid.org/
 Group: System Environment/Libraries
-License: GPL
-Vendor: MSP Slackware
+License: GPL-2
+Vendor: GNyU-Linux
 Source: http://downloads.xvid.org/downloads/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, nasm
+BuildRequires: make, gcc, nasm
+Provides: xvid = %{version}-%{release}
 
 %description
 Xvid (formerly "XviD") is a video codec library following the MPEG-4 standard.
@@ -21,36 +21,28 @@ unlike DivX, can be used on many different platforms and operating systems.
 
 
 %prep
-%setup -q
+%setup -q -n '%{name}'
 
 
 %build
 pushd 'build/generic'
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 popd
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
 pushd 'build/generic'
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 popd
 
 
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
