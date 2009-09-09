@@ -1,15 +1,15 @@
 Name: libtheora
-Version: 1.0alpha7
-Release: 1ev
+Version: 1.0
+Epoch: 1
+Release: 2ev
 Summary: A video codec that builds upon On2's VP3 codec
 URL: http://www.theora.org/
 Group: System Environment/Libraries
-License: GPL
-Vendor: MSP Slackware
+License: BSD
+Vendor: GNyU-Linux
 Source: http://downloads.xiph.org/releases/theora/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libogg >= 1.1
-Requires: libogg >= 1.1
+BuildRequires: make, pkg-config, gcc, doxygen
+BuildRequires: libogg >= 1.1, libvorbis >= 1.0.1, libsdl >= 0.11.0, libpng
 
 %description
 Theora is a video codec being developed by the Xiph.Org Foundation as part of
@@ -31,27 +31,19 @@ layers.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-rm -rf "${RPM_BUILD_ROOT}/%{_datadir}/doc/%{name}-%{version}"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
@@ -60,3 +52,7 @@ rm -rf "${RPM_BUILD_ROOT}/%{_datadir}/doc/%{name}-%{version}"
 %{_includedir}/theora
 %{_libdir}/libtheora*.*
 %{_libdir}/pkgconfig/theora.pc
+%{_libdir}/pkgconfig/theoradec.pc
+%{_libdir}/pkgconfig/theoraenc.pc
+%dir %{_datadir}/doc/%{name}-%{version}
+%doc %{_datadir}/doc/%{name}-%{version}/*
