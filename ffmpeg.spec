@@ -1,16 +1,15 @@
 Name: ffmpeg
-Version: 2009.02.13
+Version: 20090909
 Release: 1ev
 Summary: A video and audio format decoder and streaming server
 URL: http://ffmpeg.mplayerhq.hu
 Group: Applications/Multimedia
 License: GPL-2, LGPL-2.1
 Vendor: GNyU-Linux
-Source: ffmpeg-export-snapshot.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make >= 3.81, gcc
-BuildRequires lame, libogg, libvorbis, xvidcore, zlib, x264 >= 0.65
-Requires: libavcodec
+Source: ffmpeg-%{version}.tar.bz2
+BuildRequires: make >= 3.81, pkg-config >= 0.9.0, gcc
+BuildRequires: zlib, bzip2, libogg, libvorbis, libtheora, speex, xvidcore
+BuildRequires: x264, libmatroska, faad2, libsdl, alsa-lib
 
 %description
 FFmpeg is a collection of software libraries that can record, convert and
@@ -35,12 +34,11 @@ applications rely on it.
 
 
 %prep
-%setup -q -n 'ffmpeg-export-%(echo %{version} | %{__sed} "s,\.,-,g")'
+%setup -q
 
 
 %build
-# TODO: We will later include libfaad, libfaac, libx264 and liba52!
-#	--disable-libx264 \
+# TODO: We will later include libfaac and liba52!
 ./configure \
 	--prefix="%{_prefix}" \
 	--libdir="%{_libdir}" \
@@ -52,22 +50,22 @@ applications rely on it.
 	--enable-gpl \
 	--enable-nonfree \
 	--enable-postproc \
-	--enable-swscale \
 	--enable-avfilter \
 	--enable-avfilter-lavf \
-	--enable-pthreads \
-	--disable-libfaac \
-	--disable-libfaad \
+	--enable-bzlib \
+	--enable-libfaad \
 	--enable-libmp3lame \
-	--disable-libnut \
-	--disable-libtheora \
+	--enable-libtheora \
 	--enable-libvorbis \
+	--enable-libspeex \
 	--enable-libx264 \
 	--enable-libxvid \
+	--enable-zlib \
+	--enable-pthreads \
 	--cc="${CC:-%{_target_platform}-gcc}" \
 	--extra-cflags="${CFLAGS:-%{optflags}}" \
 	--arch="%{_target_cpu}" 
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 	
 
 %install
@@ -76,6 +74,7 @@ applications rely on it.
 
 %post -n libavcodec
 %{__ldconfig}
+
 
 %postun -n libavcodec
 %{__ldconfig}
@@ -87,11 +86,31 @@ applications rely on it.
 %{_bindir}/ffmpeg
 %{_bindir}/ffplay
 %{_bindir}/ffserver
+%dir %{_datadir}/ffmpeg
+%{_datadir}/ffmpeg/libx264*.ffpreset
+
 
 %files -n libavcodec
 %defattr(-, root, root)
-%{_includedir}/*.h
-%{_includedir}/postproc/
-%{_libdir}/pkgconfig/*.pc
-%{_libdir}/lib*.*
-%{_libdir}/vhook
+%{_includedir}/*/*.h
+%dir %{_includedir}/libavcodec
+%dir %{_includedir}/libavdevice
+%dir %{_includedir}/libavfilter
+%dir %{_includedir}/libavformat
+%dir %{_includedir}/libavutil
+%dir %{_includedir}/libpostproc
+%dir %{_includedir}/libswscale
+%{_libdir}/libavcodec.*
+%{_libdir}/libavdevice.*
+%{_libdir}/libavfilter.*
+%{_libdir}/libavformat.*
+%{_libdir}/libavutil.*
+%{_libdir}/libpostproc.*
+%{_libdir}/libswscale.*
+%{_libdir}/pkgconfig/libavcodec.pc
+%{_libdir}/pkgconfig/libavdevice.pc
+%{_libdir}/pkgconfig/libavfilter.pc
+%{_libdir}/pkgconfig/libavformat.pc
+%{_libdir}/pkgconfig/libavutil.pc
+%{_libdir}/pkgconfig/libpostproc.pc
+%{_libdir}/pkgconfig/libswscale.pc
