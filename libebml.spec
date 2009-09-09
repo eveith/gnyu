@@ -1,13 +1,12 @@
 Name: libebml
-Version: 0.7.7
-Release: 1ev
+Version: 0.7.8
+Release: 2ev
 Summary: A C++ library to parse EBML files (like the Matroska codec)
 URL: http://www.matroska.org/
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
+License: LGPL-2.1
+Vendor: GNyU-Linux
 Source: http://dl.matroska.org/downloads/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-g++
 
 %description
@@ -26,42 +25,38 @@ has to be handled.
 
 %build
 pushd 'make/linux'
-make \
-	CXX="%{_target_platform}-g++" \
-	CXXFLAGS="$RPM_OPT_FLAGS" \
-	prefix="%{_prefix}" \
-	staticlib sharedlib
+%{__make} %{?_smp_mflags} \
+    CXX="${CXX:-%{_target_platform}-g++}" \
+    CXXFLAGS="${CXXFLAGS:-%{optflags}}" \
+    prefix="%{_prefix}" \
+    staticlib sharedlib
 popd
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
 pushd 'make/linux'
-make \
-	CXX="%{_target_platform}-gcc" \
-	CXXFLAGS="$RPM_OPT_FLAGS" \
-	prefix="${RPM_BUILD_ROOT}/%{_prefix}" \
-	install
+%{__make} %{?_smp_mflags} \
+    CXX="${CXX:-%{_target_platform}-g++}" \
+    CXXFLAGS="${CXXFLAGS:-%{optflags}}" \
+    prefix="%{buildroot}/%{_prefix}" \
+    install
 popd
 
 
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
 
 
 %files
 %defattr(-, root, root)
 %doc LICENSE.LGPL
-%{_includedir}/ebml/
+%dir %{_includedir}/ebml
+%{_includedir}/ebml/*.h
+%dir %{_includedir}/ebml/c
+%{_includedir}/ebml/c/*.h
 %{_libdir}/libebml.*
