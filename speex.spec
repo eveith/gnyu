@@ -1,14 +1,13 @@
 Name: speex
-Version: 1.2beta2
-Release: 1ev
+Version: 1.2rc1
+Release: 2ev
 Summary: An audio codec especially for speech
 URL: http://www.speex.org/
 Group: System Environment/Libraries
 License: BSD
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://downloads.us.xiph.org/releases/speex/speex-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libogg
+BuildRequires: pkg-config >= 0.9.0, make, gcc, libogg
 
 %description
 Speex is an Open Source/Free Software patent-free audio compression format
@@ -24,27 +23,18 @@ provides useful features that are not present in most other codecs.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT" mandir="%{_mandir}"
-rm -rf "$RPM_BUILD_ROOT/%{_datadir}/doc"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
@@ -52,8 +42,12 @@ rm -rf "$RPM_BUILD_ROOT/%{_datadir}/doc"
 %doc README* AUTHORS COPYING ChangeLog NEWS TODO doc/*.pdf
 %{_bindir}/speexdec
 %{_bindir}/speexenc
-%{_includedir}/speex/
+%dir %{_includedir}/speex
+%{_includedir}/speex/*.h
 %{_libdir}/libspeex*.*
 %{_libdir}/pkgconfig/speex.pc
+%{_libdir}/pkgconfig/speexdsp.pc
 %{_datadir}/aclocal/speex.m4
-%{_mandir}/man1/speex*.1*
+%doc %{_mandir}/man1/speex*.1*
+%dir %{_datadir}/doc/speex
+%doc %{_datadir}/doc/speex/manual.pdf
