@@ -1,13 +1,12 @@
 Name: libmatroska
 Version: 0.8.1
-Release: 1ev
+Release: 2ev
 Summary: A C++ library to parse the Matroska audio/video container format
 URL: http://www.matroska.org/
 Group: System Environment/Libraries
 License: LGPL
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://dl.matroska.org/downloads/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc-g++, libebml
 
 %description
@@ -33,41 +32,37 @@ visual and audio data.
 
 %build
 pushd 'make/linux'
-make \
-    CXX="%{_target_platform}-g++" \
-    CXXFLAGS="$RPM_OPT_FLAGS" \
+%{__make} %{?_smp_mflags} \
+    CXX="${CXX:-%{_target_platform}-g++}" \
+    CXXFLAGS="${CXXFLAGS:-%{optflags}}" \
     prefix="%{_prefix}" \
     staticlib sharedlib
 popd
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
 pushd 'make/linux'
-make \
-    CXX="%{_target_platform}-gcc" \
-    CXXFLAGS="$RPM_OPT_FLAGS" \
-    prefix="${RPM_BUILD_ROOT}/%{_prefix}" \
+%{__make} \
+    CXX="${CXX:-%{_target_platform}-g++}" \
+    CXXFLAGS="${CXXFLAGS:-%{optflags}}" \
+    prefix="%{buildroot}/%{_prefix}" \
     install
 popd
 
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc LICENSE.LGPL
-%{_includedir}/matroska/
+%dir %{_includedir}/matroska
+%{_includedir}/matroska/*.h
+%dir %{_includedir}/matroska/c
+%{_includedir}/matroska/c/*.h
 %{_libdir}/libmatroska.*
