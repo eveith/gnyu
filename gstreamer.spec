@@ -1,6 +1,6 @@
 Name: gstreamer
 Version: 0.10.24
-Release: 3ev
+Release: 4ev
 Summary: A multimedia playback and processing framework
 URL: http://gstreamer.freedesktop.org/
 Group: System Environment/Libraries
@@ -31,6 +31,7 @@ plugin with a clean, generic interface.
 %install
 %{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 %find_lang gstreamer-0.10
+%{__mkdir_p} '%{buildroot}/%{_datadir}/gstreamer-0.10/presets'
 
 
 %post
@@ -64,3 +65,5 @@ plugin with a clean, generic interface.
 %{_libdir}/pkgconfig/gstreamer-*0.10.pc
 %doc %{_mandir}/man1/*.1*
 %{_datadir}/aclocal/gst-element-check-0.10.m4
+%dir %{_datadir}/gstreamer-0.10
+%dir %{_datadir}/gstreamer-0.10/presets
