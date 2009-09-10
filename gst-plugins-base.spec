@@ -1,18 +1,18 @@
 Name: gst-plugins-base
-Version: 0.10.22
-Release: 2ev
+Version: 0.10.24
+Release: 3ev
 Summary: A collection of well-maintained plugins for GStreamer
 URL: http://gstreamer.freedesktop.org/
 Group: System Environment/Libraries
-License: GPL, LGPL
-Vendor: MSP Slackware
+License: GPL-2, LGPL-2
+Vendor: GNyU-Linux
 Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, pkg-config >= 0.9.0, gettext, perl
-BuildRequires: gstreamer >= 0.10.11.2, liboil >= 0.3.14
-BuildRequires: libX11, libXv, libXext, libICE, libSM, libXau, libXdmcp
-BuildRequires: alsa-lib >= 0.9.1, cdparanoia, libogg >= 1.0, libtheora, libvorbis
-BuildRequires: pango, glib2, zlib, libxml2
+BuildRequires: pkg-config >= 0.9.0, make, gcc, gettext >= 0.17, perl
+BuildRequires: gstreamer >= 0.10.23.1, liboil >= 0.3.14
+BuildRequires: libX11, libXv, libXext
+BuildRequires: alsa-lib >= 0.9.1, cdparanoia, libogg >= 1.0, libtheora >= 1.0
+BuildRequires: libvorbis >= 1.0
+BuildRequires: pango, freetype >= 2.0.9, glib2, zlib, libxml2
 Requires: gstreamer, cdparanoia
 
 %description
