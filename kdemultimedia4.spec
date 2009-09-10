@@ -1,18 +1,18 @@
 name: kdemultimedia4
-Version: 4.2.4
-Release: 4ev
+Version: 4.3.1
+Release: 5ev
 Summary: Multimedia applications for KDE 4
 URL: http://www.kde.org/
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdemultimedia-%{version}.tar.bz2
-BuildRequires: make, gcc-g++, libstdc++, qt4 >= 4.4.2, automoc4 >= 0.8.86
-BuildRequires: kdelibs4 = %{version}, kdebase4 = %{version}, phonon >= 4.3.0
-BuildRequires: libX11, libICE, libSM, libXau, libXext
-BuildRequires: perl, alsa-lib, xine-lib, taglib >= 1.5, libvorbis, libogg, libflac
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender, libXt, libxkbfile, libxcb
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88, phonon >= 4.3.0
+BuildRequires: kdelibs4 = %{version}, kdelibs4-experimental = %{version}
+BuildRequires: alsa-lib, xine-lib, taglib >= 1.5, libvorbis, libogg, libflac
 BuildRequires: cdparanoia
-Requires: cdparanoia, pkg-config
 Obsoletes: kdemultimedia < %{version}
 
 %description
@@ -41,9 +41,6 @@ infrastructure of above applications:
 %install
 	%{__make} install DESTDIR='%{buildroot}'
 
-	[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-		&& %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
 
 %post
 	%{__ldconfig}
@@ -62,6 +59,7 @@ infrastructure of above applications:
 	%{_bindir}/juk
 	%{_bindir}/kmix
 	%{_bindir}/kmixctrl
+	%{_bindir}/mplayerthumbsconfig
 	%{_includedir}/audiocdencoder.h
 	%{_includedir}/libkcddb/
 	%{_includedir}/libkcompactdisc/
@@ -72,6 +70,7 @@ infrastructure of above applications:
 	%{_libdir}/kde4/libaudiocd_encoder_lame.so
 	%{_libdir}/kde4/libaudiocd_encoder_vorbis.so
 	%{_libdir}/kde4/libaudiocd_encoder_wav.so
+	%{_libdir}/kde4/videopreview.so
 	%{_libdir}/libaudiocdplugins.so*
 	%{_libdir}/libkcddb.so*
 	%{_libdir}/libkcompactdisc.so*
@@ -80,7 +79,7 @@ infrastructure of above applications:
 	%dir %{_datadir}/apps/dragonplayer
 	%{_datadir}/apps/dragonplayer/*.*
 	%dir %{_datadir}/apps/juk
-	%{_datadir}/apps/juk/*.rc
+	%{_datadir}/apps/juk/*rc
 	%dir %{_datadir}/apps/juk/pics
 	%{_datadir}/apps/juk/pics/*.png
 	%{_datadir}/apps/kconf_update/*.*
@@ -92,6 +91,8 @@ infrastructure of above applications:
 	%{_datadir}/apps/kmix/profiles/*.xml
 	%{_datadir}/apps/konqsidebartng/virtual_folders/services/audiocd.desktop
 	%{_datadir}/apps/solid/actions/dragonplayer-opendvd.desktop
+	%dir %{_datadir}/apps/videothumbnail
+	%{_datadir}/apps/videothumbnail/sprocket-*.png
 	%{_datadir}/autostart/*.desktop
 	%{_datadir}/config.kcfg/*.kcfg
 	%{_datadir}/dbus-1/interfaces/org.kde.*.xml
