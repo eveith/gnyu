@@ -1,6 +1,6 @@
 Name: gst-ffmpeg
 Version: 0.10.8
-Release: 1ev
+Release: 2ev
 Summary: FFMPEG plugin for gstreamer
 URL: http://gstreamer.freedesktop.org/modules/gst-ffmpeg.html
 Group: System Environment/Libraries
@@ -8,8 +8,7 @@ License: GPL-3
 Vendor: GNyU-Linux
 Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
 BuildRequires: pkg-config >= 0.9.0, make, gcc
-BuildRequires: gstreamer >= 0.10.22, liboil >= 0.3.6, bzip2
-BuildRequires: libavcodec = 20090909
+BuildRequires: gstreamer >= 0.10.22, liboil >= 0.3.6, zlib, bzip2
 
 %description
 GStreamer FFmpeg plug-in contains one plugin with a set of elements using the
@@ -22,8 +21,7 @@ colorspace conversion elements.
 
 
 %build
-	%configure \
-		--with-system-ffmpeg
+	%configure
 	%{__make} %{?_smp_mflags}
 
 
