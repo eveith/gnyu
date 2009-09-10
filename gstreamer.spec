@@ -1,13 +1,14 @@
 Name: gstreamer
-Version: 0.10.22
-Release: 2ev
+Version: 0.10.24
+Release: 3ev
 Summary: A multimedia playback and processing framework
 URL: http://gstreamer.freedesktop.org/
 Group: System Environment/Libraries
 License: LGPL-2
 Vendor: GNyU-Linux
 Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
-BuildRequires: make, gcc, pkg-config, glib2, zlib, libxml2
+BuildRequires: pkg-config >= 0.9.0, make, gcc, gettext >= 0.17, perl
+BuildRequires: glib2 >= 2.16, libxml2 >= 2.4.9
 
 %description
 GStreamer is a library that allows the construction of graphs of
