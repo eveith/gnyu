@@ -1,17 +1,20 @@
 Name: xine-lib
-Version: 1.1.12
-Release: 2ev
+Version: 1.1.16.3
+Release: 4ev
 Summary: A audio and video decoder and playback library
-URL: http://www.xinehq.de/
+URL: http://www.xine-project.org/
 Group: System Environment/Libraries
 License: GPL-2, LGPL-2
 Vendor: GNyU-Linux
 Source: http://prdownloads.sourceforge.net/xine/%{name}-%{version}.tar.bz2
-Patch0: %{name}-1.1.1-deepbind-939.patch
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, gcc-g++, libogg, libvorbis, alsa-lib, zlib, freetype
-BuildRequires: libflac, samba-libs, libmng, mesalib, libtheora, fontconfig
-BuildRequires: gawk, sed, libX11, libXext
+BuildRequires: make, gcc, gcc-g++, gettext >= 0.16.1, perl
+BuildRequires: libavcodec
+BuildRequires: libogg, libvorbis, libtheora, speex, libflac
+BuildRequires: libmad, libmng, alsa-lib
+BuildRequires: freetype, fontconfig, gtk2
+BuildRequires: samba-libs
+BuildRequires: zlib, mesalib, libsdl
+BuildRequires: libX11, libXext, libXv, libXvMC, libxcb >= 1.0
 
 %description
 xine is a free (gpl-licensed) high-performance, portable and reusable
@@ -22,64 +25,52 @@ playback and video processing purposes.
 
 %prep
 %setup -q
-%patch0 -p1
 
 
 %build
 %configure \
-	--disable-mlib \
+	--with-external-ffmpeg \
+	--disable-rpath \
 	--enable-ipv6 \
 	--enable-opengl \
 	--disable-xshm \
 	--enable-xv \
-	--disable-aalib \
-	--disable-macosx-video \
-	--disable-coreaudio \
-	--disable-directfb \
 	--disable-oss \
-	--disable-artstest \
 	--disable-gnomevfs \
-	--disable-gdkpixbuf \
 	--enable-mmap \
 	--enable-antialiasing \
 	--enable-w32dll \
 	--with-x \
-	--without-caca \
-	--without-sdl \
-	--without-pulseaudio \
-	--without-dxheaders \
 	--with-vorbis \
 	--with-theora \
-	--without-speex \
+	--with-speex \
 	--with-libflac \
-	--without-imagemagick \
 	--with-freetype \
 	--with-fontconfig \
 	--with-alsa \
+	--without-arts \
 	--without-esound \
 	--without-fusionsound \
 	--without-jack \
-	--with-w32-path='%{_libdir}/win32'
+	--with-w32-path='%{_libdir}/win32' \
+	--disable-xinerama \
+	--with-external-libmad
 %{__make} %{?_smp_mflags}
 	
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 %{__mkdir_p} '%{buildroot}/%{_libdir}/win32'
 %find_lang libxine1
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files -f libxine1.lang
