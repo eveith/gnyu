@@ -1,16 +1,20 @@
 Name: gst-plugins-good
-Version: 0.10.13
-Release: 1ev
+Version: 0.10.16
+Release: 2ev
 Summary: Plugins for GStreamer with good, clean code
 URL: http://gstramer.freedesktop.org/
 Group: System Environment/Libraries
 License: LGPL-2.1
 Vendor: GNyU-Linux
 Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
-BuildRequires: make, gcc, gettext, pkg-config >= 0.9.0, gstreamer >= 0.10.11.2
-BuildRequires: python >= 2.1, glib2, liboil >= 0.3.8, gtk2, cairo, hal
-BuildRequires: libpng, libjpeg, speex, zlib, bzip2
-BuildRequires: libX11, libICE, libSM, libXfixes, libXdamage, libXext
+BuildRequires: pkg-config >= 0.9.0, make, gcc, gettext >= 0.17
+BuildRequires: gstreamer >= 0.10.24
+BuildRequires: glib2 >= 2.16, liboil >= 0.3.8, zlib, bzip2
+BuildRequires: python >= 2.1, cairo >= 1.0.0, gtk2 >= 2.8.0
+BuildRequires: libflac >= 1.1.4, speex >= 1.1.5, taglib >= 1.5
+BuildRequires: hal >= 0.5.6, dbus >= 0.52
+BuildRequires: libpng, libjpeg
+BuildRequires: libX11, libXfixes, libXdamage, libXext, libXv
 Requires: gstreamer
 
 %description
@@ -32,10 +36,12 @@ like he's been walking 100 miles through the desert without water.
 
 %build
 %configure \
+	--disable-examples \
 	--disable-gconftool \
 	--disable-oss \
 	--disable-esd \
-	--disable-gconf
+	--disable-gconf \
+	--disable-gst_v4l2
 %{__make} %{?_smp_mflags}
 
 
@@ -58,3 +64,6 @@ like he's been walking 100 miles through the desert without water.
 %defattr(-, root, root)
 %doc COPYING ABOUT-NLS AUTHORS README RELEASE REQUIREMENTS
 %{_libdir}/gstreamer-0.10/*.*
+%dir %{_datadir}/gstreamer-0.10
+%dir %{_datadir}/gstreamer-0.10/presets
+%{_datadir}/gstreamer-0.10/presets/GstIirEqualizer*.prs
