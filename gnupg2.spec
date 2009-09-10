@@ -1,16 +1,15 @@
 Name: gnupg2
-Version: 2.0.10
-Release: 3ev
+Version: 2.0.13
+Release: 4ev
 Summary: The version of GnuPG supporting OpenPGP and S/MIME
 URL: http://www.gnupg.org/
 Group: Applications/Text
 License: GPL-3
 Vendor: GNyU-Linux
 Source: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires(build,install): make, gettext
 BuildRequires(build): gcc, libgpg-error >= 1.4, libassuan >= 1.0.4
-BuildRequires(build): libksba >= 1.0.2, libgcrypt >= 1.2.2
+BuildRequires(build): libksba >= 1.0.2, libgcrypt >= 1.4.0
 BuildRequires(build): zlib, bzip2, openldap-libs, pth >= 1.3.7, readline
 
 %description
@@ -25,12 +24,11 @@ OpenPGP-only version.
 
 
 %prep
-%setup -q -n gnupg-%{version}
+%setup -q -n 'gnupg-%{version}'
 
 
 %build
-%configure \
-	--enable-camellia
+%configure
 %{__make} %{?_smp_mflags}
 
 
@@ -38,12 +36,12 @@ OpenPGP-only version.
 %{__make_install} DESTDIR='%{buildroot}'
 %find_lang gnupg2
 %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-%{__rm} -rf '%{buildroot}/%{_datadir}/doc'
 
 
 %post
 %{__ldconfig}
 update-info-dir
+
 
 %postun
 %{__ldconfig}
@@ -85,3 +83,5 @@ update-info-dir
 %doc %{_mandir}/man8/addgnupghome.8*
 %{_libexecdir}/*
 %doc %{_infodir}/gnupg.info*
+%dir %{_datadir}/doc/gnupg
+%doc %{_datadir}/doc/gnupg/*
