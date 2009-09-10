@@ -1,16 +1,16 @@
 Name: phonon
 Version: 4.3.0
-Release: 2ev
+Release: 3ev
 Summary: KDE Multimedia backend
 URL: http://phonon.kde.org/
 Group: User Interface/Desktops
 License: LGPL-2.1
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/phonon/%{version}/%{name}-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4 >= 4.4.0, automoc4 >= 0.9.86
-BuildRequires: kdelibs4, xine-lib, gstreamer, glib2, mesalib, pkg-config, libxml2
-BuildRequires: libX11, libSM, libICE, libXxf86misc, libXv, libXt
-BuildRequires: libXrender, libXScrnSaver, alsa-lib, gst-plugins-base
+BuildRequires: cmake >= 2.6.2, pkg-config >= 0.9.0, make, gcc-g++
+BuildRequires: qt4 >= 4.4.0, automoc4 >= 0.9.86
+BuildRequires: xine-lib >= 1.1.9, gstreamer >= 0.10.22, gst-plugins-base
+BuildRequires: glib2, mesalib, libxml2, libxcb
 
 %description
 Phonon is KDE's multimedia backend. It replaces aRts, but also provides an
@@ -37,6 +37,7 @@ GStreamer.
 
 %post
 %{__ldconfig}
+
 
 %postun
 %{__ldconfig}
