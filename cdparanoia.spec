@@ -1,14 +1,12 @@
-%define ver 9.8
-
 Name: cdparanoia
+%define ver 9.8
 Version: alpha%{ver}
-Release: 1ev
-Summary: A CD ripping application.
+Release: 2ev
+Summary: A CD ripping application
 URL: http://www.xiph.org/paranoia/
 Group: Applications/Multimedia
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: GPL-2
+Vendor: GNyU-Linux
 Source: http://downloads.xiph.org/releases/%{name}/%{name}-III-%{version}.src.tgz
 Patch0: cdparanoia-III-alpha9.8.nostrip.patch
 Patch1: cdparanoia-III-alpha9.8.labels.patch
@@ -21,8 +19,7 @@ Patch7: cdparanoia-III-alpha9.8.verbosity3.patch
 Patch8: cdparanoia-III-alpha9.8.env.patch
 Patch9: cdparanoia-III-alpha9.8.smalldma.patch
 Patch10: cdparanoia-III-alpha9.8.lm.patch
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core
+BuildRequires: make >= 3.79.1, gcc
 
 %description
 cdparanoia reads audio from the CDROM directly as data, with no analog step
@@ -49,50 +46,48 @@ have been damaged in some way.
 
 
 %build
-%configure --includedir=%{_includedir}/cdda
-make all CFLAGS="$RPM_OPT_FLAGS"
+%configure \
+	--includedir='%{_includedir}/cdda'
+%{__make} %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS"
 
 
 %install
-rm -rf "$RPM_BUILD_ROOT"
+%{__install} -d "${RPM_BUILD_ROOT}/%{_bindir}"
+%{__install} -d "${RPM_BUILD_ROOT}/%{_includedir}/cdda"
+%{__install} -d "${RPM_BUILD_ROOT}/%{_libdir}"
+%{__install} -d "${RPM_BUILD_ROOT}/%{_mandir}/man1"
+%{__install} -m 0755 cdparanoia "${RPM_BUILD_ROOT}/%{_bindir}"
+%{__install} -m 0644 cdparanoia.1 "${RPM_BUILD_ROOT}/%{_mandir}/man1"
+%{__install} -m 0644 utils.h paranoia/cdda_paranoia.h \
+	interface/cdda_interface.h \
+    "${RPM_BUILD_ROOT}/%{_includedir}/cdda"
+%{__install} -m 0755 "paranoia/libcdda_paranoia.so.0.%{ver}" \
+    "interface/libcdda_interface.so.0.%{ver}" \
+    "${RPM_BUILD_ROOT}/%{_libdir}"
+%{__install} -m 0755 paranoia/libcdda_paranoia.a interface/libcdda_interface.a \
+    "${RPM_BUILD_ROOT}/%{_libdir}"
 
-install -d ${RPM_BUILD_ROOT}/%{_bindir}
-install -d ${RPM_BUILD_ROOT}/%{_includedir}/cdda
-install -d ${RPM_BUILD_ROOT}/%{_libdir}
-install -d ${RPM_BUILD_ROOT}/%{_mandir}/man1
-install -m 0755 cdparanoia ${RPM_BUILD_ROOT}/%{_bindir}
-install -m 0644 cdparanoia.1 ${RPM_BUILD_ROOT}/%{_mandir}/man1/
-install -m 0644 utils.h paranoia/cdda_paranoia.h interface/cdda_interface.h \
-    ${RPM_BUILD_ROOT}/%{_includedir}/cdda
-install -m 0755 paranoia/libcdda_paranoia.so.0.%{ver} \
-    interface/libcdda_interface.so.0.%{ver} \
-    ${RPM_BUILD_ROOT}/%{_libdir}
-install -m 0755 paranoia/libcdda_paranoia.a interface/libcdda_interface.a \
-    ${RPM_BUILD_ROOT}/%{_libdir}
-
-/sbin/ldconfig -n $RPM_BUILD_ROOT/%{_libdir}
+%{__ldconfig} -n "$RPM_BUILD_ROOT/%{_libdir}"
 
 pushd "$RPM_BUILD_ROOT/%{_libdir}"
-ln -s libcdda_paranoia.so.0.%{ver} libcdda_paranoia.so
-ln -s libcdda_interface.so.0.%{ver} libcdda_interface.so
+%{__ln_s} "libcdda_paranoia.so.0.%{ver}" libcdda_paranoia.so
+%{__ln_s} "libcdda_interface.so.0.%{ver}" libcdda_interface.so
 popd
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc FAQ* GPL README
 %{_bindir}/cdparanoia
-%{_mandir}/man1/cdparanoia.1*
+%doc %{_mandir}/man1/cdparanoia.1*
 %{_libdir}/libcdda_*.*
-%{_includedir}/cdda/
+%dir %{_includedir}/cdda
+%{_includedir}/cdda/*.h
