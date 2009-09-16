@@ -1,6 +1,6 @@
 Name: gst-plugins-ugly
 Version: 0.10.12
-Release: 1ev
+Release: 2ev
 Summary: Plugins for some proprietary video/audio file formats
 URL: http://gstreamer.freedesktop.org/modules/gst-plugins-ugly.html
 Group: System Environment/Libraries
@@ -10,7 +10,7 @@ Source: http://gstreamer.freedesktop.org/src/%{name}/%{name}-%{version}.tar.bz2
 BuildRequires: pkg-config >= 0.9.0, make, gcc, gettext >= 0.17
 BuildRequires: gstreamer >= 0.10.23, glib2 >= 2.12, liboil >= 0.3.8
 BuildRequires: lame, libid3tag >= 0.15, libmad >= 0.15, mpeg2dec >= 0.40
-BuildRequires: x264, libdvdread, libdvdnav >= 0.1.7
+BuildRequires: x264, libdvdnav >= 0.1.7, a52dec
 
 %description
 "When you have to shoot, shoot. Don't talk." 
@@ -37,7 +37,9 @@ check if they want/can ship these plug-ins.
 
 
 %build
-	%configure
+	%configure \
+		--disable-dvdread \
+		--enable-dvdnav
 	%{__make} %{?_smp_mflags}
 
 
