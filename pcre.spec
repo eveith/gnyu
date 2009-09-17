@@ -1,13 +1,12 @@
 Name: pcre
-Version: 7.6
-Release: 1ev
+Version: 7.9
+Release: 2ev
 Summary: Perl5 compatible regular expressions for other programs
 URL: http://www.pcre.org/
 Group: System Environment/Libraries
 License: BSD 
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
 BuildRequires: gcc, gcc-g++, make >= 3.79.1, bzip2, zlib, pkg-config, libstdc++
 
 %description
@@ -36,20 +35,15 @@ Onyx, Hypermail, Leafnode, and Askemos.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
-%{__rm} -rf %{buildroot}/%{_datadir}/doc
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
@@ -70,7 +64,9 @@ Onyx, Hypermail, Leafnode, and Askemos.
 %{_libdir}/libpcreposix.*
 %{_libdir}/pkgconfig/libpcre.pc
 %{_libdir}/pkgconfig/libpcrecpp.pc
-%{_mandir}/man1/pcre-config.1*
-%{_mandir}/man1/pcregrep.1*
-%{_mandir}/man1/pcretest.1*
-%{_mandir}/man3/pcre*.3*
+%doc %{_mandir}/man1/pcre-config.1*
+%doc %{_mandir}/man1/pcregrep.1*
+%doc %{_mandir}/man1/pcretest.1*
+%doc %{_mandir}/man3/pcre*.3*
+%dir %{_datadir}/doc/pcre
+%doc %{_datadir}/doc/pcre/*
