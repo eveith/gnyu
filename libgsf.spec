@@ -1,18 +1,15 @@
 Name: libgsf
-Version: 1.14.3
-Release: 1ev
-Summary: Read and write OLE and Zip files.
-URL: ftp://ftp.gnome.org/pub/GNOME/sources/libgsf/
+Version: 1.14.15
+Release: 2ev
+Summary: Read and write OLE and Zip files
+URL: ftp://ftp.gnome.org/pub/GNOME/sources/libgsf
 Group: System Environment/Libraries
-License: LGPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.gnome.org/pub/GNOME/sources/libgsf/1.14/libgsf-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core
-BuildRequires: glib2, zlib >= 1.1.3, libxml2 >= 2.4.16
-Requires: glib2, zlib >= 1.1.3, libxml2 >= 2.4.16
-Provides: libtool(%{_libdir}/libgsf-1.la)
+BuildRequires: pkg-config >= 0.9.0, make >= 3.79.1, gcc, gettext, intltool
+BuildRequires: perl, perl-XML-Parser
+BuildRequires: zlib >= 1.1.3, bzip2, glib2
 
 %description
 The GNOME Structured File Library is a utility library for reading and writing
@@ -29,34 +26,32 @@ abiword, libwv2, koffice. It is also part of the AAF format.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
-
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 %find_lang libgsf
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__ldconfig}
 
 
 %files -f libgsf.lang
 %defattr(-, root, root)
 %doc AUTHORS BUGS COPYING* HACKING NEWS README TODO
-%doc %{_datadir}/gtk-doc/html/gsf/
+%doc %{_datadir}/gtk-doc/html/gsf/*
+%dir %{_datadir}/gtk-doc/html/gsf
 %{_bindir}/gsf
 %{_bindir}/gsf-vba-dump
 %{_includedir}/libgsf-1/
 %{_libdir}/libgsf-1.*
 %{_libdir}/pkgconfig/libgsf-1.pc
-%{_mandir}/man1/gsf-office-thumbnailer.1.gz
+%doc %{_mandir}/man1/gsf-office-thumbnailer.1*
+%doc %{_mandir}/man1/gsf-vba-dump.1*
+%doc %{_mandir}/man1/gsf.1*
