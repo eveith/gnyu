@@ -1,6 +1,6 @@
 Name: akonadi
-Version: 1.2.0
-Release: 3ev
+Version: 1.2.1
+Release: 4ev
 Summary: KDE 4 PIM storage service
 URL: http://pim.kde.org/akonadi/
 Group: User Interface/Desktops
@@ -10,7 +10,7 @@ Source: http://download.akonadi-project.org/akonadi-%{version}.tar.bz2
 BuildRequires: cmake >= 2.4.5, pkg-config >= 0.9.0, make, gcc-g++
 BuildRequires: qt4 >= 4.5.0, libQtSql.so.4, automoc4, soprano
 BuildRequires: shared-mime-info >= 0.20
-BuildRequires: libxslt, boost
+BuildRequires: libxslt, boost, redland
 Requires: shared-mime-info
 
 %description
