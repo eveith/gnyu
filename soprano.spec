@@ -1,6 +1,6 @@
 Name: soprano
-Version: 2.3.0
-Release: 3ev
+Version: 2.3.1
+Release: 4ev
 Summary: An interface library between Qt 4 and RDF storage solutions
 URL: http://soprano.sourceforge.net/
 Group: System Environment/Libraries
@@ -58,6 +58,7 @@ Soprano has the following features:
 %post
 %{__ldconfig}
 
+
 %postun
 %{__ldconfig}
 
@@ -86,4 +87,3 @@ Soprano has the following features:
 %{_datadir}/dbus-1/interfaces/org.soprano.StatementIterator.xml
 %dir %{_datadir}/soprano
 %{_datadir}/soprano/*
-%{_datadir}/apps/cmake/modules/SopranoAddOntology.cmake
