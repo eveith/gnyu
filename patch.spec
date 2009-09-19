@@ -1,13 +1,12 @@
 Name: patch
-Version: 2.5.4
-Release: 1ev
+Version: 2.5.9
+Release: 2ev
 Summary: An utility to apply difference listings to text files
-URL: http://www.gnu.org/software/patch/
+URL: http://www.gnu.org/software/patch
 Group: System Environment/Base
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.gnu.org/pub/gnu/patch/patch-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires: make, gcc
 
 %description
@@ -34,14 +33,9 @@ They add support for:
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 %{__mkdir_p} '%{buildroot}'/{bin,'%{_mandir}/man1'}
 %{__install} -m0755 patch '%{buildroot}/bin'
 %{__install} -m0644 patch.man '%{buildroot}/%{_mandir}/man1/patch.1'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
