@@ -1,14 +1,13 @@
 Name: diffutils
 Version: 2.8.1
-Release: 1ev
+Release: 2ev
 Summary: This package contains the GNU diff, diff3, sdiff, and cmp utilities
 URL: http://www.gnu.org/software/diffutils/
 Group: Applications/Text
 License: GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/pub/gnu/diffutils/diffutils-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, gettext
+BuildRequires: make, gcc, gettext
 
 %description
 Diffutils contains the GNU diff, diff3, sdiff, and cmp utilities. Their 
@@ -23,29 +22,26 @@ These programs are usually used for creating patch files.
 
 %build
 %configure
-%{__make} %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 %find_lang diffutils
 
 [[ -e '%{buildroot}/%{_infodir}/dir' ]] \
     && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
-%clean
-[[ -d '%{buildroot}' ]] && %{__rm} -rf '%{buildroot}'
-
-
 %files -f diffutils.lang
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS ChangeLog COPYING NEWS README THANKS
 %{_bindir}/cmp
-%{_bindir}/*diff*
-%{_infodir}/diff.info*
-%{_mandir}/man1/cmp.1*
-%{_mandir}/man1/diff.1*
-%{_mandir}/man1/diff3.1*
-%{_mandir}/man1/sdiff.1.*
+%{_bindir}/diff
+%{_bindir}/diff3
+%{_bindir}/sdiff
+%doc %{_infodir}/diff.info*
+%doc %{_mandir}/man1/cmp.1*
+%doc %{_mandir}/man1/diff.1*
+%doc %{_mandir}/man1/diff3.1*
+%doc %{_mandir}/man1/sdiff.1*
