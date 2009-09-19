@@ -1,12 +1,12 @@
 Name: ccache
 Version: 2.4
-Release: 2ev
+Release: 3ev
 Summary: A caching C preprocessor
-License: GPL
-Source: http://samba.org/ftp/ccache/ccache-2.4.tar.gz
 URL: http://ccache.samba.org/
 Group: Development/Tools
-BuildRoot: %{_tmppath}/%{name}-root
+License: GPL-2
+Source: http://samba.org/ftp/ccache/ccache-%{version}.tar.gz
+BuildRequires: make, gcc
 
 %description
 Ccache is a compiler cache. It acts as a caching pre-processor to C/C++
@@ -24,15 +24,15 @@ more features and better performance.
 
 %build
 %configure
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-%makeinstall
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc COPYING README
 %{_bindir}/ccache
-%{_mandir}/man1/ccache.1.gz
+%doc %{_mandir}/man1/ccache.1*
