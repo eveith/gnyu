@@ -1,16 +1,13 @@
 Name: grep
-Version: 2.5.1a
-Release: 1ev
+Version: 2.5.4
+Release: 2ev
 Summary: Searches for matches of a userspecified pattern in a given input stream
 URL: http://www.gnu.org/software/grep
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc-core, make >= 3.79.1, pcre
-Requires: /sbin/install-info
+License: GPL-3
+Vendor: GNyU-Linux
+Source: ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.bz2
+BuildRequires: gcc, make >= 3.79.1, pcre, gettext
 Patch0: grep-2.5.1-fgrep.patch
 Patch1: grep-2.5.1-bracket.patch
 Patch2: grep-2.5-i18n.patch
@@ -36,52 +33,33 @@ will run more slowly, however.)
 
 %prep
 %setup -q
-%patch0 -p1 -b .fgrep
-%patch1 -p1 -b .bracket
-%patch2 -p1 -b .i18n
-%patch3 -p1 -b .oi
-%patch4 -p1 -b .manpage
-%patch5 -p1 -b .color
-%patch6 -p1 -b .icolor
-%patch10 -p1 -b .egf-speedup
-%patch11 -p1 -b .dfa-optional
-%patch12 -p1 -b .tests
-%patch13 -p1 -b .w
-%patch14 -p1 -b .P
-chmod a+x tests/fmbtest.sh
 
 
 %build
 %configure
-make CFLAGS="$RPM_OPT_FLAGS -static"
-make check
+%{__make} %{?_smp_mflags} CFLAGS="$RPM_OPT_FLAGS -static"
+%{__make} check
 
 
 %install
-%makeinstall LDFLAGS="-s"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__make} install LDFLAGS="-s" DESTDIR='%{buildroot}'
+%{__rm} ${RPM_BUILD_ROOT}/%{_infodir}/dir ||:
 %find_lang grep
 
 # Move grep to /bin where its needed at boottime
-mkdir ${RPM_BUILD_ROOT}/bin
-mv ${RPM_BUILD_ROOT}/%{_bindir}/*grep* ${RPM_BUILD_ROOT}/bin
-if [ "$RPM_BUILD_ROOT" != "/" ]
-then
-	rm -rf "${RPM_BUILD_ROOT}/%{_bindir}"
-fi
+%{__mkdir_p} "${RPM_BUILD_ROOT}/bin"
+%{__mv} "${RPM_BUILD_ROOT}/%{_bindir}"/*grep* "${RPM_BUILD_ROOT}/bin"
+%{__rm_rf} "${RPM_BUILD_ROOT}/%{_bindir}"
 
 
 %post
-/sbin/install-info %{_infodir}/grep.info.gz %{_infodir}/dir
-/sbin/ldconfig
+update-info-dir
+%{__ldconfig}
+
 
 %preun
-/sbin/install-info --delete %{_infodir}/grep.info.gz %{_infodir}/dir
-/sbin/ldconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+update-info-dir
+%{__ldconfig}
 
 
 %files -f grep.lang
@@ -90,7 +68,7 @@ rm -rf ${RPM_BUILD_ROOT}
 /bin/egrep
 /bin/fgrep
 /bin/grep
-%{_infodir}/grep.info.gz
-%{_mandir}/man1/egrep.1*
-%{_mandir}/man1/fgrep.1*
-%{_mandir}/man1/grep.1*
+%doc %{_infodir}/grep.info*
+%doc %{_mandir}/man1/egrep.1*
+%doc %{_mandir}/man1/fgrep.1*
+%doc %{_mandir}/man1/grep.1*
