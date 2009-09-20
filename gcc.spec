@@ -1,15 +1,14 @@
 Name: gcc
-Version: 4.2.4
-Release: 2ev
+Version: 4.3.4
+Release: 3ev
 Summary: The GNU Compiler Collection (Core Package)
+URL: http://gcc.gnu.org/
 License: GPL-3
 Group: Development/Languages
 Vendor: GNyU-Linux
 Source0: ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-URL: http://gcc.gnu.org/
-BuildRequires: coreutils, grep, sed, gettext, gcc, make >= 3.79.1, binutils
-BuildRequires: bison
-BuildRoot: %{_tmppath}/%{name}-root
+BuildRequires: make >= 3.80, gcc, gawk >= 3.1.5, binutils, gettext
+Buildrequires: gmp >= 4.2, mpfr >= 2.3.2
 Provides: gcc-core = %{version}
 Obsoletes: gcc-core < %{version}-%{release}
 
@@ -41,6 +40,7 @@ of miscellaneous operations.
 %package g++
 Summary: The GNU Compiler Collection (C++ Package)
 Group: Development/Languages
+Requires: gcc = %{version}-%{release}
 
 %description -n gcc-g++
 The GNU Compiler Collection includes front ends for C, C++, Objective-C,
@@ -50,71 +50,70 @@ software is ever compiled on it.
 This package comes with the C++ compiler.
 
 
-%package -n libstdc++
+%package -n libstdc++6
 Summary: Standard C++ implementations library
 Group: System Environment/Libraryibstdc++
+Provides: libstdc++ = %{version}-%{release}
 
-%description -n libstdc++
+%description -n libstdc++6
 The C++ standard defines some methods and classes that ought to be always
 available. The libstdc++ is the GNU implementation of these methods/classes.
 It is used by every program that is written in C++ and dynamically linked.
 
 
 %prep
-%setup -q
-%{__rm} -rf %{_builddir}/%{name}-obj
-%{__mkdir_p} %{_builddir}/%{name}-obj
+%setup -q -c -a0
+%{__mkdir_p} obj
 
 
 %build
-pushd %{_builddir}/%{name}-obj
+pushd obj
 
 # Run configure
-#CFLAGS="$RPM_OPT_FLAGS"
-#CXXFLAGS="$RPM_OPT_FLAGS"
-#export CFLAGS CXXFLAGS
-${RPM_BUILD_DIR}/gcc-%{version}/configure \
-	--host=%{_host} \
-	--build=%{_build} \
-	--target=%{_target_platform} \
-	--program-prefix=%{?_program_prefix} \
-	--prefix=%{_prefix} \
-	--exec-prefix=%{_exec_prefix} \
-	--bindir=%{_bindir} \
-	--sbindir=%{_sbindir} \
-	--sysconfdir=%{_sysconfdir} \
-	--datadir=%{_datadir} \
-	--includedir=%{_includedir} \
-	--libdir=%{_libdir} \
-	--libexecdir=%{_libexecdir} \
-	--localstatedir=%{_localstatedir} \
-	--sharedstatedir=%{_sharedstatedir} \
-	--mandir=%{_mandir} \
-	--infodir=%{_infodir} \
-	--enable-threads=posix \
-	--with-cpu=%{_target_cpu} \
+CC="${CC:-%{_target_platform}-gcc}"
+CFLAGS="${CFLAGS:-%{optflags}}"
+CXX="${CXX:-%{_target_platform}-g++}"
+CXXFLAGS="${CFLAGS:-%{optflags}}"
+export CC CFLAGS CXX CXXFLAGS
+../gcc-%{version}/configure \
+	--host='%{_host}' \
+	--build='%{_build}' \
+	--target='%{_target_platform}' \
+	--program-prefix='%{?_program_prefix}' \
+	--prefix='%{_prefix}' \
+	--exec-prefix='%{_exec_prefix}' \
+	--bindir='%{_bindir}' \
+	--sbindir='%{_sbindir}' \
+	--sysconfdir='%{_sysconfdir}' \
+	--datadir='%{_datadir}' \
+	--includedir='%{_includedir}' \
+	--libdir='%{_libdir}' \
+	--libexecdir='%{_libexecdir}' \
+	--localstatedir='%{_localstatedir}' \
+	--sharedstatedir='%{_sharedstatedir}' \
+	--mandir='%{_mandir}' \
+	--infodir='%{_infodir}' \
+	--enable-threads \
+	--with-cpu='%{_target_cpu}' \
 	--enable-__cxa_atexit \
 	--enable-nls \
 	--with-system-zlib \
 	--without-x \
 	--enable-languages=c,c++
 %{__make} %{?_smp_mflags}
-
 popd
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-pushd %{_builddir}/%{name}-obj
-%{__make_install} DESTDIR='%{buildroot}'
+pushd obj
+%{__make} install DESTDIR='%{buildroot}'
 popd
 
 # Remove libiberty.a, this is shipped by GNU binutils.
-%{__rm} -f '%{buildroot}/%{_libdir}/libiberty.a'
+%{__rm} '%{buildroot}/%{_libdir}/libiberty.a'
 
 %find_lang gcc
-%find_lang libstdc++
+%find_lang cpplib
 
 pushd '%{buildroot}/%{_bindir}'
 %{__ln_s} gcc cc
@@ -123,33 +122,33 @@ pushd '%{buildroot}/%{_bindir}'
 # %{__ln_s} %{_target_platform}-g++ %{_target_platform}-c++
 popd
 
-%{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__rm} -rf '%{_builddir}/%{name}-obj'
+%{__rm} '%{buildroot}/%{_infodir}/dir' ||:
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir
+
 
 %postun 
-/sbin/ldconfig
+%{__ldconfig}
 update-info-dir
 
-%post -n libstdc++
-/sbin/ldconfig
 
-%postun -n libstdc++
-/sbin/ldconfig
+%post -n libstdc++6
+%{__ldconfig}
+
+
+%postun -n libstdc++6
+%{__ldconfig}
 
 
 %files -f gcc.lang
 %defattr(-, root, root)
-%doc ABOUT-NLS BUGS COPYING* ChangeLog* FAQ LAST_UPDATED MAINTAINERS NEWS
-%doc README* *.html
+%doc gcc-%{version}/ABOUT-NLS gcc-%{version}/COPYING*
+%doc gcc-%{version}/ChangeLog* gcc-%{version}/LAST_UPDATED
+%doc gcc-%{version}/MAINTAINERS gcc-%{version}/NEWS
+%doc gcc-%{version}/README* gcc-%{version}/*/*.html
 %{_bindir}/*cc*
 %{_bindir}/cpp
 %{_bindir}/gcov
@@ -172,6 +171,7 @@ update-info-dir
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixinc.sh
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixincl
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/mkheaders
+%{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/mkinstalldirs
 %doc %{_mandir}/man1/cpp.1*
 %doc %{_mandir}/man1/gcc.1*
 %doc %{_mandir}/man1/gcov.1*
@@ -180,19 +180,24 @@ update-info-dir
 %doc %{_mandir}/man7/gpl.7*
 %{_datadir}/locale/*/*/cpplib.mo
 
+
 %files g++
 %defattr(-, root, root)
-%doc ABOUT-NLS BUGS COPYING* ChangeLog* FAQ LAST_UPDATED MAINTAINERS NEWS
-%doc README* *.html
+%doc gcc-%{version}/ABOUT-NLS gcc-%{version}/COPYING*
+%doc gcc-%{version}/ChangeLog* gcc-%{version}/LAST_UPDATED
+%doc gcc-%{version}/MAINTAINERS gcc-%{version}/NEWS
+%doc gcc-%{version}/README* gcc-%{version}/*/*.html
 %{_bindir}/*?++
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/cc1plus
 %doc %{_mandir}/man1/g++.1*
 
-%files -n libstdc++ -f libstdc++.lang
+
+%files -n libstdc++6 -f cpplib.lang
 %defattr(-, root, root)
 %{_includedir}/c++/
 %{_libdir}/libstdc++*.*
 %{_libdir}/libsupc++*.*
+
 
 %files -n libgcc_s
 %defattr(-, root, root)
