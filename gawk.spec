@@ -1,16 +1,13 @@
 Name: gawk
-Version: 3.1.5
-Release: 1ev
-Summary: A pattern scanning and processing language.
+Version: 3.1.7
+Release: 2ev
+Summary: A pattern scanning and processing language
 URL: http://www.gnu.org/software/gawk
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: GPL-3
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc-core, make >= 3.79.1
-Requires: /sbin/install-info
+BuildRequires: make, gcc, gettext
 Provides: awk
 
 %description
@@ -30,31 +27,29 @@ code.
 
 
 %build
-%configure --enable-switch --enable-portals
-make
+%configure \
+	--enable-switch \
+	--enable-portals
+%{__make} %{?_smp_mflags}
+%{__make} check
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT" LDFLAGS="-s"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}" LDFLAGS="-s"
+%{__rm} ${RPM_BUILD_ROOT}/%{_infodir}/dir ||:
 %find_lang gawk
 
 # Move awk to /bin where we need it at boot time
-mkdir ${RPM_BUILD_ROOT}/bin
-mv ${RPM_BUILD_ROOT}/%{_bindir}/*awk* ${RPM_BUILD_ROOT}/bin
+%{__mkdir_p} "${RPM_BUILD_ROOT}/bin"
+%{__mv} -v "${RPM_BUILD_ROOT}/%{_bindir}"/*awk* "${RPM_BUILD_ROOT}/bin"
 
 
 %post
-/sbin/install-info %{_infodir}/gawk.info.gz %{_infodir}/dir
-/sbin/install-info %{_infodir}/gawkinet.info.gz %{_infodir}/dir
+update-info-dir
+
 
 %postun
-/sbin/install-info --delete %{_infodir}/gawk.info.gz %{_infodir}/dir
-/sbin/install-info --delete %{_infodir}/gawkinet.info.gz %{_infodir}/dir
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+update-info-dir
 
 
 %files -f gawk.lang
@@ -62,14 +57,15 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc ABOUT-NLS AUTHORS COPYING ChangeLog* FUTURES LIMITATIONS POSIX* PROBLEMS
 %doc README*
 /bin/awk
-/bin/gawk
 /bin/gawk*
 /bin/igawk
 /bin/pgawk*
-%{_infodir}/gawk.info.gz
-%{_infodir}/gawkinet.info.gz
-%{_libexecdir}/awk/
-%{_mandir}/man1/gawk.1*
-%{_mandir}/man1/igawk.1*
-%{_mandir}/man1/pgawk.1*
-%{_datadir}/awk/
+%doc %{_infodir}/gawk.info*
+%doc %{_infodir}/gawkinet.info*
+%dir %{_libexecdir}/awk
+%{_libexecdir}/awk/??cat
+%doc %{_mandir}/man1/gawk.1*
+%doc %{_mandir}/man1/igawk.1*
+%doc %{_mandir}/man1/pgawk.1*
+%dir %{_datadir}/awk
+%{_datadir}/awk/*.awk
