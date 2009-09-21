@@ -1,6 +1,6 @@
 Name: hplip
 Version: 3.9.8
-Release: 3ev
+Release: 4ev
 Summary: Imaging and printing drivers for HP products
 URL: http://hplip.sourceforge.net/
 Group: System Environment/Base
@@ -28,9 +28,11 @@ Business Inkjet, LaserJet, Edgeline MFP, and LaserJet MFP.
 %configure \
 	--enable-hpijs-only-build \
 	--enable-pp-build \
+	--enable-hpijs-install \
 	--enable-foomatic-drv-install \
 	--with-drvdir='%{_libdir}/cups/driver' \
 	--with-hpppddir='%{_datadir}/cups/model' \
+	--enable-foomatic-rip-hplip \
 	--disable-scan-build \
 	--disable-gui-build \
 	--disable-fax-build \
@@ -48,6 +50,7 @@ Business Inkjet, LaserJet, Edgeline MFP, and LaserJet MFP.
 %files
 %defattr(-, root, root)
 %doc COPYING doc/*html doc/images doc/styles
+%{_bindir}/hpijs
 %{_libdir}/cups/driver/hpcups.drv
 %{_libdir}/cups/driver/hpijs.drv
 %{_libdir}/cups/filter/hpcups
