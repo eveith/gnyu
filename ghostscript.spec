@@ -1,16 +1,16 @@
 Name: ghostscript
-Version: 8.62
-Release: 1ev
+Version: 8.70
+Release: 2ev
 Summary: A postscript and PDF interpreter
 URL: http://www.ghostscript.com/
 Group: Applications/Publishing
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/GPL/gs862/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc, fontconfig, libpng, libjpeg, zlib, cups-libs
-BuildRequires: coreutils, gawk, perl, libstdc++, pkg-config
-BuildRequires: gtk2, libX11, libSM, libICE, libXext, libXt
+BuildRequires: pkgconfig, make, gcc
+BuildRequires: fontconfig, cups-libs
+BuildRequires: gtk2, cairo
+BuildRequires: libX11, libXext, libXt
 Requires: gnu-gs-fonts
 Obsoletes: espgs
 
@@ -28,6 +28,7 @@ Ghostscript is a package of software that provides:
   and filtering (data compression / decompression / conversion) capabilities 
   that appear as primitive operations in the PostScript language and in PDF.
 
+
 %package gtk2
 Summary: A GTK-enabled PostScript(TM) interpreter and renderer
 Group: Applications/Publishing
@@ -39,7 +40,6 @@ A GTK-enabled version of Ghostscript, called 'gsx'.
 
 %prep
 %setup -q
-sh autogen.sh
 for f in man/de/*.1
 do
 	iconv -f iso-8859-1 -t utf-8 < "${f}" > "${f}_"
@@ -51,24 +51,17 @@ done
 %configure \
 	--enable-dynamic \
 	--with-ijs \
-	--without-jasper \
 	--with-drivers=ALL \
 	--with-gtk \
-	--with-omni \
-	--with-x \
     --with-cups
 %{__make} %{?_smp_mflags}
 
+
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} soinstall DESTDIR='%{buildroot}'
+%{__make} install soinstall DESTDIR='%{buildroot}'
 
 [[ -e '%{buildroot}/%{_infodir}/dir' ]] \
     && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -113,45 +106,48 @@ done
 %dir %{_libdir}/ghostscript/%{version}
 %dir %{_datadir}/ghostscript
 %{_datadir}/ghostscript/%{version}/
-%{_mandir}/man1/dvipdf.1*
-%{_mandir}/man1/eps2eps.1*
-%{_mandir}/man1/font2c.1*
-%{_mandir}/man1/gs.1*
-%{_mandir}/man1/gslp.1*
-%{_mandir}/man1/gsnd.1*
-%{_mandir}/man1/pdf2dsc.1*
-%{_mandir}/man1/pdf2ps.1*
-%{_mandir}/man1/pdfopt.1*
-%{_mandir}/man1/pf2afm.1*
-%{_mandir}/man1/pfbtopfa.1*
-%{_mandir}/man1/printafm.1*
-%{_mandir}/man1/ps2ascii.1*
-%{_mandir}/man1/ps2epsi.1*
-%{_mandir}/man1/ps2pdf.1*
-%{_mandir}/man1/ps2pdf12.1*
-%{_mandir}/man1/ps2pdf13.1*
-%{_mandir}/man1/ps2pdfwr.1*
-%{_mandir}/man1/ps2ps.1*
-%{_mandir}/man1/wftopfa.1*
-%{_mandir}/*/man1/dvipdf.1*
-%{_mandir}/*/man1/eps2eps.1*
-%{_mandir}/*/man1/font2c.1*
-%{_mandir}/*/man1/gsnd.1*
-%{_mandir}/*/man1/pdf2dsc.1*
-%{_mandir}/*/man1/pdf2ps.1*
-%{_mandir}/*/man1/pdfopt.1*
-%{_mandir}/*/man1/printafm.1*
-%{_mandir}/*/man1/ps2ascii.1*
-%{_mandir}/*/man1/ps2pdf.1*
-%{_mandir}/*/man1/ps2pdf12.1*
-%{_mandir}/*/man1/ps2pdf13.1*
-%{_mandir}/*/man1/ps2ps.1*
-%{_mandir}/*/man1/wftopfa.1*
-%{_sysconfdir}/cups/pstoraster.convs
+%doc %{_mandir}/man1/dvipdf.1*
+%doc %{_mandir}/man1/eps2eps.1*
+%doc %{_mandir}/man1/font2c.1*
+%doc %{_mandir}/man1/gs.1*
+%doc %{_mandir}/man1/gslp.1*
+%doc %{_mandir}/man1/gsnd.1*
+%doc %{_mandir}/man1/pdf2dsc.1*
+%doc %{_mandir}/man1/pdf2ps.1*
+%doc %{_mandir}/man1/pdfopt.1*
+%doc %{_mandir}/man1/pf2afm.1*
+%doc %{_mandir}/man1/pfbtopfa.1*
+%doc %{_mandir}/man1/printafm.1*
+%doc %{_mandir}/man1/ps2ascii.1*
+%doc %{_mandir}/man1/ps2epsi.1*
+%doc %{_mandir}/man1/ps2pdf.1*
+%doc %{_mandir}/man1/ps2pdf12.1*
+%doc %{_mandir}/man1/ps2pdf13.1*
+%doc %{_mandir}/man1/ps2pdfwr.1*
+%doc %{_mandir}/man1/ps2ps.1*
+%doc %{_mandir}/man1/wftopfa.1*
+%doc %{_mandir}/*/man1/dvipdf.1*
+%doc %{_mandir}/*/man1/eps2eps.1*
+%doc %{_mandir}/*/man1/font2c.1*
+%doc %{_mandir}/*/man1/gsnd.1*
+%doc %{_mandir}/*/man1/pdf2dsc.1*
+%doc %{_mandir}/*/man1/pdf2ps.1*
+%doc %{_mandir}/*/man1/pdfopt.1*
+%doc %{_mandir}/*/man1/printafm.1*
+%doc %{_mandir}/*/man1/ps2ascii.1*
+%doc %{_mandir}/*/man1/ps2pdf.1*
+%doc %{_mandir}/*/man1/ps2pdf12.1*
+%doc %{_mandir}/*/man1/ps2pdf13.1*
+%doc %{_mandir}/*/man1/ps2ps.1*
+%doc %{_mandir}/*/man1/wftopfa.1*
+%config %{_sysconfdir}/cups/pdftoraster.convs
+%config %{_sysconfdir}/cups/pstoraster.convs
 %{_libdir}/cups/filter/pstopxl
+%{_libdir}/cups/filter/pdftoraster
 %{_libdir}/cups/filter/pstoraster
 %{_datadir}/cups/model/pxlcolor.ppd
 %{_datadir}/cups/model/pxlmono.ppd
+
 
 %files gtk2
 %defattr(-, root, root)
