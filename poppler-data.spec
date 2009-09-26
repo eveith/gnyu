@@ -1,8 +1,8 @@
 Name: poppler-data
-Version: 0.2.1
-Release: 1ev
+Version: 0.3.0
+Release: 2ev
 Summary: Encoding data for use with poppler
-URL: http://poppler.freedesktop.org/
+URL: http://poppler.freedesktop.org
 Group: System Environment/Libraries
 License: Proprietary, Adobe
 Vendor: GNyU-Linux
