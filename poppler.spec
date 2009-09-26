@@ -1,15 +1,17 @@
 Name: poppler
-Version: 0.10.4
-Release: 1ev
+Version: 0.12.0
+Release: 2ev
 Summary: A PDF rendering library
-URL: http://poppler.freedesktop.org/
+URL: http://poppler.freedesktop.org
 Group: System Environment/Libraries
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://poppler.freedesktop.org/poppler-%{version}.tar.gz
-BuildRequires: make, gcc-g++, pkg-config >= 0.9.0, libstdc++
-BuildRequires: zlib, cairo, glib2, gtk2, qt4, libjpeg, freetype, fontconfig
-BuildRequires: libX11, libICE, poppler-data
+BuildRequires: make, gcc-g++, pkg-config >= 0.9.0
+Buildrequires: zlib, libjpeg, libpng, freetype >= 2.0, fontconfig >= 2.0.0
+BuildRequires: cairo >= 1.8.4, glib2 >= 2.6
+BuildRequires: gtk2 >= 2.12, qt4 >= 4.3.0, lcms
+BuildRequires: poppler-data
 Requires: poppler-data
 
 %description
@@ -47,11 +49,14 @@ This is the interface library between the poppler routines and Qt4.
 %post
 %{__ldconfig}
 
+
 %postun
 %{__ldconfig}
 
+
 %post qt4
 %{__ldconfig}
+
 
 %postun qt4
 %{__ldconfig}
@@ -84,6 +89,7 @@ This is the interface library between the poppler routines and Qt4.
 %doc %{_mandir}/man1/pdftotext.1*
 %dir %{_datadir}/gtk-doc/html/poppler
 %doc %{_datadir}/gtk-doc/html/poppler/*
+
 
 %files qt4
 %defattr(-, root, root)
