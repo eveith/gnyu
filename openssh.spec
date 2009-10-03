@@ -1,16 +1,16 @@
 Name: openssh
-Version: 4.7p1
-Release: 1ev
+Version: 5.3p1
+Release: 2ev
 Summary: The Secure SHell clients and libraries
 URL: http://www.openssh.org/
 Group: Applications/Communications
 License: BSD/MIT
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source0: ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/%{name}-%{version}.tar.gz
 Source1: openssh-sshd.i
 Source2: openssh-sshd.pam
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, gcc-core, libpam, zlib, openssl >= 0.9.8, sed
+BuildRequires: make >= 3.79.1, gcc, perl
+BuildRequires: zlib >= 1.2.3, openssl >= 0.9.6, tcp_wrappers, shadow, libpam
 %define _sshd_uid 504
 %define _sshd_gid 51
 
@@ -35,148 +35,129 @@ the sftp-server and sshd.
 
 
 %prep
-%setup -q
-
-if ! id sshd > /dev/null 2>&1
-then
-	touch .REMOVE_SSHD_USER
-	groupadd -g %{_sshd_gid} sshd
-	useradd -g sshd -u %{_sshd_uid} -s /sbin/nologin -d /var/empty sshd
-fi
+	%setup -q
 
 
 %build
-%configure \
-	--sysconfdir=/etc/ssh \
-	--with-cflags="$RPM_OPT_FLAGS" \
-	--with-cppflags="$RPM_OPT_FLAGS" \
-	--with-md5-passwords \
-	--with-pam \
-	--with-mantype=man \
-	--with-rand-helper \
-	--with-privsep-path=/%{_var}/empty \
-	--with-privsep-user=sshd
-make %{_smp_mflags}
+	%configure \
+		--sysconfdir='%{_sysconfdir}/ssh' \
+		--with-cflags="${CFLAGS:-%{optflags}}" \
+		--with-cppflags="${CXXFLAGS:-%{optflags}}" \
+		--with-tcp-wrappers \
+		--with-md5-passwords \
+		--with-pam \
+		--with-mantype=man \
+		--with-ssl-engine \
+		--with-privsep-path='/%{_var}/empty' \
+		--with-privsep-user=sshd
+	%{__make} %{?_smp_mflags}
+
 
 %install
-[[ "$RPM_BUILD_ROOT" != "/" ]] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+	%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
 
-rm -vf "$RPM_BUILD_ROOT"/"%{_infodir}"/dir
+	%{__touch} '%{buildroot}/%{_sysconfdir}/ssh/moduli'
 
-# Install OpenSSH pam control file
+	# Install OpenSSH pam control file
+	%{__mkdir_p} "${RPM_BUILD_ROOT}/%{_sysconfdir}/pam.d"
+	%{__cp} '%{SOURCE2}' "${RPM_BUILD_ROOT}/%{_sysconfdir}/pam.d/sshd"
 
-mkdir -p "$RPM_BUILD_ROOT"/etc/pam.d
-cp %{SOURCE2} "$RPM_BUILD_ROOT"/etc/pam.d/sshd
+	# Install OpenSSH service file
+	%{__mkdir_p} "${RPM_BUILD_ROOT}/etc/initng/daemon"
+	%{install_ifile '%{SOURCE1}' daemon/sshd.i}
 
-# Install OpenSSH service file
+	# Privilege separation needs a directory
+	%{__mkdir_p} "${RPM_BUILD_ROOT}/%{_var}/empty"
 
-mkdir -p "$RPM_BUILD_ROOT"/etc/initng/daemon
-cat "%{SOURCE1}" \
-	| sed \
-		-e 's,@sshd@,%{_sbindir}/sshd,g' \
-		-e 's,@ssh-keygen@,%{_bindir}/ssh-keygen,g' \
-	> "$RPM_BUILD_ROOT"/etc/initng/daemon/sshd.i
-
-# Privilege separation needs a directory
-mkdir -p "$RPM_BUILD_ROOT"/%{_var}/empty
-
-# Touch ghost files
-for file in ssh_host_dsa_key ssh_host_dsa_key.pub \
-		ssh_host_key ssh_host_key.pub ssh_host_rsa_key \
-		ssh_host_rsa_key.pub
-do
-	touch "$RPM_BUILD_ROOT"/etc/ssh/"$file"
-done
+	# Touch ghost files
+	for file in ssh_host_dsa_key ssh_host_dsa_key.pub \
+			ssh_host_key ssh_host_key.pub ssh_host_rsa_key \
+			ssh_host_rsa_key.pub
+	do
+		%{__touch} "${RPM_BUILD_ROOT}/etc/ssh/${file}"
+	done
 
 
 %pre server
-groupadd -g %{_sshd_gid} sshd > /dev/null 2>&1 || :
-useradd -g %{_sshd_gid} -u %{_sshd_uid} -s /sbin/nologin -d /var/empty sshd \
-	> /dev/null 2>&1 || :
+	if [[ "${1}" -eq 1 ]]
+	then
+		groupadd \
+			-g '%{_sshd_gid}' \
+			sshd
+		useradd \
+			-g '%{_sshd_gid}' \
+			-u '%{_sshd_uid}' \
+			-s /sbin/nologin
+			-d '/%{_var}/empty' \
+			sshd
+	fi > /dev/null 2>&1
+	exit 0
 
 
 %preun server
-if [ "$1" = '0' ]
-then
-	ngc -d daemon/sshd/generate_keys > /dev/null 2>&1 ||:
-	ngc -d daemon/sshd > /dev/null 2>&1 || :
-	ng-update del daemon/sshd > /dev/null 2>&1 || :
-fi
+	if [[ "${1}" -eq 0 ]]
+	then
+		%{__ngc} -d daemon/sshd
+		ng-update delete daemon/sshd default
+	fi > /dev/null 2>&1
+	exit 0
 
-%post server
-if ngc -s | grep -q 'daemon/sshd'
-then
-	ngc -d daemon/sshd/generate_keys > /dev/null 2>&1 ||:
-	ngc -r daemon/sshd > /dev/null 2>&1 || :
-fi
-/sbin/ldconfig
 
 %postun server
-if [ "$1" = '0' ] 
-then
-	userdel sshd > /dev/null 2>&1 || :
-	groupdel sshd > /dev/null 2>&1 || :
-fi
-/sbin/ldconfig
+	if [[ "${1}" -eq 0 ]]
+	then
+		userdel sshd
+		groupdel sshd
+	fi > /dev/null 2>&1
+	%{__ldconfig}
+
 
 %post
-/sbin/ldconfig
+	%{__ldconfig}
+
 
 %postun 
-/sbin/ldconfig
-
-
-%clean
-[[ "$RPM_BUILD_ROOT" != "/" ]] && rm -rf "$RPM_BUILD_ROOT"
-if [ -e '.REMOVE_SSHD_USER' ]
-then
-	userdel sshd > /dev/null 2>&1
-	groupdel sshd > /dev/null 2>&1
-fi
-exit 0
+	%{__ldconfig}
 
 
 %files
-%defattr(-, root, root)
-%doc LICENCE README* CREDITS ChangeLog* RFC* WARNING* TODO 
-%dir /etc/ssh
-%attr(0644, root, root) %config(noreplace) /etc/ssh/ssh_config
-%config /etc/ssh/ssh_prng_cmds
-/etc/ssh/moduli
-%{_datadir}/Ssh.bin
-%{_bindir}/ssh
-%{_bindir}/slogin
-%{_bindir}/scp
-%{_bindir}/ssh-add
-%{_bindir}/ssh-agent
-%{_bindir}/ssh-keygen
-%{_bindir}/ssh-keyscan
-%{_bindir}/sftp
-%{_mandir}/man1/scp.1.gz
-%{_mandir}/man1/ssh-agent.1.gz
-%{_mandir}/man1/ssh-keygen.1.gz
-%{_mandir}/man1/ssh-keyscan.1.gz
-%{_mandir}/man1/ssh.1.gz
-%{_mandir}/man1/ssh-add.1.gz
-%{_mandir}/man1/slogin.1.gz
-%{_mandir}/man5/ssh_config.5.gz
-%{_mandir}/man8/ssh-keysign.8.gz
-%{_mandir}/man8/ssh-rand-helper.8.gz
-%{_mandir}/man8/sftp-server.8.gz
-%{_libexecdir}/ssh-keysign
-%{_libexecdir}/ssh-rand-helper
+	%defattr(-, root, root)
+	%doc LICENCE README* CREDITS ChangeLog* PROTOCOL* WARNING* TODO 
+	%dir %{_sysconfdir}/ssh
+	%attr(0644, root, root) %config(noreplace) %{_sysconfdir}/ssh/ssh_config
+	%{_sysconfdir}/ssh/moduli
+	%{_datadir}/Ssh.bin
+	%{_bindir}/ssh
+	%{_bindir}/slogin
+	%{_bindir}/scp
+	%{_bindir}/ssh-add
+	%{_bindir}/ssh-agent
+	%{_bindir}/ssh-keygen
+	%{_bindir}/ssh-keyscan
+	%{_bindir}/sftp
+	%doc %{_mandir}/man1/scp.1*
+	%doc %{_mandir}/man1/ssh-agent.1*
+	%doc %{_mandir}/man1/ssh-keygen.1*
+	%doc %{_mandir}/man1/ssh-keyscan.1*
+	%doc %{_mandir}/man1/ssh.1*
+	%doc %{_mandir}/man1/ssh-add.1*
+	%doc %{_mandir}/man1/slogin.1*
+	%doc %{_mandir}/man5/ssh_config.5*
+	%doc %{_mandir}/man8/ssh-keysign.8*
+	%doc %{_mandir}/man8/sftp-server.8*
+	%attr(4711, root, root) %{_libexecdir}/ssh-keysign
 
 
 %files server
-/etc/initng/daemon/sshd.i
-%dir /etc/ssh
-%config(noreplace) /etc/pam.d/sshd
-%ghost %config(noreplace) /etc/ssh/ssh_host_*key*
-%attr(0600, root, root) %config(noreplace) /etc/ssh/sshd_config
-%{_libexecdir}/sftp-server
-%{_sbindir}/sshd
-%{_mandir}/man5/sshd_config.5.gz
-%{_mandir}/man1/sftp.1.gz
-%{_mandir}/man8/sshd.8.gz
-%dir /%{_var}/empty
+	%attr(0660, root, root) %{_sysconfdir}/initng/daemon/sshd.i
+	%config(noreplace) %{_sysconfdir}/pam.d/sshd
+	%ghost %config(noreplace) %{_sysconfdir}/ssh/ssh_host_*key*
+	%config %ghost %{_sysconfdir}/ssh/moduli
+	%attr(0600, root, root) %config(noreplace) %{_sysconfdir}/ssh/sshd_config
+	%{_libexecdir}/sftp-server
+	%{_sbindir}/sshd
+	%doc %{_mandir}/man5/sshd_config.5*
+	%doc %{_mandir}/man5/moduli.5*
+	%doc %{_mandir}/man1/sftp.1*
+	%doc %{_mandir}/man8/sshd.8*
+	%dir /%{_var}/empty
