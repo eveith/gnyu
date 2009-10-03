@@ -13,7 +13,8 @@ Source3: %{name}-winbindd.i
 Buildroot: %{_tmppath}/%{name}-buildroot
 BuildRequires(build,install): coreutils, grep, sed
 BuildRequires(build): make, gcc, openldap-libs, libattr, libacl, popt, libpam
-BuildRequires(build): heimdal-libs, cups
+BuildRequires(build): heimdal-libs, cups, libcap2, ncurses, readline, zlib
+BuildRequires(build): openssl
 Requires: samba-libs = %{version}
 
 %description
