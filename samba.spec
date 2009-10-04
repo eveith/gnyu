@@ -1,6 +1,6 @@
 Name: samba
-Version: 3.2.0
-Release: 2ev
+Version: 3.4.2
+Release: 3ev
 Summary: SMB and CIFS file exchange client tools and server
 URL: http://www.samba.org/
 Group: System Environment/Daemons
@@ -10,11 +10,10 @@ Source0: http://www.samba.org/samba/ftp/stable/samba-%{version}.tar.gz
 Source1: %{name}-smbd.i
 Source2: %{name}-nmbd.i
 Source3: %{name}-winbindd.i
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires(build,install): coreutils, grep, sed
-BuildRequires(build): make, gcc, openldap-libs, libattr, libacl, popt, libpam
-BuildRequires(build): heimdal-libs, cups, libcap2, ncurses, readline, zlib
-BuildRequires(build): openssl
+BuildRequires: pkg-config >= 0.9.0, make, gcc, perl
+BuildRequires: readline, libattr, libutempter, libcap2, libacl
+BuildRequires: libpam, gnutls, openldap-libs, heimdal-libs
+BuildRequires: cups, perl-Net-LDAP, zlib, openssl, popt
 Requires: samba-libs = %{version}
 
 %description
@@ -61,20 +60,20 @@ Tool. It is a standalone HTTP service listining on port 901.
 
 
 %build
-pushd source
+pushd source3
 %configure \
 	--enable-shared \
 	--enable-static \
 	--enable-swat \
 	--enable-cups \
 	--with-fhs \
-	--with-privatedir=%{_sysconfdir}/samba/private \
-	--with-lockdir=%{_localstatedir}/lock \
-	--with-piddir=%{_localstatedir}/run/samba \
-	--with-pammodulesdir=/%{_lib}/security \
-	--with-swatdir=%{_datadir}/swat \
-	--with-configdir=%{_sysconfdir}/samba \
-	--with-mandir=%{_mandir} \
+	--with-privatedir='%{_sysconfdir}/samba/private' \
+	--with-lockdir='%{_localstatedir}/lock' \
+	--with-piddir='%{_localstatedir}/run/samba' \
+	--with-pammodulesdir='/%{_lib}/security' \
+	--with-swatdir='%{_datadir}/swat' \
+	--with-configdir='%{_sysconfdir}/samba' \
+	--with-mandir='%{_mandir}' \
 	--with-ldap \
 	--with-cifsmount \
 	--with-pam \
@@ -82,11 +81,9 @@ pushd source
 	--with-quotas \
 	--with-sys-quotas \
 	--with-utmp \
-	--with-ads \
-	--with-libmsrpc \
-	--with-libaddns \
 	--with-libsmbclient \
 	--with-libsmbsharemodes \
+	--enable-gnutls \
 	--with-acl-support \
 	--with-aio-support \
 	--with-sendfile-support \
@@ -96,36 +93,25 @@ popd
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-pushd source
-%{__make_install} DESTDIR='%{buildroot}'
+pushd source3
+%{__make} install DESTDIR='%{buildroot}'
+%find_lang pam_winbind
 popd
 
 %{__mkdir_p} '%{buildroot}/etc/samba/private'
-touch '%{buildroot}/etc/samba/smb.conf'
+%{__touch} '%{buildroot}/etc/samba/smb.conf'
+
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/lock/winbindd_privileged'
 %{__mkdir_p} '%{buildroot}/%{_localstatedir}/lock/printing'
-touch '%{buildroot}/%{_localstatedir}/lock/winbindd_privileged/pipe'
-touch '%{buildroot}/%{_localstatedir}/lock/winbindd_idmap.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/winbindd_cache.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/account_policy.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/brlock.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/browse.dat'
-touch '%{buildroot}/%{_localstatedir}/lock/connections.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/gencache.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/group_mapping.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/locking.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/login_cache.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/messages.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/netsamlogon_cache.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/ntdrivers.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/ntprinters.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/registry.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/sessionid.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/share_info.tdb'
-touch '%{buildroot}/%{_localstatedir}/lock/wins.dat'
 
+for lock in winbindd_privileged/pipe winbindd_idmap.tdb winbindd_cache.tdb \
+		account_policy.tdb brlock.tdb browse.dat connections.tdb gencache.tdb \
+		group_mapping.tdb locking.tdb login_cache.tdb messages.tdb \
+		netsamlogon_cache.tdb ntdrivers.tdb ntprinters.tdb registry.tdb \
+		sessionid.tdb share_info.tdb wins.dat
+do
+	%{__touch} "%{buildroot}/%{_localstatedir}/lock/${lock}"
+done
 
 # Install InitNG service files
 %{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
@@ -141,7 +127,8 @@ done
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %preun
 if [[ "${1}" -eq 0 ]]
@@ -154,28 +141,27 @@ then
 fi
 exit 0
 
+
 %postun
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %post libs
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun libs 
-/sbin/ldconfig
+%{__ldconfig}
 
 
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-
-%files
+%files -f source3/pam_winbind.lang
 %defattr(-, root, root)
 %doc README WHATSNEW* Roadmap COPYING MAINTAINERS Read-Manifest-Now
 %doc examples/ docs/*
 %dir %{_sysconfdir}/samba
 %dir %{_sysconfdir}/samba/private
 %ghost %config(noreplace) %{_sysconfdir}/samba/smb.conf
-%{_sysconfdir}/initng/daemon/*.i
+%attr(0700, root, root) %{_sysconfdir}/initng/daemon/*.i
 /%{_lib}/security/*.so
 %{_bindir}/eventlogadm
 %{_bindir}/findsmb
@@ -183,6 +169,7 @@ exit 0
 %{_bindir}/ldbdel
 %{_bindir}/ldbedit
 %{_bindir}/ldbmodify
+%{_bindir}/ldbrename
 %{_bindir}/ldbsearch
 %{_bindir}/net
 %{_bindir}/nmblookup
@@ -190,6 +177,7 @@ exit 0
 %{_bindir}/pdbedit
 %{_bindir}/profiles
 %{_bindir}/rpcclient
+%{_bindir}/sharesec
 %{_bindir}/smbcacls
 %{_bindir}/smbcontrol
 %{_bindir}/smbcquotas
@@ -203,46 +191,53 @@ exit 0
 %{_sbindir}/smbd
 %{_sbindir}/swat
 %{_sbindir}/winbindd
-%{_libdir}/upcase.dat
-%{_libdir}/lowcase.dat
-%{_libdir}/valid.dat
-%{_libdir}/charset/
-%{_libdir}/auth/
-%{_libdir}/vfs/
+%dir %{_libdir}/samba
+%{_libdir}/samba/lowcase.dat
+%{_libdir}/samba/upcase.dat
+%{_libdir}/samba/valid.dat
+%dir %{_libdir}/samba/auth
+%{_libdir}/samba/auth/script.so
+%dir %{_libdir}/samba/charset
+%{_libdir}/samba/charset/*.so
+%dir %{_libdir}/samba/vfs
+%{_libdir}/samba/vfs/*.so
 %doc %{_mandir}/man1/findsmb.*
 %doc %{_mandir}/man1/ldbadd.1*
 %doc %{_mandir}/man1/ldbdel.1*
 %doc %{_mandir}/man1/ldbedit.1*
 %doc %{_mandir}/man1/ldbmodify.1*
+%doc %{_mandir}/man1/ldbrename.1*
 %doc %{_mandir}/man1/ldbsearch.1*
-%doc %{_mandir}/man1/log2pcap.*
-%doc %{_mandir}/man1/nmblookup.*
-%doc %{_mandir}/man1/ntlm_auth.*
-%doc %{_mandir}/man1/profiles.*
-%doc %{_mandir}/man1/rpcclient.*
-%doc %{_mandir}/man1/smbcacls.*
-%doc %{_mandir}/man1/smbcontrol.*
-%doc %{_mandir}/man1/smbcquotas.*
-%doc %{_mandir}/man1/smbstatus.*
-%doc %{_mandir}/man1/testparm.*
-%doc %{_mandir}/man1/vfstest.*
-%doc %{_mandir}/man1/wbinfo.*
-%doc %{_mandir}/man5/lmhosts.*
-%doc %{_mandir}/man5/smb.conf.*
+%doc %{_mandir}/man1/log2pcap.1*
+%doc %{_mandir}/man1/nmblookup.1*
+%doc %{_mandir}/man1/ntlm_auth.1*
+%doc %{_mandir}/man1/profiles.1*
+%doc %{_mandir}/man1/rpcclient.1*
+%doc %{_mandir}/man1/sharesec.1*
+%doc %{_mandir}/man1/smbcacls.1*
+%doc %{_mandir}/man1/smbcontrol.1*
+%doc %{_mandir}/man1/smbcquotas.1*
+%doc %{_mandir}/man1/smbstatus.1*
+%doc %{_mandir}/man1/testparm.1*
+%doc %{_mandir}/man1/vfstest.1*
+%doc %{_mandir}/man1/wbinfo.1*
+%doc %{_mandir}/man5/lmhosts.5*
+%doc %{_mandir}/man5/smb.conf.5*
 %doc %{_mandir}/man5/smbpasswd.5*
-%doc %{_mandir}/man7/libsmbclient.*
-%doc %{_mandir}/man7/pam_winbind.*
-%doc %{_mandir}/man7/samba.*
-%doc %{_mandir}/man8/eventlogadm.*
+%doc %{_mandir}/man7/libsmbclient.7*
+%doc %{_mandir}/man7/samba.7*
+%doc %{_mandir}/man7/winbind_krb5_locator.7*
+%doc %{_mandir}/man8/cifs.upcall.8*
+%doc %{_mandir}/man8/eventlogadm.8*
 %doc %{_mandir}/man8/net.*
 %doc %{_mandir}/man8/nmbd.*
-%doc %{_mandir}/man8/pdbedit.*
+%doc %{_mandir}/man8/pam_winbind.8*
+%doc %{_mandir}/man8/pdbedit.8*
 %doc %{_mandir}/man8/smbd.*
 %doc %{_mandir}/man8/smbpasswd.*
-%doc %{_mandir}/man8/smbspool.*
-%doc %{_mandir}/man8/swat.*
-%doc %{_mandir}/man8/tdb*.*
-%doc %{_mandir}/man8/vfs_*.*
+%doc %{_mandir}/man8/smbspool.8*
+%doc %{_mandir}/man8/tdb*.8*
+%doc %{_mandir}/man8/vfs_*.8*
 %doc %{_mandir}/man8/winbindd.*
 %{_bindir}/smbclient
 %{_bindir}/smbget
@@ -278,17 +273,28 @@ exit 0
 %ghost %config(noreplace missingok) %{_localstatedir}/lock/share_info.tdb
 %ghost %config(noreplace missingok) %{_localstatedir}/lock/wins.dat
 
+
 %files libs
 %defattr(-, root, root)
-%{_includedir}/*.h
-%{_libdir}/*.so*
-%{_libdir}/*.a
-%doc %{_mandir}/man7/libsmbclient.*
-%doc %{_mandir}/man8/idmap_*.*
+%{_includedir}/libsmbclient.h
+%{_includedir}/netapi.h
+%{_includedir}/smb_share_modes.h
+%{_includedir}/talloc.h
+%{_includedir}/tdb.h
+%{_includedir}/wbclient.h
+%{_libdir}/libnetapi.*
+%{_libdir}/libsmbclient.*
+%{_libdir}/libsmbsharemodes.*
+%{_libdir}/libtalloc.*
+%{_libdir}/libtdb.*
+%{_libdir}/libwbclient.*
+%doc %{_mandir}/man7/libsmbclient.7*
+%doc %{_mandir}/man8/idmap_*.8*
+
 
 %files swat
 %defattr(-, root, root)
 %{_sbindir}/swat
 %{_datadir}/swat/
-%{_libdir}/*.msg
+%{_libdir}/samba/*.msg
 %doc %{_mandir}/man8/swat.8*
