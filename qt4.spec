@@ -1,12 +1,12 @@
 Name: qt4
-Version: 4.5.2
-Release: 11ev
+Version: 4.5.3
+Release: 12ev
 Summary: The Qt GUI toolkit
 URL: http://www.trolltech.com/
 Group: User Interface/Desktops
 License: GPL-3, LGPL-2.1
 Vendor: GNyU-Linux
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 Source1: %{name}-profile.sh
 BuildRequires(build,install): make
 BuildRequires(install): findutils
@@ -167,16 +167,6 @@ examples.
 	%{_libdir}/qt4/lib/pkgconfig/QtUiTools.pc
 	%{_libdir}/qt4/lib/pkgconfig/QtWebKit.pc
 	%{_libdir}/qt4/lib/pkgconfig/QtXml.pc
-	%dir %{_libdir}/qt4/translations
-	%{_libdir}/qt4/translations/designer_*.qm
-	%{_libdir}/qt4/translations/linguist_*.qm
-	%{_libdir}/qt4/translations/qt_??.qm
-	%{_libdir}/qt4/translations/qt_??_??.qm
-	%{_libdir}/qt4/translations/qt_help_??.qm
-	%{_libdir}/qt4/translations/qt_help_??_??.qm
-	%{_libdir}/qt4/translations/qtconfig_*.qm
-	%{_libdir}/qt4/translations/qvfb*.qm
-	%{_libdir}/qt4/translations/qt_*untranslated.qm
 	%{_libdir}/qt4/mkspecs/
 	%{_libdir}/qt4/plugins/
 	%{_libdir}/qt4/phrasebooks/
@@ -213,4 +203,3 @@ examples.
 	%{_libdir}/qt4/lib/libQtAssistantClient.*
 	%{_libdir}/qt4/lib/pkgconfig/QtAssistantClient.pc
 	%{_libdir}/pkgconfig/QtAssistantClient.pc
-	%{_libdir}/qt4/translations/assistant*.qm
