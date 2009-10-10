@@ -1,18 +1,25 @@
 Name: mplayer
-Version: 1.0rc1
-Release: 1ev
+Version: 20091010
+Release: 2ev
 Summary: A multimedia player
-URL: http://www.mplayerhq.hu/
+URL: http://www.mplayerhq.hu
 Group: Applications/Multimedia
 License: GPL-2
-Vendor: MSP Slackware
-Source0: http://www.mplayerhq.hu/MPlayer/releases/MPlayer-%{version}.tar.bz2
+Vendor: GNyU-Linux
+Source0: http://www.mplayerhq.hu/MPlayer/releases/mplayer-checkout-snapshot.tar.bz2
 Source1: http://www.mplayerhq.hu/MPlayer/skins/Blue-1.7.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, gtk2, samba-libs, libavcodec
-BuildRequires: xvidcore, libogg, libvorbis, libtheora, freetype, fontconfig
-BuildRequires: libjpeg, libpng, zlib, x264, libfame, alsa-lib
-Requires: gtk2
+BuildRequires: pkg-config, make, gcc
+BuildRequires: samba-libs
+BuildRequires: libX11, libXScrnSaver, libXext, libXv, libXvMC
+BuildRequires: libXxf86vm, libXxf86dga
+BuildRequires: mesalib
+BuildRequires: libpng, libmng, zlib, libjpeg, libungif, bzip2
+BuildRequires: libsdl >= 1.2.1, alsa-lib >= 1.0.0
+BuildRequires: cdparanoia
+BuildRequires: freetype >= 2.1.8, fontconfig, fribidi >= 0.10.4
+BuildRequires: libmad, libogg, libvorbis, speex >= 1.1, libtheora
+BuildRequires: liba52, xvidcore, lame
+BuildRequires: gtk2, glib2
 Obsoletes: gmplayer
 
 %description
@@ -42,13 +49,13 @@ DVD subtitles (SPU streams, VOBsub and Closed Captions) are supported as well.
 
 
 %build
-pushd "MPlayer-%{version}"
+pushd mplayer-checkout-*
 ./configure \
 	--prefix="%{_prefix}" \
 	--bindir="%{_bindir}" \
 	--datadir="%{_datadir}/mplayer" \
 	--mandir="%{_mandir}" \
-	--confdir=/etc/mplayer \
+	--confdir='%{_sysconfdir}/mplayer' \
 	--libdir="%{_libdir}" \
 	--enable-mencoder \
 	--enable-gui \
@@ -56,190 +63,65 @@ pushd "MPlayer-%{version}"
 	--disable-linux-devfs \
 	--disable-termcap \
 	--disable-termios \
-	--disable-lirc \
-	--disable-lircc \
-	--disable-joystick \
-	--enable-vm \
-	--enable-xf86keysym \
-	--disable-radio \
-	--disable-radio-capture \
-	--disable-radio-v4l2 \
-	--disable-tv \
-	--disable-tv-v4l1 \
-	--disable-tv-v4l2 \
-	--disable-tv-bsdbt848 \
-	--disable-pvr \
-	--disable-rtc \
-	--enable-network \
-	--disable-winsock2 \
-	--enable-smb \
-	--disable-live \
-	--disable-dvdnav \
-	--enable-dvdread \
-	--disable-mpdvdkit \
-	--enable-cdparanoia \
-	--enable-bitmap-font \
-	--enable-freetype \
-	--enable-unrarlib \
-	--disable-menu \
-	--enable-sortsub \
-	--disable-fribidi \
-	--disable-enca \
-	--disable-macosx \
-	--disable-maemo \
-	--disable-macosx-finder-support \
-	--disable-macosx-bundle \
-	--enable-inet6 \
-	--enable-gethostbyname2 \
-	--enable-ftp \
-	--disable-vstream \
-	--enable-pthreads \
-	--enable-ass \
-	--disable-rpath \
-	--disable-gif \
-	--enable-png \
-	--enable-jpeg \
-	--disable-libcdio \
-	--disable-liblzo \
-	--enable-win32 \
-	--enable-qtx \
-	--enable-xanim \
-	--enable-real \
-	--enable-xvid \
-	--disable-x264 \
-	--disable-nut \
-	--enable-libavutil \
-	--enable-libavcodec \
-	--enable-libavformat \
-	--enable-libpostproc \
-	--enable-libavutil_so \
-	--enable-libavcodec_so \
-	--enable-libavformat_so \
-	--enable-libpostproc_so \
-	--enable-libavcodec_mpegaudio_hp \
-	--disable-libfame \
-	--enable-tremor-internal \
-	--disable-tremor-low \
-	--disable-tremor-external \
-	--enable-libvorbis \
-	--disable-speex \
-	--enable-theora \
-	--disable-faad-external \
-	--enable-faad-internal \
-	--disable-faac \
-	--disable-ladspa \
-	--disable-libdv \
-	--enable-mad \
-	--disable-toolame \
-	--disable-twolame \
-	--disable-xmms \
-	--enable-mp3lib \
-	--enable-liba52 \
-	--disable-libdts \
-	--enable-libmpeg2 \
-	--disable-musepack \
-	--enable-gl \
-	--disable-sdl \
-	--disable-aa \
-	--disable-caca \
-	--disable-ggi \
-	--disable-ggiwmh \
-	--disable-directx \
-	--disable-dxr2 \
-	--disable-dxr3 \
-	--disable-ivtv \
-	--disable-dvdnav \
-	--disable-dvdread \
-	--disable-xmga \
-	--enable-xv \
-	--enable-xvmc \
-	--enable-vm \
-	--enable-xinerama \
-	--enable-x11 \
-	--disable-fbdev \
-	--disable-mlib \
-	--disable-3dfx \
-	--disable-tdfxfb \
-	--disable-s3fb \
-	--disable-directfb \
-	--disable-zr \
-	--disable-bl \
-	--disable-tdfxvid \
-	--disable-tga \
-	--enable-md5sum \
-	--enable-pnm \
-	--enable-alsa \
-	--disable-ossaudio \
 	--disable-arts \
 	--disable-esd \
-	--disable-polyp \
 	--disable-jack \
 	--disable-openal \
 	--disable-nas \
 	--disable-sgiaudio \
-	--disable-win32waveout \
-	--disable-select \
 	--enable-runtime-cpudetection \
 	--enable-cross-compile \
 	--cc="%{_target_platform}-gcc" \
 	--target="%{_target}" \
-	--with-extraincdir="%{_includedir}/cdda" \
-	--with-win32libdir="%{_libdir}/win32" \
-	--with-xanimlibdir="%{_libdir}/xanim" \
-	--with-reallibdir="%{_libdir}/real"
-# (After --enable-freetype) --enable-fontconfig \
-make %{_smp_mflags}
+	--extra-cflags="${CFLAGS:-%{optflags}} -I%{_includedir}/cdda" \
+	--win32codecsdir="%{_libdir}/win32" \
+	--realcodecsdir="%{_libdir}/real"
+%{__make} %{?_smp_mflags}
 popd
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-
-pushd "MPlayer-%{version}"
-make install DESTDIR="$RPM_BUILD_ROOT"
+pushd mplayer-checkout-*
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 popd
 
 # Create and touch some extra dirs and files for the package
-
-pushd "$RPM_BUILD_ROOT"
-mkdir -p etc/mplayer ./%{_datadir}/mplayer/skins
-touch etc/mplayer/mplayer.conf
-popd
+%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/mplayer' \
+	'%{buildroot}/%{_datadir}/mplayer/skins'
+%{__touch} '%{buildroot}/%{_sysconfdir}/mplayer/mplayer.conf'
 
 # Install standard skin
-
-cp -r Blue "${RPM_BUILD_ROOT}/%{_datadir}/mplayer/skins"
+%{__cp} -r Blue "${RPM_BUILD_ROOT}/%{_datadir}/mplayer/skins"
 pushd "${RPM_BUILD_ROOT}/%{_datadir}/mplayer/skins"
-ln -sf Blue default
+%{__ln_s} Blue default
 popd
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
-%doc "MPlayer-%{version}/AUTHORS" "MPlayer-%{version}/ChangeLog" 
-%doc "MPlayer-%{version}/Copyright" "MPlayer-%{version}/DOCS"
-%doc "MPlayer-%{version}/LICENSE" "MPlayer-%{version}/README"
-%dir /etc/mplayer
-%ghost %config(noreplace) /etc/mplayer/mplayer.conf
+%doc mplayer-checkout-*/AUTHORS
+%doc mplayer-checkout-*/README
+%doc mplayer-checkout-*/Changelog
+%doc mplayer-checkout-*/DOCS
+%doc mplayer-checkout-*/LICENSE
+%dir %{_sysconfdir}/mplayer
+%ghost %config(noreplace) %{_sysconfdir}/mplayer/mplayer.conf
 %{_bindir}/mplayer
 %{_bindir}/gmplayer
 %{_bindir}/mencoder
-%{_libdir}/libdha.*
-%{_libdir}/mplayer/
-%{_mandir}/man1/mencoder.1*
-%{_mandir}/man1/mplayer.1*
+%doc %{_mandir}/man1/mencoder.1*
+%doc %{_mandir}/man1/mplayer.1*
 %{_datadir}/pixmaps/mplayer.xpm
 %{_datadir}/applications/mplayer.desktop
 %dir %{_datadir}/mplayer
-%{_datadir}/mplayer/skins
+%dir %{_datadir}/mplayer/skins
+%{_datadir}/mplayer/skins/default
+%{_datadir}/mplayer/skins/Blue/
