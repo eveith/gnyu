@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
-Version: 4.3.1
-Release: 9ev
+Version: 4.3.2
+Release: 10ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -14,7 +14,7 @@ BuildRequires: kdelibs4 = %{version}, kdepimlibs4 = %{version}
 BuildRequires: kdebase4-runtime = %{version}
 BuildRequires: qt4 >= 4.5.0, qimageblitz, strigi, phonon >= 4.3.0
 BuildRequires: libpam, libusb, zlib, glib2, freetype, fontconfig
-BuildRequires: bluez, soprano, polkit-qt >= 0.9.0
+BuildRequires: bluez, soprano, polkit-qt >= 0.9.0, consolekit
 BuildRequires: python, python-sip >= 4.7.1, python-PyQt4 >= 4.4.0
 BuildRequires: python-PyKDE4
 BuildRequires: dbus >= 1.1.20, policykit >= 0.8
