@@ -1,17 +1,16 @@
 Name: kplayer
-Version: 0.6.3
-Release: 1ev
+Version: 0.7
+Release: 2ev
 Summary: A KDE frontend to MPlayer
-URL: http://kplayer.sourceforge.net/
+URL: http://kplayer.sourceforge.net
 Group: Applications/Multimedia
-License: GPL-2
-Vendor: MSP Slackware
+License: GPL-3
+Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/kplayer/kplayer-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: gcc-core, gcc-g++, make, qt3, kdelibs, kdebase, mplayer
-BuildRequires: autoconf, automake
-BuildRequires: libSM, libICE, libX11, libXau, libXcursor, libXdmcp, libXext
-Requires: kdelibs, kdebase, mplayer
+BuildRequires: cmake >= 2.6.2, pkg-config, make, gcc-g++, perl
+BuildRequires: qt4, kdelibs4, kdebase4
+BuildRequires: libX11
+BuildRequires: mplayer
 
 %description
 KPlayer is a KDE multimedia player. With KPlayer you can easily play a wide
@@ -31,43 +30,38 @@ DVB, and KDE I/O Slaves;
 %prep
 %setup -q
 
+# Fix link issue against -lx11
+%{__sed} -i \
+	's:target_link_libraries(kplayerpart :target_link_libraries(kplayerpart \${X11_LIBRARIES} :' \
+		kplayer/CMakeLists.txt
+
 
 %build
-make -f Makefile.dist
-%configure \
-	--disable-debug \
-	--disable-warnings \
-	--enable-final
-make %{_smp_mflags}
+%{cmake} .
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
 %find_lang kplayer
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
-%post
-/sbin/ldconfig
-
-%postun
-/sbin/ldconfig
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
 
 
 %files -f kplayer.lang
 %defattr(-, root, root)
 %doc AUTHORS BUGS COPYING* ChangeLog README TODO
-%doc %{_datadir}/doc/HTML/*/kplayer
+%doc %{_datadir}/doc/HTML/*/*
 %{_bindir}/kplayer
-%{_libdir}/kde3/libkplayerpart.*
-%{_datadir}/applications/kde/kplayer.desktop
-%{_datadir}/apps/konqueror/servicemenus/kplayer*.desktop
-%{_datadir}/apps/kplayer
-%{_datadir}/services/kplayerpart.desktop
-%{_datadir}/icons/*color/*/apps/kplayer.png
+%{_libdir}/kde4/libkplayerpart.so
+%{_datadir}/applications/kde4/kplayer.desktop
+%{_datadir}/apps/konqueror/servicemenus/kplayer-*.desktop
+%dir %{_datadir}/apps/kplayer
+%{_datadir}/apps/kplayer/COPYING
+%{_datadir}/apps/kplayer/input.conf
+%{_datadir}/apps/kplayer/*.rc
+%dir %{_datadir}/apps/kplayer/icons
+%dir %{_datadir}/apps/kplayer/icons/hicolor
+%dir %{_datadir}/apps/kplayer/icons/hicolor/*
+%dir %{_datadir}/apps/kplayer/icons/hicolor/*/actions
+%{_datadir}/apps/kplayer/icons/hicolor/*/actions/*.png
+%{_datadir}/icons/hicolor/*/apps/kplayer.png
+%{_datadir}/kde4/services/kplayerpart.desktop
