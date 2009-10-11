@@ -1,6 +1,6 @@
 Name: kdepimlibs4
-Version: 4.3.1
-Release: 7ev
+Version: 4.3.2
+Release: 8ev
 Summary: Libraries common to all KDE 4 PIM applications
 URL: http://www.kde.org/
 Group: System Environment/Libraries

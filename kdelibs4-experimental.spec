@@ -1,6 +1,6 @@
 Name: kdelibs4-experimental
-Version: 4.3.1
-Release: 2ev
+Version: 4.3.2
+Release: 3ev
 Summary: Experimental KDE modules intended for internal use only
 URL: http://www.kde.org/
 Group: User Interface/Desktops
