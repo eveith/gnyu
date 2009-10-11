@@ -1,6 +1,6 @@
 Name: kdebase4-runtime
-Version: 4.3.1
-Release: 7ev
+Version: 4.3.2
+Release: 8ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
