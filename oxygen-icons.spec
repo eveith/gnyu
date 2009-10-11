@@ -1,6 +1,6 @@
 Name: oxygen-icons
-Version: 4.3.1
-Release: 2ev
+Version: 4.3.2
+Release: 2.1ev
 Summary: The Oxygen Icon Theme
 URL: http://www.kde.org
 Group: User Interface/Desktops
