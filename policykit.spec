@@ -1,6 +1,6 @@
 Name: policykit
 Version: 0.9
-Release: 1ev
+Release: 1.1ev
 Summary: An authorization framework for hardware access from desktops
 URL: http://www.freedesktop.org/wiki/Software/PolicyKit
 Group: System Environment/Daemons
@@ -94,11 +94,11 @@ exotic kernel features.
 	%{_libdir}/pkgconfig/polkit.pc
 	%attr(2751, root, polkit) %{_libexecdir}/polkit-explicit-grant-helper
 	%attr(2751, root, polkit) %{_libexecdir}/polkit-grant-helper
-	%attr(4751, root, polkit) %{_libexecdir}/polkit-grant-helper-pam
+	%attr(4750, root, polkit) %{_libexecdir}/polkit-grant-helper-pam
 	%attr(2751, root, polkit) %{_libexecdir}/polkit-read-auth-helper
-	%attr(4751, root, polkit) %{_libexecdir}/polkit-resolve-exe-helper
+	%attr(4751, root, root) %{_libexecdir}/polkit-resolve-exe-helper
 	%attr(2751, root, polkit) %{_libexecdir}/polkit-revoke-helper
-	%attr(4751, root, polkit) %{_libexecdir}/polkit-set-default-helper
+	%attr(4751, polkit, root) %{_libexecdir}/polkit-set-default-helper
 	%attr(0751, root, polkit) %{_libexecdir}/polkitd
 	%doc %{_mandir}/man1/polkit-action.1*
 	%doc %{_mandir}/man1/polkit-auth.1*
@@ -116,4 +116,4 @@ exotic kernel features.
 	%attr(0644, polkit, polkit) %{_localstatedir}/lib/misc/PolicyKit.reload
 	%dir %attr(0770, root, polkit) %{_localstatedir}/run/PolicyKit
 	%dir %attr(0770, root, polkit) %{_localstatedir}/lib/PolicyKit
-	%dir %attr(0755, root, polkit) %{_localstatedir}/lib/PolicyKit-public
+	%dir %attr(0755, polkit, root) %{_localstatedir}/lib/PolicyKit-public
