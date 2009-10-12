@@ -1,8 +1,8 @@
 Name: kde4-l10n-de
-Version: 4.3.1
-Release: 4ev
+Version: 4.3.2
+Release: 5.0ev
 Summary: German translations for KDE 4
-URL: http://www.kde.org/
+URL: http://www.kde.org
 Group: User Interface/Desktops
 License: FDL-1.2
 Vendor: GNyU-Linux
