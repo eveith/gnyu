@@ -1,6 +1,6 @@
 Name: kdebase4-workspace
 Version: 4.3.2
-Release: 10ev
+Release: 10.1ev
 Summary: KDE Desktop Applications such as the panel or the login manager
 URL: http://www.kde.org/
 Group: User Interface/Desktops
