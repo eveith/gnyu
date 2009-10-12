@@ -1,6 +1,6 @@
 Name: kdebindings4
-Version: 4.2.4
-Release: 1ev
+Version: 4.3.0
+Release: 2ev
 Summary: Bindings for various languages to KDE
 URL: http://www.kde.org/
 Group: User Interface/Desktops
