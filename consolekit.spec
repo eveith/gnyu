@@ -1,6 +1,6 @@
 Name: consolekit
 Version: 0.3.0
-Release: 1ev
+Release: 1.1ev
 Summary: A framework for tracking users, login sessions and seats
 URL: http://www.freedesktop.org/wiki/Software/ConsoleKit
 Group: System Environment/Daemons
