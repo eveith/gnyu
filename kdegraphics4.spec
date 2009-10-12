@@ -1,6 +1,6 @@
 Name: kdegraphics4
-Version: 4.3.1
-Release: 5ev
+Version: 4.3.2
+Release: 6.0ev
 Summary: A collection of graphic oriented applications for KDE 4.2
 URL: http://www.kde.org/
 Group: User Interface/Desktops
