@@ -1,6 +1,6 @@
 Name: kdepim4
-Version: 4.3.1
-Release: 6ev
+Version: 4.3.2
+Release: 7.0ev
 Summary: Personal Information Management suite for KDE
 URL: http://www.kde.org/
 Group: User Interface/Desktops
