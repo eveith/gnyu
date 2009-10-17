@@ -1,6 +1,6 @@
 Name: consolekit
 Version: 0.3.0
-Release: 1.1ev
+Release: 1.2ev
 Summary: A framework for tracking users, login sessions and seats
 URL: http://www.freedesktop.org/wiki/Software/ConsoleKit
 Group: System Environment/Daemons
@@ -33,7 +33,10 @@ sessions, session switching, hardware-awareness (a seat) and other features.
 %install
 	%{__make} install DESTDIR='%{buildroot}'
 	%{install_ifile '%{SOURCE1}' daemon/console-kit-daemon.i}
-	%{__mkdir_p} '%{buildroot}/%{_localstatedir}/run'
+	%{__mkdir_p} '%{buildroot}/%{_localstatedir}/run/ConsoleKit'
+	%{__mkdir_p} '%{buildroot}/%{_localstatedir}/log/ConsoleKit'
+	%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/ConsoleKit/run-session.d'
+	%{__mkdir_p} '%{buildroot}/%{_libdir}/ConsoleKit/run-session.d'
 	%{__touch} '%{buildroot}/%{_localstatedir}/run/console-kit-daemon.pid'
 
 
@@ -52,6 +55,7 @@ sessions, session switching, hardware-awareness (a seat) and other features.
 	%dir %{_sysconfdir}/ConsoleKit
 	%dir %{_sysconfdir}/ConsoleKit/seats.d
 	%config %{_sysconfdir}/ConsoleKit/seats.d/00-primary.seat
+	%dir %{_sysconfdir}/ConsoleKit/run-session.d
 	%config %{_sysconfdir}/dbus-1/system.d/ConsoleKit.conf
 	/%{_lib}/security/pam_ck_connector.*
 	%{_bindir}/ck-history
@@ -61,6 +65,7 @@ sessions, session switching, hardware-awareness (a seat) and other features.
 	%dir %{_includedir}/ConsoleKit/ck-connector
 	%{_includedir}/ConsoleKit/ck-connector/ck-connector.h
 	%dir %{_libdir}/ConsoleKit
+	%dir %{_libdir}/ConsoleKit/run-session.d
 	%dir %{_libdir}/ConsoleKit/scripts
 	%{_libdir}/ConsoleKit/scripts/ck-system-restart
 	%{_libdir}/ConsoleKit/scripts/ck-system-stop
@@ -80,3 +85,5 @@ sessions, session switching, hardware-awareness (a seat) and other features.
 	%{_datadir}/dbus-1/interfaces/org.freedesktop.ConsoleKit.*.xml
 	%{_datadir}/dbus-1/system-services/org.freedesktop.ConsoleKit.service
 	%ghost %config(noreplace) %{_localstatedir}/run/console-kit-daemon.pid
+	%dir %{_localstatedir}/run/ConsoleKit
+	%dir %{_localstatedir}/log/ConsoleKit
