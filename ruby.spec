@@ -1,15 +1,15 @@
 Name: ruby
 Version: 1.9.1
-%define patchlevel 129
-Release: 6ev
+%define patchlevel 243
+Release: 7.0ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{version}-p%{patchlevel}.tar.gz
-BuildRequires: make, gcc, groff, openssl
-BuildRequires: libtermcap, ncurses, zlib, db, libX11, readline, zlib
+BuildRequires: make, gcc, groff
+BuildRequires: openssl, readline, ncurses, zlib, db, libX11
 
 %description
 Ruby is the interpreted scripting language for quick and
@@ -54,8 +54,16 @@ programs that want to embed Ruby or parse the language.
 	%{__make} %{?_smp_mflags}
 
 
+%check
+	%{__make} test
+
+
 %install
 	%{__make} install DESTDIR='%{buildroot}'
+	%{__mkdir_p} \
+		'%{buildroot}/%{_libdir}/ruby/site_ruby/%{version}/%{_target}'
+	%{__mkdir_p} \
+		'%{buildroot}/%{_libdir}/ruby/vendor_ruby/%{version}/%{_target}'
 
 
 %post
@@ -79,6 +87,12 @@ programs that want to embed Ruby or parse the language.
 	%{_bindir}/irb
 	%dir %{_libdir}/ruby
 	%dir %{_libdir}/ruby/%{version}
+	%dir %{_libdir}/ruby/site_ruby
+	%dir %{_libdir}/ruby/site_ruby/%{version}
+	%dir %{_libdir}/ruby/site_ruby/%{version}/%{_target}
+	%dir %{_libdir}/ruby/vendor_ruby
+	%dir %{_libdir}/ruby/vendor_ruby/%{version}
+	%dir %{_libdir}/ruby/vendor_ruby/%{version}/%{_target}
 	%{_libdir}/ruby/%{version}/*
 	%dir %{_includedir}/ruby-%{version}
 	%{_includedir}/ruby-%{version}/*
