@@ -1,6 +1,6 @@
 Name: oxygen-icons
 Version: 4.3.2
-Release: 2.1ev
+Release: 2.2ev
 Summary: The Oxygen Icon Theme
 URL: http://www.kde.org
 Group: User Interface/Desktops
@@ -32,7 +32,11 @@ It is unobstrusive and carfully designed for a coherent look and feel.
 	for i in mimetypes intl animations apps emotes places categories emblems \
 			actions devices status
 	do
-		%{__mkdir_p} "%{buildroot}/%{_datadir}/icons/oxygen/scalable/${i}"
+		for j in 128x128 16x16 22x22 256x256 32x32 42x42 48x48 64x64 8x8 \
+			scalable
+		do
+			%{__mkdir_p} "%{buildroot}/%{_datadir}/icons/oxygen/${j}/${i}"
+		done
 	done
 
 
