@@ -1,15 +1,13 @@
 Name: cmake
-Version: 2.4.6
-Release: 1ev
+Version: 2.6.2
+Release: 2ev
 Summary: A cross-platform build system
 URL: http://www.cmake.org/
 Group: Development/Tools
 License: BSD
-Vendor: MSP Slackware
-Source: http://www.cmake.org/files/v2.4/cmake-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, gcc-g++, curl, expat, zlib, xmlrpc-c
-Requires: curl, expat, zlib, xmlrpc-c
+Vendor: GNyU-Linux
+Source: http://www.cmake.org/files/v2.6/cmake-%{version}.tar.gz
+BuildRequires: make, gcc-g++, libstdc++, ncurses, openssl
 
 %description
 CMake is a cross-platform, open-source build system. It is used to control the
@@ -25,37 +23,48 @@ pre-processor generation, and code generation.
 
 
 %build
-# Strip prefix from dir variables since cmake's bootstrap skript's somehow
+# Strip prefix from dir variables since cmake's bootstrap skript's somewhat
 # strange here...
-_DATADIR=$(echo %{_datadir} | sed 's,^%{_prefix},,')
-_DOCDIR=$(echo %{_docdir} | sed 's,^%{_prefix},,')
-_MANDIR=$(echo %{_mandir} | sed 's,^%{_prefix},,')
+_datadir=$(echo %{_datadir} | sed 's,^%{_prefix},,')
+_docdir=$(echo %{_docdir} | sed 's,^%{_prefix},,')
+_mandir=$(echo %{_mandir} | sed 's,^%{_prefix},,')
 
-CC=%{_target_platform}-gcc CXX=%{_target_platform}-g++ \
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" \
+CC='%{_target_platform}-gcc' CXX='%{_target_platform}-g++' \
+CFLAGS="${CFLAGS:-%{optflags}}" CXXFLAGS="${CXXFLAGS:-%{optflags}}" \
 ./bootstrap \
-	--prefix=%{_prefix} \
-	--datadir=/${_DATADIR}/cmake \
-	--docdir=/${_DOCDIR}/cmake-%{version} \
-	--mandir=/${_MANDIR} \
-make
+	--prefix='%{_prefix}' \
+	--datadir="${_datadir}/cmake" \
+	--docdir="${_docdir}/cmake-%{version}" \
+	--mandir="${_mandir}" 
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc Docs/*.html Docs/*.txt Docs/*.vim
-%{_mandir}/*/*
-%{_bindir}/c*
-%{_datadir}/cmake/
+%{_bindir}/ccmake
+%{_bindir}/cmake
+%{_bindir}/cpack
+%{_bindir}/ctest
+%doc %{_mandir}/man1/ccmake.1*
+%doc %{_mandir}/man1/cmake.1*
+%doc %{_mandir}/man1/cmakecommands.1*
+%doc %{_mandir}/man1/cmakecompat.1*
+%doc %{_mandir}/man1/cmakemodules.1*
+%doc %{_mandir}/man1/cmakepolicies.1*
+%doc %{_mandir}/man1/cmakeprops.1*
+%doc %{_mandir}/man1/cmakevars.1*
+%doc %{_mandir}/man1/cpack.1*
+%doc %{_mandir}/man1/ctest.1*
+%dir %{_datadir}/apps/cmake/modules
+%dir %{_datadir}/cmake
+%dir %{_datadir}/cmake/Modules
+%dir %{_datadir}/cmake/Templates
+%dir %{_datadir}/cmake/include
+%{_datadir}/cmake/Modules/*
+%{_datadir}/cmake/Templates/*
+%{_datadir}/cmake/include/*
