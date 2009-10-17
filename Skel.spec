@@ -1,6 +1,6 @@
 Name:
 Version:
-Release: 1ev
+Release: 1.0ev
 Summary:
 URL:
 Group:
@@ -27,6 +27,7 @@ BuildRequires:
 
 
 %post
+
 
 %postun
 
