@@ -1,15 +1,18 @@
 Name: kdeartwork4
-Version: 4.2.2
-Release: 3ev
+Version: 4.3.2
+Release: 4.0ev
 Summary: Miscellaneous artworks for KDE 4
-URL: http://www.kde.org/
+URL: http://www.kde.org
 Group: User Interface/Desktops
 License: GPL-2, LGPL-2.1, FDL-1.2
 Vendor: GNyU-Linux
 Source: ftp://ftp.kde.org/pub/kde/stable/%{version}/src/kdeartwork-%{version}.tar.bz2
-BuildRequires: cmake >= 2.4.5, make, gcc-g++, qt4, automoc4 >= 0.8.86
-BuildRequires: libX11, libICE, libXpm
-BuildRequires: kdelibs4, kdebase4, kdebase4-workspace, phonon >= 4.3.0, strigi
+BuildRequires: cmake >= 2.6.2, make, flex, bison, gcc-g++, perl, gettext
+BuildRequires: libX11, libSM, libICE, libXrender, libXt, libxkbfile
+BuildRequires: libXpm, libXScrnSaver
+BuildRequires: qt4 >= 4.5.0, automoc4 >= 0.9.88
+BuildRequires: kdelibs4 = %{version}, kdebase4 = %{version}
+BuildRequires: phonon >= 4.3.0, strigi
 BuildRequires: xscreensaver, mesalib
 Requires: xscreensaver, kdebase4, kdebase4-workspace
 Obsoletes: kdeartwork < %{version}
@@ -26,7 +29,7 @@ for KDE. We placed them into this module so that kdebase won't be too bloated.
 
 
 %prep
-%setup -q -T -c -a0 -n 'kdebase-%{version}'
+%setup -q -T -c -a0 -n 'kdeartwork-%{version}'
 %{__mkdir_p} 'kdeartwork-%{version}-obj'
 
 
@@ -54,7 +57,7 @@ popd
 %doc 'kdeartwork-%{version}/README'
 %doc 'kdeartwork-%{version}'/COPYING*
 %{_datadir}/apps/color-schemes/*.colors
-%{_datadir}/icons/kdeclassic/
+%{_datadir}/icons/nuvola/
 %dir %{_datadir}/emoticons/ccmathteam.com
 %dir %{_datadir}/emoticons/greggman.com
 %dir %{_datadir}/emoticons/phpBB
@@ -86,9 +89,4 @@ popd
 %{_datadir}/apps/kstyle/themes/phase.themerc
 %{_datadir}/apps/kfiresaver/*.*
 %{_datadir}/sounds/*.*
-%{_datadir}/wallpapers/Colorado_Farm/
-%{_datadir}/wallpapers/Emotion/
-%{_datadir}/wallpapers/Golden_Ripples/
-%{_datadir}/wallpapers/Green_Concentration/
-%{_datadir}/wallpapers/Leafs_Labyrinth/
-%{_datadir}/wallpapers/Skeeter_Hawk/
+%{_datadir}/wallpapers/*/
