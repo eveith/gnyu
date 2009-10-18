@@ -1,6 +1,6 @@
 Name: kdepim4
 Version: 4.3.2
-Release: 7.0ev
+Release: 7.1ev
 Summary: Personal Information Management suite for KDE
 URL: http://www.kde.org/
 Group: User Interface/Desktops
@@ -16,6 +16,7 @@ BuildRequires: boost >= 1.33.1, akonadi, zlib, strigi, gpgme, gnokii, soprano
 BuildRequires: libassuan, shared-mime-info, pilot-link, libmal, libxml2
 BuildRequires: libXScrnSaver
 Obsoletes: kdepim < %{version}
+Requires: kdepim4-runtime >= %{version}
 
 %description
 KDE PIM is sub project of KDE. Its goal is to provide an application suite to
