@@ -1,17 +1,17 @@
 Name: freetype
-Version: 2.3.9
-Release: 4ev
+Version: 2.3.11
+Release: 5.0ev
 Summary: An open-source font renderer
 URL: http://www.freetype.org/
 Group: System Environment/Libraries
-License: GPL
+License: FTL
 Vendor: GNyU-Linux
 Source: http://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.bz2
 Patch0: freetype-2.1.10-enable-ft2-bci.patch
 Patch1: freetype-2.2.1-memcpy-fix.patch
 Patch2: freetype-2.3.0-enable-spr.patch
 Patch3: freetype-multilib.patch
-BuildRequires: make >= 3.79.1, gcc, zlib, pkg-config
+BuildRequires: make >= 3.80, gcc, zlib, pkg-config
 
 %description
 FreeType 2 is a software font engine that is designed to be small, efficient,
