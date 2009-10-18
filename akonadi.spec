@@ -1,6 +1,6 @@
 Name: akonadi
 Version: 1.2.1
-Release: 4ev
+Release: 5.0ev
 Summary: KDE 4 PIM storage service
 URL: http://pim.kde.org/akonadi/
 Group: User Interface/Desktops
@@ -32,6 +32,11 @@ provide unique desktop wide object identification and retrieval.
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
+%{__mkdir_p} '%{buildroot}/%{_includedir}/akonadi/xml'
+%{__mkdir_p} '%{buildroot}/%{_datadir}/akonadi/agents'
+%{__mkdir_p} '%{buildroot}/%{_datadir}/apps/akonadi/firstrun'
+%{__mkdir_p} '%{buildroot}/%{_datadir}/apps/akonadi/plugins/serializer'
+%{__mkdir_p} '%{buildroot}/%{_datadir}/apps/akonadi_knut_resource'
 
 
 %post
@@ -59,6 +64,13 @@ exit 0
 %{_libdir}/Akonadi/cmake/AkonadiConfigVersion.cmake
 %{_libdir}/libakonadi*.*
 %{_libdir}/pkgconfig/akonadi.pc
+%dir %{_datadir}/akonadi
+%dir %{_datadir}/akonadi/agents
+%dir %{_datadir}/apps/akonadi
+%dir %{_datadir}/apps/akonadi/firstrun
+%dir %{_datadir}/apps/akonadi/plugins
+%dir %{_datadir}/apps/akonadi/plugins/serializer
+%dir %{_datadir}/apps/akonadi_knut_resource
 %dir %{_datadir}/config/akonadi
 %{_datadir}/config/akonadi/mysql-global.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.Akonadi.*.xml
