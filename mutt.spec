@@ -1,14 +1,15 @@
 Name: mutt
-Version: 1.5.19
-Release: 3ev
+Version: 1.5.20
+Release: 4.0ev
 Summary: A console MUA (Mail User Agent)
 URL: http://www.mutt.org/
 Group: Applications/Internet
 License: GPL
 Vendor: GNyU-Linux
 Source: ftp://ftp.mutt.org/mutt/devel/mutt-%{version}.tar.gz
-BuildRequires: make, gcc, ncurses, openssl, cyrus-sasl
-BuildRequires: gpgme, zlib, perl
+Patch0: http://lunar-linux.org/~tchan/mutt/patch-1.5.20.sidebar.20090619.txt
+BuildRequires: make, gcc, perl, gettext, libxslt
+BuildRequires: ncurses, openssl, cyrus-sasl, gpgme >= 1.1.1, zlib
 
 %description
 Mutt is a small but very powerful text-based MIME mail client. It is highly 
@@ -19,6 +20,7 @@ messages.
 
 %prep
 	%setup -q
+	%patch0 -p1
 
 
 %build
@@ -27,8 +29,8 @@ messages.
 		--enable-pop \
 		--enable-imap \
 		--enable-smtp \
-		--with-ssl \
 		--with-sasl \
+		--with-homespool='Maildir' \
 		--without-gdbm \
 		--without-qdbm
 	%{__make} %{?_smp_mflags}
