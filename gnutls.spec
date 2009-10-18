@@ -1,6 +1,6 @@
 Name: gnutls
-Version: 2.6.4
-Release: 4ev
+Version: 2.6.6
+Release: 5.0ev
 Summary: An Open Source implementation of TLS 1.0 Internet protocol (RFC 2246)
 URL: http://www.gnu.org/software/gnutls/
 Group: System Environment/Libraries
@@ -18,6 +18,22 @@ Quoting from the TLS protocol specification:
 "The TLS protocol provides communications privacy over the Internet. The 
 protocol allows client/server applications to communicate in a way that is 
 designed to prevent eavesdropping, tampering, or message forgery."
+
+
+%package -n libgnutls26
+Summary: GNU TLS runtime library
+Group: System Environment/Libraries
+
+%description
+gnutls is a portable library which implements the Transport Layer Security
+(TLS) 1.0 and Secure Sockets Layer (SSL) 3.0 protocols. 
+Currently gnutls implements: 
+ - the TLS 1.0 and SSL 3.0 protocols, without any US-export
+   controlled algorithms
+ - X509 Public Key Infrastructure (with several limitations).
+ - SRP for TLS authentication.
+ - TLS Extension mechanism
+This package contains the runtime libraries.
 
 
 %prep
@@ -40,10 +56,11 @@ designed to prevent eavesdropping, tampering, or message forgery."
     && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
-%post
+%post -n libgnutls26
 %{__ldconfig}
 
-%postun
+
+%postun -n libgnutls26
 %{__ldconfig}
 
 
@@ -57,17 +74,23 @@ designed to prevent eavesdropping, tampering, or message forgery."
 %{_bindir}/libgnutls-config
 %{_bindir}/libgnutls-extra-config
 %{_bindir}/[ps][sr][kp]tool
-%{_includedir}/gnutls/
 %doc %{_infodir}/gnutls*
+%doc %{_mandir}/man1/gnutls-cli*.1*
+%doc %{_mandir}/man1/gnutls-serv.1*
+%doc %{_mandir}/man1/*tool.1*
+
+
+%files -n libgnutls26
+%defattr(-, root, root)
+%doc ABOUT-NLS AUTHORS COPYING COPYING.LIB README NEWS THANKS doc/*.pdf
+%dir %{_includedir}/gnutls
+%{_includedir}/gnutls/*.h
 %{_libdir}/libgnutls-extra.*
 %{_libdir}/libgnutls-openssl.*
 %{_libdir}/libgnutls.*
 %{_libdir}/libgnutlsxx.*
 %{_libdir}/pkgconfig/gnutls.pc
 %{_libdir}/pkgconfig/gnutls-extra.pc
-%doc %{_mandir}/man1/gnutls-cli*.1*
-%doc %{_mandir}/man1/gnutls-serv.1*
-%doc %{_mandir}/man1/*tool.1*
 %doc %{_mandir}/man3/gnutls_*.3*
 %{_datadir}/aclocal/libgnutls.m4
 %{_datadir}/aclocal/libgnutls-extra.m4
