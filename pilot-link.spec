@@ -1,16 +1,14 @@
 Name: pilot-link
-Version: 0.12.2
+Version: 0.12.3
 Release: 1ev
 Summary: A suite of tools to connect a Palm handheld with Linux
 URL: http://www.pilot-link.org/
 Group: Applications/Productivity
-License: LGPL
-Vendor: MSP Slackware
+License: LGPL-2
+Vendor: GNyU-Linux
 Source: http://downloads.pilot-link.org.nyud.net:8090/%{name}-%{version}.tar.bz2
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, libusb, python, popt
-Requires: popt, perl
-Provides: libtool(%{_libdir}/libpisock.la), libtool(%{_libdir}/libpisync.la)
+BuildRequires: make, gcc, libusb, python, popt, perl
 %define pyver %(echo $(python -c "import sys; print sys.version[0:3]"))
 
 %description
@@ -21,13 +19,13 @@ and others. It also includes language bindings for languages such as Perl,
 Python, and Java.
 
 
-%package java
-Summary: Java bindings for Pilot Link
-Group: System Environment/Library
-Requires: sun-jre, pilot-link
-
-%description java
-Java bindings for Pilot Link
+#%package java
+#Summary: Java bindings for Pilot Link
+#Group: System Environment/Library
+#Requires: sun-jre, pilot-link
+#
+#%description java
+#Java bindings for Pilot Link
 
 
 %package perl
@@ -55,21 +53,17 @@ Python bindings to Pilot Link
 %build
 %configure \
 	--without-perl \
-	--with-java=%{_libdir}/java \
+	--without-java \
 	--with-python \
 	--enable-conduits \
 	--enable-threads \
 	--enable-libusb \
 	--disable-debug
-make
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT" 
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+%{__make_install} DESTDIR='%{buildroot}' 
 
 %post
 /sbin/ldconfig
@@ -79,7 +73,7 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
@@ -91,13 +85,11 @@ make install DESTDIR="$RPM_BUILD_ROOT"
 %{_libdir}/pkgconfig/pilot-link.pc
 %{_datadir}/pilot-link/
 %{_datadir}/aclocal/pilot-link.m4
-%{_mandir}/man1/*
-%{_mandir}/man7/*
 
-%files java
-%defattr(-, root, root)
-%doc bindings/Java/README* bindings/Java/TODO
-%{_libdir}/java/jre/lib/libjpisock.so
+#%files java
+#%defattr(-, root, root)
+#%doc bindings/Java/README* bindings/Java/TODO
+#%{_libdir}/java/jre/lib/libjpisock.so
 
 %files python
 %defattr(-, root, root)
