@@ -1,15 +1,15 @@
 Name: python2.6
-Version: 2.6
-Release: 2ev
+Version: 2.6.3
+Release: 3.0ev
 Summary: A high-level scripting language
 URL: http://www.python.org/
 Group: Development/Languages
 License: Modified CNRI Open Source License
 Vendor: GNyU-Linux
-Source: http://www.python.org/ftp/python/2.4.3/Python-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc, gcc-g++, make >= 3.79.1, openssl, libX11
-BuildRequires: zlib, ncurses, libstdc++, readline
+Source: http://www.python.org/ftp/python/%{version}/Python-%{version}.tar.bz2
+BuildRequires: pkg-config, make, gcc, gcc-g++, 
+BuildRequires: zlib, bzip2, gmp, readline, ncurses, openssl, expat
+BuildRequires: libX11, bluez, sqlite, gdbm, libstdc++
 Provides: python(abi) = 2.6, python-abi = 2.6, python = %{version}
 %define __python_requires %nil
 
@@ -26,7 +26,7 @@ Mac.
 
 
 %prep 
-%setup -q -n Python-%{version}
+%setup -q -n 'Python-%{version}'
 
 
 %build
@@ -41,42 +41,34 @@ Mac.
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}'
 
 #  fix the #! line in installed files
-find '%{buildroot}' -type f -print0 |
+%{__find} '%{buildroot}' -type f -print0 |
       xargs -0 %{__grep} -l '/usr/local/bin/python' | while read file
 do
    %{__sed} -i 's|^#!.*python|#!/usr/bin/env python|' "${file}"
 done
-find '%{buildroot}' -type f -print0 |
+%{__find} '%{buildroot}' -type f -print0 |
       xargs -0 %{__grep} -l '/usr/bin/env' | while read file
 do
    %{__sed} -i 's|^#!.*python|#!/usr/bin/env python|' "${file}"
 done
 
 # Clean up the testsuite - we don't need compiled files for it
-find '%{buildroot}/%{_libdir}/python*/test' \
+%{__find} '%{buildroot}/%{_libdir}/python*/test' \
     -name '*.pyc' -o -name '*.pyo' | xargs %{__rm} -f
 
-find '%{buildroot}/%{_libdir}'/python* -type d | \
-	%{__sed} 's|%{buildroot}|%dir |' >> dynfiles
-find '%{buildroot}/%{_libdir}'/python* -type f | \
-	%{__sed} 's|%{buildroot}||' >> dynfiles
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
+%{__ldconfig}
 
 
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-
-
-%files -f dynfiles
+%files
 %defattr(-, root, root)
 %doc LICENSE README 
 %{_bindir}/python
@@ -88,5 +80,8 @@ find '%{buildroot}/%{_libdir}'/python* -type f | \
 %{_bindir}/2to3
 %{_bindir}/smtpd.py
 %{_libdir}/libpython?.?.*
-%{_includedir}/python?.?/
+%dir %{_libdir}/python?.?
+%{_libdir}/python?.?/*
+%dir %{_includedir}/python?.?
+%{_includedir}/python?.?/*.h
 %doc %{_mandir}/man1/python.1*
