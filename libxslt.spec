@@ -22,7 +22,6 @@ Summary: Python bindings for the libxslt library
 Group: Development/Libraries
 Requires: libxslt = %{version}
 Requires: libxml2-python >= 2.6.27
-Requires: %{_libdir}/python%{_python_version}
 
 %description python
 The libxslt-python package contains a module that permits applications
