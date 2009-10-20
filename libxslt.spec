@@ -1,16 +1,14 @@
 Name: libxslt
 Version: 1.1.22
-Release: 2ev
+Release: 3.0ev
 Summary: Library providing the Gnome XSLT engine
 URL: http://xmlsoft.org/XSLT/
 Group: System Environment/Libraries
 License: MIT
 Vendor: GNyU-Linux
 Source: ftp://xmlsoft.org/libxslt/%{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires(build,prep,install): coreutils
-BuildRequires(build,install): make, python, pkg-config
-BuildRequires(build): gcc, libxml2 >= 2.6.17, libgcrypt
+BuildRequires: pkg-config, make, gcc
+BuildRequires: libxml2 >= 2.6.27, libgcrypt >= 1.1.42, python
 
 %description
 This C library allows to transform XML files into other XML files
@@ -20,11 +18,10 @@ installed. The xsltproc command is a command line interface to the XSLT engine
 
 
 %package python
-%define _python_version %(python -c "import sys; print sys.version[0:3]")
 Summary: Python bindings for the libxslt library
 Group: Development/Libraries
 Requires: libxslt = %{version}
-Requires: libxml2-python >= 2.6.17
+Requires: libxml2-python >= 2.6.27
 Requires: %{_libdir}/python%{_python_version}
 
 %description python
@@ -49,24 +46,16 @@ gzip -9 ChangeLog
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} \
-	DESTDIR='%{buildroot}' \
-	HTML_DIR='%{_docdir}' \
-	DOCS_DIR='%{_docdir}/%{name}-python-%{version}'
+%{__make} install DESTDIR='%{buildroot}'
 %{__rm} -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
-%{__rm} -rf ${RPM_BUILD_ROOT}/%{_datadir}/doc
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
@@ -81,6 +70,8 @@ gzip -9 ChangeLog
 %doc %{_mandir}/man1/xsltproc.1*
 %doc %{_mandir}/man3/libxslt.3*
 %doc %{_mandir}/man3/libexslt.3*
+%doc %{_datadir}/doc/libxslt-%{version}/*
+%dir %{_datadir}/doc/libxslt-%{version}
 %{_libdir}/libxslt-plugins
 %{_bindir}/xsltproc
 %{_datadir}/aclocal/libxslt.m4
@@ -93,6 +84,7 @@ gzip -9 ChangeLog
 %{_includedir}/libexslt
 %{_includedir}/libxslt
 
+
 %files python
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog.gz NEWS README Copyright FEATURES
@@ -101,5 +93,8 @@ gzip -9 ChangeLog
 %doc python/tests/*.py
 %doc python/tests/*.xml
 %doc python/tests/*.xsl
+%doc %{_datadir}/doc/libxslt-python-%{version}/*
+%dir %{_datadir}/doc/libxslt-python-%{version}
 %{_libdir}/python*/site-packages/libxslt.py*
 %{_libdir}/python*/site-packages/libxsltmod*
+
