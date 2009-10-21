@@ -1,13 +1,13 @@
 Name: smart
 Version: 1.2
-Release: 2ev
+Release: 3.0ev
 Summary: A console-based package manager on top of RPM
 URL: http://labix.org/smart/
 Group: System Environment/Tools
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://labix.org/download/smart/smart-%{version}.tar.bz2
-BuildRequires: python, gcc, rpm5-python
+BuildRequires: python >= 2.3, gcc, rpm5-python
 
 %description
 The Smart Package Manager project has the ambitious objective of creating 
@@ -26,6 +26,7 @@ From The Free On-line Dictionary of Computing:
 
 
 %build
+	CFLAGS="${CFLAGS:-%{optflags}}"; export CFLAGS
 	%{__python} ./setup.py build
 
 
