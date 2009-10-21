@@ -1,16 +1,17 @@
 Name: kernel
-Version: 2.6.22.2
+Version: 2.6.23.17
 Release: 1ev
 Summary: The Linux Kernel
 URL: http://www.kernel.org/
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
+License: GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{version}.tar.bz2
 Source1: %{name}-create_biarch_asm.sh
 Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: gcc-core, make
+BuildRequires: coreutils, make, gcc
 Requires: fhs
+Prefix: /usr
 
 %description
 The very basis of every OS is its kernel. This is the Linux Kernel, required
@@ -28,38 +29,46 @@ should install this.
 
 
 %prep
-%setup -q -n linux-%{version}
+%setup -q -n 'linux-%{version}'
 
 
 %build
-make menuconfig
-make V=1
+%{__make} menuconfig
+%{__make} V=1
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-
-mkdir -p "$RPM_BUILD_ROOT"/boot
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__mkdir_p} '%{buildroot}/boot'
 
 %ifarch %ix86
-make \
+%{__fakeroot} %{__make} \
 	ARCH=i386 \
-	INSTALL_HDR_PATH="${RPM_BUILD_ROOT}/usr" \
+	INSTALL_HDR_PATH='%{buildroot}/%{_prefix}' \
 	headers_install
 
-	cp -v arch/i386/boot/bzImage "$RPM_BUILD_ROOT"/boot/vmlinuz-%{version}
+%{__install} -m 0644 arch/i386/boot/bzImage \
+	'%{buildroot}/boot/vmlinuz-%{version}'
 %else
-make \
-	ARCH=%{_arch} \
-	INSTALL_HDR_PATH="${RPM_BUILD_ROOT}/usr" \
+%{__fakeroot} %{__make} \
+	ARCH='%{_arch}' \
+	INSTALL_HDR_PATH='%{buildroot}/%{_prefix}' \
 	headers_install
-
-	cp -v arch/%{_arch}/boot/bzImage "$RPM_BUILD_ROOT"/boot/vmlinuz-%{version}
+%{__install} -m 0644 'arch/%{_arch}/boot/bzImage' \
+	'%{buildroot}/boot/vmlinuz-%{version}'
 %endif
-cp -v System.map "$RPM_BUILD_ROOT"/boot/System.map-%{version}
-cp -v .config "$RPM_BUILD_ROOT"/boot/config-%{version}
 
-make modules_install INSTALL_MOD_PATH="$RPM_BUILD_ROOT"
+# These headers are provided by glibc by now, so remove them
+%{__rm} -rf '%{buildroot}/%{_includedir}/scsi'
+%{__rm} -f '%{buildroot}/%{_includedir}/asm*/atomic.h'
+%{__rm} -f '%{buildroot}/%{_includedir}/asm*/io.h'
+%{__rm} -f '%{buildroot}/%{_includedir}/asm*/irq.h'
+
+
+%{__install} -m 0644 System.map '%{buildroot}/boot/System.map-%{version}'
+%{__install} -m 0600 .config '%{buildroot}/boot/config-%{version}'
+
+%{__fakeroot} %{__make} modules_install INSTALL_MOD_PATH='%{buildroot}'
 
 
 %post
@@ -78,7 +87,7 @@ echo
 
 
 %clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
