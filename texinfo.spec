@@ -1,32 +1,21 @@
-Summary: Tools needed to create Texinfo format documentation files.
 Name: texinfo
-Version: 4.8
-Release: 1ev
-License: GPL
-Group: Applications/Publishing
+Version: 4.13a
+Release: 2.0ev
+Summary: Tools needed to create Texinfo format documentation files.
 Url: http://www.gnu.org/software/texinfo/
-Source0: ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.bz2
-Source1: info-dir
+Group: Applications/Publishing
+License: GPL-3
+Vendor: GNyU-Linux
+Source0: ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.gz
 Source2: texi2pdf.man
-Patch1: texinfo-4.8-zlib.patch
-Patch2: texinfo-CAN-2005-3011.patch
-Prereq: /sbin/install-info
-Prefix: %{_prefix}
-Buildroot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: zlib, ncurses
+BuildRequires: make, gcc, gettext >= 0.17, zlib, ncurses
 Requires: tetex
 Provides: texinfo-tex = %{version}-%{release}
-
-
-# Redefine this so "dir" in the info directory isn't compressed
-
-%define __spec_install_post %{?__debug_package:%{__debug_install_post}} /usr/lib/rpm/brp-strip \; /usr/lib/rpm/brp-strip-comment-note \; rm -f
 
 %description
 Texinfo is a documentation system that can produce both online
 information and printed output from a single source file. The GNU
 Project uses the Texinfo file format for most of its documentation.
-
 Install texinfo if you want a documentation system for producing both
 online and print documentation from the same source file and/or if you
 are going to write documentation for the GNU Project.
@@ -35,12 +24,6 @@ are going to write documentation for the GNU Project.
 %package -n info
 Summary: A stand-alone TTY-based reader for GNU texinfo documentation.
 Group: System Environment/Base
-# By making info prereq bash, other packages which have triggers based on
-# info don't run those triggers until bash is in place as well. This is an
-# ugly method of doing it (triggers which fire on set intersection would
-# be better), but it's the best we can do for now. Talk to Erik before
-# removing this.
-Prereq: bash
 
 %description -n info
 The GNU project uses the texinfo file format for much of its
@@ -49,81 +32,72 @@ browser program for viewing texinfo files.
 
 
 %prep
-%setup -q
-%patch1 -p1 -b .zlib
-%patch2 -p1 -b .CAN-2005-3011
+%setup -q -n '%{name}-4.13'
 
 
 %build
 %configure
-make %{?_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
-mkdir -p ${RPM_BUILD_ROOT}/sbin
-make install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install DESTDIR='%{buildroot}'
+%find_lang '%{name}'
+%{__touch} '%{buildroot}/%{_infodir}/dir'
 
-pushd ${RPM_BUILD_ROOT}
-  install -m644 %{SOURCE2} .%{_mandir}/man1/texi2pdf.1
-  gzip -n -9f .%{_infodir}/*info*
-  gzip -n -9f .%{_mandir}/*/*
-  install -m644 $RPM_SOURCE_DIR/info-dir .%{_infodir}/dir
-  mv -f .%{_bindir}/install-info ./sbin
+pushd '%{buildroot}'
+%{__install} -m644 '%{SOURCE2}' .%{_mandir}/man1/texi2pdf.1
+%{__mkdir_p} ./sbin
+%{__mv} .%{_bindir}/install-info ./sbin
 popd
-
-rm -f $RPM_BUILD_ROOT%{_datadir}/texinfo/texinfo.{xsl,dtd}
-
-%find_lang %name
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
 
 
 %post
-/sbin/install-info %{_infodir}/texinfo.gz %{_infodir}/dir || :
+update-info-dir
+
 
 %preun
-if [ $1 = 0 ]; then
-    /sbin/install-info --delete %{_infodir}/texinfo.gz %{_infodir}/dir || :
-fi
+update-info-dir
+
 
 %post -n info
-/sbin/install-info %{_infodir}/info-stnd.info.gz %{_infodir}/dir || :
+update-info-dir
+
 
 %preun -n info
-if [ $1 = 0 ]; then
-    /sbin/install-info --delete %{_infodir}/info-stnd.info.gz %{_infodir}/dir \
-	|| :
-fi
+update-info-dir
 
 
-%files -f %{name}.lang
-%defattr(-,root,root)
+%files -f '%{name}.lang'
+%defattr(-, root, root)
 %doc AUTHORS ChangeLog INSTALL INTRODUCTION NEWS README TODO
-%doc --parents info/README
 %{_bindir}/makeinfo
+%{_bindir}/pdftexi2dvi
 %{_bindir}/texindex
 %{_bindir}/texi2dvi
 %{_bindir}/texi2pdf
-%{_datadir}/texinfo
-%{_infodir}/texinfo*
-%{_mandir}/man1/makeinfo.1*
-%{_mandir}/man1/texindex.1*
-%{_mandir}/man1/texi2dvi.1*
-%{_mandir}/man1/texi2pdf.1*
-%{_mandir}/man5/texinfo.5*
+%dir %{_datadir}/texinfo
+%{_datadir}/texinfo/texinfo.cat
+%{_datadir}/texinfo/texinfo.dtd
+%{_datadir}/texinfo/texinfo.xsl
+%doc %{_infodir}/texinfo*
+%doc %{_mandir}/man1/makeinfo.1*
+%doc %{_mandir}/man1/pdftexi2dvi.1*
+%doc %{_mandir}/man1/texindex.1*
+%doc %{_mandir}/man1/texi2dvi.1*
+%doc %{_mandir}/man1/texi2pdf.1*
+%doc %{_mandir}/man5/texinfo.5*
+
 
 %files -n info
-%defattr(-,root,root)
-%config(noreplace) %verify(not md5 size mtime) %{_infodir}/dir
+%defattr(-, root, root)
+%ghost %config(noreplace) %verify(not md5 size mtime) %{_infodir}/dir
+/sbin/install-info
 %{_bindir}/info
 %{_bindir}/infokey
-%{_infodir}/info.info*
-%{_infodir}/info-stnd.info*
-/sbin/install-info
-%{_mandir}/man1/info.1*
-%{_mandir}/man1/infokey.1*
-%{_mandir}/man1/install-info.1*
-%{_mandir}/man5/info.5*
+%doc %{_infodir}/info.info*
+%doc %{_infodir}/info-stnd.info*
+%doc %{_mandir}/man1/info.1*
+%doc %{_mandir}/man1/infokey.1*
+%doc %{_mandir}/man1/install-info.1*
+%doc %{_mandir}/man5/info.5*
