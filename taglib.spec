@@ -1,14 +1,13 @@
 Name: taglib
-Version: 1.5
-Release: 2ev
+Version: 1.6
+Release: 3.0ev
 Summary: An audio meta data (tag) reading and modification library
 URL: http://developer.kde.org/~wheeler/taglib/
 Group: System Environment/Libraries
 License: LGPL-2/MPL-1.1
 Vendor: GNyU-Linux
 Source: http://developer.kde.org/~wheeler/files/src/taglib-%{version}.tar.gz
-BuildRequires: make >= 3.79.1, gcc-g++, pkg-config, zlib
-Requires: pkg-config
+BuildRequires: pkg-config >= 0.9.0, make >= 3.80, gcc-g++, zlib
 
 %description
 TagLib is a library for reading and editing the meta data of several popular
@@ -23,7 +22,9 @@ comments and ID3 tags, and Vorbis comments in FLAC files.
 %build
 %configure \
 	--disable-debug \
-	--disable-warnings
+	--disable-warnings \
+	--enable-mp4 \
+	--enable-asf
 %{__make} %{?_smp_mflags}
 
 
