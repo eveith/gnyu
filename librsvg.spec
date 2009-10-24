@@ -3,7 +3,7 @@ Version: 2.16.1
 Release: 2.0ev
 Summary: Tools for rendering and converting SVG images
 URL: http://librsvg.sourceforge.net/
-Group: System Environment/Libraries
+Group: Applications/Graphics
 License: GPL-2
 Vendor: GNyU-Linux
 Source: http://ftp.gnome.org/pub/GNOME/sources/librsvg/2.16/%{name}-%{version}.tar.bz2
