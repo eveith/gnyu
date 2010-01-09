@@ -1,15 +1,13 @@
 Name: autoconf
-Version: 2.61
-Release: 1ev
+Version: 2.65
+Release: 2.0ev
 Summary: A package of M4 macros to produce scripts to automatically configure sourcecode
 URL: http://www.gnu.org/software/autoconf/
 Group: Development/Tools
-License: GPL
-Vendor: MSP Slackware
+License: GPL-2
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: perl, m4, gawk, sed, make, grep
-Requires: m4, perl
+BuildRequires: perl >= 5.5, m4, automake >= 1.10, make,
 BuildArch: noarch
 
 %description
@@ -25,37 +23,44 @@ intervention.
 
 %build
 %configure
-make %{_smp_mflags}
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
+%{__make} install DESTDIR="${RPM_BUILD_ROOT}"
+%{__rm_rf} "${RPM_BUILD_ROOT}/%{_infodir}/dir"
 
-
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
-rm -f "${RPM_BUILD_ROOT}/%{_infodir}/standards.info*"
-
-
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
+# Provided by binutils
+%{__rm_rf} "${RPM_BUILD_ROOT}/%{_infodir}/"standards.info*
 
 
 %post
-/sbin/install-info --infodir="%{_infodir}" "%{_infodir}/autoconf.info.gz"
+update-info-dir
+
 
 %postun
-/sbin/install-info --delete --infodir="%{_infodir}" \
-	"%{_infodir}/autoconf.info.gz"
+update-info-dir
 
 
 %files
 %defattr(-, root, root)
 %doc AUTHORS BUGS COPYING ChangeLog* NEWS README THANKS TODO
-%{_bindir}/auto*
+%{_bindir}/autoconf
+%{_bindir}/autoheader
+%{_bindir}/autom4te
+%{_bindir}/autoreconf
+%{_bindir}/autoscan
+%{_bindir}/autoupdate
 %{_bindir}/ifnames
-%{_mandir}/man1/*.1*
-%{_datadir}/autoconf/
-%{_datadir}/emacs/site-lisp/auto*-mode.el*
-%{_infodir}/autoconf.info.gz
+%{_datadir}/autoconf/*
+%doc %{_mandir}/man1/autoconf.1*
+%doc %{_mandir}/man1/autoheader.1*
+%doc %{_mandir}/man1/autom4te.1*
+%doc %{_mandir}/man1/autoreconf.1*
+%doc %{_mandir}/man1/autoscan.1*
+%doc %{_mandir}/man1/autoupdate.1*
+%doc %{_mandir}/man1/config.guess.1*
+%doc %{_mandir}/man1/config.sub.1*
+%doc %{_mandir}/man1/ifnames.1*
+%dir %{_datadir}/autoconf
+%doc %{_infodir}/autoconf.info*
