@@ -11,7 +11,7 @@ Patch0: coreutils-5.97-i18n-1.patch
 Patch1: coreutils-5.97-uname-1.patch
 Patch2: coreutils-5.97-uname-2.patch
 BuildRequires: make, grep, sed, gcc, gcc-g++, gettext >= 0.17
-BuildRequires: gmp, libattr, libacl
+BuildRequires: gmp, libattr, libacl, libcap2
 Obsoletes: mktemp
 Conflicts: mktemp
 Provides: mktemp
