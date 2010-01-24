@@ -1,6 +1,6 @@
 Name: etc
-Version: 2.0
-Release: 2.0ev
+Version: 2.1
+Release: 2.1ev
 Summary: Basic system configuration files
 Group: System Environment/Base
 License: OSL-3.0, GPL-3
@@ -9,6 +9,8 @@ Source0: http://sethwklein.net/iana-etc-2.30.tar.bz2
 Source1: %{name}-profile.sh
 Source2: %{name}-DIR_COLORS
 Source3: %{name}-hosts
+Source4: %{name}-passwd
+Source5: %{name}-group
 BuildRequires: gawk >= 3.1.0, make >= 3.79.1
 BuildArch: noarch
 
@@ -40,6 +42,26 @@ popd
 %{__cp} '%{SOURCE3}' '%{buildroot}/etc/hosts'
 echo gnyu.localdomain > '%{buildroot}/etc/HOSTNAME'
 echo 'GNyU-Linux %{version}' > '%{buildroot}/etc/GNyU-version'
+%{__cp} '%{SOURCE4}' '%{buildroot}/etc/passwd'
+%{__cp} '%{SOURCE5}' '%{buildroot}/etc/group'
+%{__touch} \
+	'%{buildroot}/etc/passwd-' \
+	'%{buildroot}/etc/group-' \
+	'%{buildroot}/etc/shadow-' \
+	'%{buildroot}/etc/gshadow-'
+
+# Create /etc/shadow and /etc/gshadow from sources
+old_ifs=$IFS
+IFS=:
+while read name rest
+do
+	echo "${name}:!:::::::" >> '%{buildroot}/etc/shadow'
+done < '%{SOURCE4}'
+while read name passwd gid member_list
+do
+	echo "${name}:${passwd}:root:${member_list}" >> '%{buildroot}/etc/gshadow'
+done < '%{SOURCE5}'
+IFS=$old_ifs
 
 
 %files
@@ -52,3 +74,11 @@ echo 'GNyU-Linux %{version}' > '%{buildroot}/etc/GNyU-version'
 %attr(0644, root, root) /etc/DIR_COLORS
 %attr(0644, root, root) /etc/GNyU-version
 %attr(0755, root, root) /etc/profile
+%config(noreplace) %attr(0644, root, root) /etc/group
+%ghost %config %attr(0644, root, root) /etc/group-
+%config(noreplace) %attr(0644, root, root) /etc/passwd
+%ghost %config %attr(0644, root, root) /etc/passwd-
+%config(noreplace) %attr(0400, root, root) /etc/shadow
+%ghost %config %attr(0400, root, root) /etc/shadow-
+%config(noreplace) %attr(0400, root, root) /etc/gshadow
+%ghost %config %attr(0400, root, root) /etc/gshadow-
