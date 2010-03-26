@@ -1,19 +1,20 @@
-Name: openssl0.9.8
-Version: 0.9.8k
-Release: 6ev
+Name: openssl
+Version: 0.9.8n
+%define soversion %(echo %{version} | %{__sed} -e 's,[a-z],,g')
+Release: 7.0ev
 Summary: A free SSL implementation and toolkit
-URL: http://www.openssl.org/
+URL: http://www.openssl.org
 Group: System Environment/Libraries
 License: BSD
 Vendor: GNyU-Linux
 Source: http://www.openssl.org/source/openssl-%{version}.tar.gz
 Patch0: %{name}-gcc42.patch
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires(build,install): make, perl
-BuildRequires(build): bc, gcc
+BuildRequires(build,install): sed, perl > 5.0, make
+BuildRequires(build): bc, m4, gcc
 BuildRequires: pkg-config
-Provides: openssl = %{version}-%{release}
-Obsoletes: openssl < %{version}, openssl098
+Obsoletes: openssl%{soversion} < %{version}, openssl098
+Conflicts: openssl%{soversion}
 
 %description
 The OpenSSL Project is a collaborative effort to develop a robust,
@@ -33,8 +34,26 @@ OpenSSL is the base of many SSL/TLS enabled programs and should be installed
 on every system.
 
 
+%package -n libssl%{soversion}
+Summary: SSL shared libraries
+Group: System Environment/Libraries
+
+%description -n libssl%{soversion}
+libssl and libcrypto shared libraries needed by openssh and other programs
+that make use of OpenSSL as its cryptographic library.
+
+
+%package devel
+Summary: OpenSSL development headers
+Group: Development/Libraries
+
+%description devel
+Contains header files and pkg-config information for linking against the
+OpenSSL libraries. It also offers documentation for development.
+
+
 %prep
-%setup -q -n 'openssl-%{version}'
+%setup -q
 
 
 %build
@@ -44,7 +63,7 @@ on every system.
 	threads \
 	shared \
 	zlib-dynamic \
-	"${RPM_OPT_FLAGS}"
+	"${CFLAGS:-$RPM_OPT_FLAGS}"
 %{__make} %{?_smp_mflags}
 %{__make} test
 
@@ -92,30 +111,23 @@ done
 popd
 
 
-%post
+%post -n libssl%{soversion}
 %{__ldconfig}
 
-%postun
+
+%postun -n libssl%{soversion}
 %{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc CHANGES* FAQ LICENSE README* NEWS PROBLEMS VMS 
-%doc doc demos
 %dir %{_sysconfdir}/ssl
 %dir %attr(0711, root, root) %{_sysconfdir}/ssl/certs
 %dir %attr(0711, root, root) %{_sysconfdir}/ssl/private
 %config(noreplace) %attr(0644, root, root) %{_sysconfdir}/ssl/openssl.cnf
 %{_bindir}/openssl
 %{_bindir}/c_rehash
-%{_libdir}/engines/
-%{_libdir}/pkgconfig/libcrypto.pc
-%{_libdir}/pkgconfig/libssl.pc
-%{_libdir}/pkgconfig/openssl.pc
-%{_libdir}/libssl.*
-%{_libdir}/libcrypto.*
-%{_includedir}/openssl/
 %attr(0700, root, root) %{_sbindir}/CA.pl
 %attr(0700, root, root) %{_sbindir}/CA.sh
 %{_sbindir}/c_hash
@@ -123,6 +135,26 @@ popd
 %{_sbindir}/c_issuer
 %{_sbindir}/c_name
 %doc %{_mandir}/man1/*ssl*
-%doc %{_mandir}/man3/*ssl*
 %doc %{_mandir}/man5/*ssl*
 %doc %{_mandir}/man7/*ssl*
+
+
+%files -n libssl%{soversion}
+%defattr(-, root, root)
+%doc CHANGES* FAQ LICENSE README* NEWS PROBLEMS VMS 
+%{_libdir}/libssl.*
+%{_libdir}/libcrypto.*
+%dir %{_libdir}/engines
+%{_libdir}/engines/*.so
+
+
+%files devel
+%defattr(-, root, root)
+%doc CHANGES* FAQ LICENSE README* NEWS PROBLEMS VMS 
+%doc doc demos
+%doc %{_mandir}/man3/*ssl*
+%dir %{_includedir}/openssl
+%{_includedir}/openssl/*.h
+%{_libdir}/pkgconfig/libcrypto.pc
+%{_libdir}/pkgconfig/libssl.pc
+%{_libdir}/pkgconfig/openssl.pc
