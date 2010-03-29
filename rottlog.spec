@@ -1,16 +1,15 @@
 Name: rottlog
-Version: 0.70beta3
-Release: 1ev
+Version: 0.72.1
+Release: 2.0ev
 Summary: A system tool that rotates, compresses and archives logfiles
-URL: http://www.gnu.org/software/rottlog/
+URL: http://www.gnu.org/software/rottlog
 Group: System Environment/Base
-License: GPL
-Vendor: MSP Slackware
-Source: http://savannah.gnu.org/download/%{name}/%{name}-%{version}.tar.gz
+License: GPL-3
+Vendor: GNyU-Linux
+Source: ftp://ftp.gnu.org/gnu/rottlog/rottlog-%{version}.tar.gz
 BuildArch: noarch
-Buildroot: %{_tmppath}/%{name}-%{version}-buildroot
-BuildRequires: make, coreutils, texinfo, sed
-Requires: /bin/sh, bash, coreutils
+BuildRequires: sed, make, texinfo, findutils, util-linux-ng, bzip2, gzip
+Requires: bash, coreutils, util-linux-ng, findutils, bzip2, gzip
 Provides: logrotate
 
 %description
@@ -27,81 +26,67 @@ compatible with host-based intrusion detection schemes like aide.
 
 
 %build
-%configure
+LOCK_FILE='%{_localstatedir}/lock/rottlog' %configure
 %{__make} %{?_smp_mflags}
+%{__make} check
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+for i in '%{_bindir}' '%{_localstatedir}/lock'; do
+	%{__mkdir_p} "%{buildroot}${i}"
+done
 
-%{__mkdir_p} %{buildroot}/%{_bindir}
-%{__make_install} DESTDIR='%{buildroot}' \
-	sbindir='%{buildroot}/%{_sbindir}' \
-	bindir='%{buildroot}/%{_bindir}' \
-	sysconfdir='%{buildroot}/%{_sysconfdir}' \
-	ROTT_ETCDIR='%{buildroot}/%{_sysconfdir}/rottlog' \
-	ROTT_STATDIR='%{buildroot}/%{_localstatedir}/rottlog'
+%{__fakeroot} %{__make} install DESTDIR='%{buildroot}' \
+	bindir='%{buildroot}%{_bindir}' \
+	ROTT_STATDIR='%{buildroot}%{_localstatedir}/lib/rottlog' \
+	ROTT_ETCDIR='%{buildroot}%{_sysconfdir}/rottlog'
 
 # Install logrotate-to-rottlog converter
-%{__install} -m0755 src/Log2Rot %{buildroot}/%{_bindir}/log2rot
+%{__install} src/Log2Rot '%{buildroot}%{_bindir}/log2rot'
 
 # Provide old logrotate directories for compatibility
 %{__mkdir_p} %{buildroot}/etc/logrotate.d
 
 # Create rottlog configuratation files and directories
-%{__mkdir_p} %{buildroot}/%{_sysconfdir}/rottlog
-touch %{buildroot}/%{_sysconfdir}/rottlog/{rc,daily,weekly,monthly,custom}
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/rottlog'
+%{__touch} '%{buildroot}%{_sysconfdir}'/rottlog/{rc,daily,weekly,monthly,custom}
+
+%{__touch} '%{buildroot}%{_localstatedir}/lock/rottlog'
 
 # Make sure rottlog is started every day by installing a file to cron.daily
-%{__mkdir_p} %{buildroot}/%{_sysconfdir}/cron.daily
-
-%{__cat} << __END__ > %{buildroot}/%{_sysconfdir}/cron.daily/rottlog
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/cron.daily'
+%{__cat} << __END__ > '%{buildroot}%{_sysconfdir}/cron.daily/rottlog'
 #!/bin/sh
 
-[[ -r /etc/logrott/rc ]] || exit 1
+[[ -r '%{_sysconfdir}logrott/rc' ]] || exit 1
 %{_bindir}/logrott
 __END__
 
-
-# Remove installed info directory file, every system has its own
 [[ -e %{buildroot}/%{_infodir}/dir ]] \
     && %{__rm} -f %{buildroot}/%{_infodir}/dir
-
-
-# Correct links
-
-pushd "$RPM_BUILD_ROOT/%{_bindir}"
-for f in custom day month week
-do
-	rm -f viroot${f}
-	ln -sf virottrc virott${f}
-done
-popd
 
 
 %post
 update-info-dir
 
+
 %postun
 update-info-dir
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
 
 
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog README* NEWS TODO VERSION rc/
-/etc/logrotate.d
-%attr(0300, root, root) %dir %{_sysconfdir}/rottlog
-%{_sysconfdir}/rottlog/sample_*
-%ghost %config(noreplace) %{_sysconfdir}/rottlog/rc
-%ghost %config(noreplace) %{_sysconfdir}/rottlog/daily
-%ghost %config(noreplace) %{_sysconfdir}/rottlog/weekly
-%ghost %config(noreplace) %{_sysconfdir}/rottlog/monthly
-%ghost %config(noreplace) %{_sysconfdir}/rottlog/custom
+%attr(0700, root, root) %dir %{_sysconfdir}/logrotate.d
+%attr(0700, root, root) %dir %{_sysconfdir}/rottlog
+%attr(0660, root, adm) %ghost %config(noreplace) %{_sysconfdir}/rottlog/rc
+%attr(0660, root, adm) %ghost %config(noreplace) %{_sysconfdir}/rottlog/daily
+%attr(0660, root, adm) %ghost %config(noreplace) %{_sysconfdir}/rottlog/weekly
+%attr(0660, root, adm) %ghost %config(noreplace) %{_sysconfdir}/rottlog/monthly
+%attr(0660, root, adm) %ghost %config(noreplace) %{_sysconfdir}/rottlog/custom
 %attr(0700, root, root) %{_sysconfdir}/cron.daily/rottlog
-%{_bindir}/*rot*
-%{_infodir}/rottlog*.info*
-%{_mandir}/*/rottlog*.*
+%attr(0750, root, adm) %{_bindir}/rottlog
+%{_bindir}/log2rot
+%doc %{_infodir}/rottlog.info*
+%ghost %{_localstatedir}/lock/rottlog
+%dir %{_localstatedir}/lib/rottlog
