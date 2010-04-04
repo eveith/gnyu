@@ -1,16 +1,14 @@
 Name: doxygen
-Version: 1.5.1
-Release: 1ev
+Version: 1.6.3
+Release: 2.0ev
 Summary: A documentation system for programing languages
-URL: http://www.doxygen.org/
+URL: http://www.doxygen.org
 Group: Development/Tools
-License: GPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
+License: GPL-2
+Vendor: GNyU-Linux
 Source: ftp://ftp.stack.nl/pub/users/dimitri/%{name}-%{version}.src.tar.gz
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: perl, make >= 3.79.1, gcc-g++, libstdc++, mktemp, qt3, sed
-BuildRequires: flex, bison, graphviz >= 2.8
+BuildRequires: sed, flex, bison, make, perl, python, gcc-g++
+BuildRequires: libstdc++, graphviz >= 1.8.10
 
 %description
 Doxygen is a cross-platform, JavaDoc-like documentation system for C++, C,
@@ -24,32 +22,26 @@ distributions.
 
 
 %prep
-%setup -q -n %{name}-%{version}
-
-# We don't build for windows.
-rm -f src/unistd.h
+%setup -q -n '%{name}-%{version}'
 
 
 %build
-./configure --release --shared --with-doxywizard \
-	--prefix %{_prefix} --docdir %{_docdir}
-sed -i "s/\(TMAKE_CFLAGS_RELEASE\s*=\s*\).*/\1${RPM_OPT_FLAGS}/" \
-	tmake/lib/*/tmake.conf
-make
-make doc	
+CFLAGS=${CFLAGS:-%{optflags}}
+CXXFLAGS=${CXXFLAGS:-%{optflags}}
+export CFLAGS CXXFLAGS
+
+./configure \
+	--release \
+	--shared \
+	--prefix '%{_prefix}' \
+	--docdir '%{_docdir}'
+echo "TMAKE_CXXFLAGS += ${CFLAGS}" >> .tmakeconfig
+%{__make} %{?_smp_mflags}
+%{__make} doc
+
 
 %install
-make install INSTALL="${RPM_BUILD_ROOT}/%{_prefix}"
-rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
-
-
-%post
-
-%postun
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__make} install INSTALL='%{buildroot}%{_prefix}'
 
 
 %files
@@ -57,7 +49,5 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc LICENSE LANGUAGE* README* VERSION PLATFORMS 
 %{_bindir}/doxygen
 %{_bindir}/doxytag
-%{_bindir}/doxywizard
-%{_mandir}/man1/doxygen.1*
-%{_mandir}/man1/doxytag.1*
-%{_mandir}/man1/doxywizard.1*
+%doc %{_mandir}/man1/doxygen.1*
+%doc %{_mandir}/man1/doxytag.1*
