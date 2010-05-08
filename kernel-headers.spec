@@ -1,6 +1,6 @@
 Name: kernel-headers
-Version: 2.6.31.4
-Release: 1.0ev
+Version: 2.6.33.3
+Release: 2.0ev
 Summary: Linux Kernel C headers
 URL: http://www.kernel.org/
 Group: Development/Headers
@@ -16,41 +16,41 @@ aware of the semantics of the system.
 
 
 %prep
-	%setup -q -n 'linux-%{version}'
+%setup -q -n 'linux-%{version}'
 
 
 %build
-	%{__make} defconfig
+%{__make} defconfig
 
 
 %install
-	%{__mkdir_p} '%{buildroot}/%{_includedir}'
-	%{__make} headers_install INSTALL_HDR_PATH='%{buildroot}/%{_prefix}'
-	%{__find} '%{buildroot}' \
-		\( -name '.install' -or -name '..install.cmd' \) \
-		-exec %{__rm} '{}' \;
+%{__mkdir_p} '%{buildroot}/%{_includedir}'
+%{__make} headers_install INSTALL_HDR_PATH='%{buildroot}/%{_prefix}'
+%{__find} '%{buildroot}' \
+	\( -name '.install' -or -name '..install.cmd' \) \
+	-exec %{__rm} '{}' \;
 
 
 %files
-	%defattr(-, root, root)
-	%doc MAINTAINERS COPYING CREDITS README REPORTING-BUGS
-	%dir %{_includedir}/asm
-	%{_includedir}/asm/*
-	%dir %{_includedir}/asm-generic
-	%{_includedir}/asm-generic/*
-	%dir %{_includedir}/drm
-	%{_includedir}/drm/*
-	%dir %{_includedir}/linux
-	%{_includedir}/linux/*
-	%dir %{_includedir}/mtd
-	%{_includedir}/mtd/*
-	%dir %{_includedir}/rdma
-	%{_includedir}/rdma/*
-	%dir %{_includedir}/scsi
-	%{_includedir}/scsi/*
-	%dir %{_includedir}/sound
-	%{_includedir}/sound/*
-	%dir %{_includedir}/video
-	%{_includedir}/video/*
-	%dir %{_includedir}/xen
-	%{_includedir}/xen/*
+%defattr(-, root, root)
+%doc MAINTAINERS COPYING CREDITS README REPORTING-BUGS
+%dir %{_includedir}/asm
+%{_includedir}/asm/*
+%dir %{_includedir}/asm-generic
+%{_includedir}/asm-generic/*
+%dir %{_includedir}/drm
+%{_includedir}/drm/*
+%dir %{_includedir}/linux
+%{_includedir}/linux/*
+%dir %{_includedir}/mtd
+%{_includedir}/mtd/*
+%dir %{_includedir}/rdma
+%{_includedir}/rdma/*
+%dir %{_includedir}/scsi
+%{_includedir}/scsi/*
+%dir %{_includedir}/sound
+%{_includedir}/sound/*
+%dir %{_includedir}/video
+%{_includedir}/video/*
+%dir %{_includedir}/xen
+%{_includedir}/xen/*
