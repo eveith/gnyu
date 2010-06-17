@@ -1,7 +1,7 @@
 Name: openssl
-Version: 0.9.8n
+Version: 0.9.8o
 %define soversion %(echo %{version} | %{__sed} -e 's,[a-z],,g')
-Release: 7.0ev
+Release: 8.0ev
 Summary: A free SSL implementation and toolkit
 URL: http://www.openssl.org
 Group: System Environment/Libraries
@@ -46,6 +46,7 @@ that make use of OpenSSL as its cryptographic library.
 %package devel
 Summary: OpenSSL development headers
 Group: Development/Libraries
+Requires: pkg-config
 
 %description devel
 Contains header files and pkg-config information for linking against the
