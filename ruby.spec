@@ -1,6 +1,6 @@
 Name: ruby
 Version: 1.9.1
-%define patchlevel 243
+%define patchlevel 429
 Release: 7.0ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
@@ -30,81 +30,98 @@ Features of Ruby:
     Windows, Mac, BeOS etc.)
 
 
-%package -n libruby1.9
-Summary: Ruby language library
+%package libs
+Summary: Libraries and directory structures neccessary to run or embed Ruby
 Group: System Environment/Libraries
-Provides: libruby = %{version}
-Obsoletes: libruby < %{version}
+Provides: libruby1.9 = %{version}-%{release}
+Provides: libruby = %{version}-%{release}
+Obsoletes: libruby < %{version}-%{release}
+Conflicts: libruby < %{version}-%{release}
 
-%description -n libruby1.9
-This is the Ruby language's core library. It contains the standard language
-features which are required to run Ruby script. libruby is often linked to by
-programs that want to embed Ruby or parse the language.
+%description libs
+This is the Ruby language's core library, as well as the directory structure
+needed for Ruby gems (i.e., addon-libraries for ruby).
+
+
+%package devel
+Summary: Ruby development headers
+Group: Development/Libraries
+
+%description devel
+Header files and libraries for building a extension library for the Ruby or an
+application embedded Ruby.
 
 
 %prep
-	%setup -q -n '%{name}-%{version}-p%{patchlevel}'
+%setup -q -n '%{name}-%{version}-p%{patchlevel}'
 
 
 %build
-	%configure \
-		--enable-pthread \
-		--enable-shared \
-		--enable-install-doc
-	%{__make} %{?_smp_mflags}
+%configure \
+	--enable-pthread \
+	--enable-shared \
+	--enable-install-doc
+%{__make} %{?_smp_mflags}
 
 
 %check
-	%{__make} test
+%{__make} test
 
 
 %install
-	%{__make} install DESTDIR='%{buildroot}'
-	%{__mkdir_p} \
-		'%{buildroot}/%{_libdir}/ruby/site_ruby/%{version}/%{_target}'
-	%{__mkdir_p} \
-		'%{buildroot}/%{_libdir}/ruby/vendor_ruby/%{version}/%{_target}'
+%{__make} install DESTDIR='%{buildroot}'
+%{__mkdir_p} \
+	'%{buildroot}/%{_libdir}/ruby/site_ruby/%{version}/%{_target}'
+%{__mkdir_p} \
+	'%{buildroot}/%{_libdir}/ruby/vendor_ruby/%{version}/%{_target}'
 
 
 %post
-	%{__ldconfig}
+%{__ldconfig}
 
 
 %postun
-	%{__ldconfig}
+%{__ldconfig}
 
 
 %files
-	%defattr(-, root, root)
-	%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
-	%{_bindir}/ruby
-	%{_bindir}/testrb
-	%{_bindir}/rdoc
-	%{_bindir}/erb
-	%{_bindir}/gem
-	%{_bindir}/rake
-	%{_bindir}/ri
-	%{_bindir}/irb
-	%dir %{_libdir}/ruby
-	%dir %{_libdir}/ruby/%{version}
-	%dir %{_libdir}/ruby/site_ruby
-	%dir %{_libdir}/ruby/site_ruby/%{version}
-	%dir %{_libdir}/ruby/site_ruby/%{version}/%{_target}
-	%dir %{_libdir}/ruby/vendor_ruby
-	%dir %{_libdir}/ruby/vendor_ruby/%{version}
-	%dir %{_libdir}/ruby/vendor_ruby/%{version}/%{_target}
-	%{_libdir}/ruby/%{version}/*
-	%dir %{_includedir}/ruby-%{version}
-	%{_includedir}/ruby-%{version}/*
-	%dir %{_datadir}/ri
-	%dir %{_datadir}/ri/%{version}/
-	%doc %{_datadir}/ri/%{version}/*
-	%doc %{_mandir}/man1/ruby.1*
-	%doc %{_mandir}/man1/erb.1*
-	%doc %{_mandir}/man1/irb.1*
-	%doc %{_mandir}/man1/rake.1*
-	%doc %{_mandir}/man1/ri.1*
+%defattr(-, root, root)
+%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+%{_bindir}/ruby
+%{_bindir}/testrb
+%{_bindir}/rdoc
+%{_bindir}/erb
+%{_bindir}/gem
+%{_bindir}/rake
+%{_bindir}/ri
+%{_bindir}/irb
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/%{version}/
+%doc %{_datadir}/ri/%{version}/*
+%doc %{_mandir}/man1/ruby.1*
+%doc %{_mandir}/man1/erb.1*
+%doc %{_mandir}/man1/irb.1*
+%doc %{_mandir}/man1/rake.1*
+%doc %{_mandir}/man1/ri.1*
 
 
-%files -n libruby1.9
-	%{_libdir}/*ruby*.*
+%files libs
+%defattr(-, root, root)
+%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+%dir %{_libdir}/ruby
+%dir %{_libdir}/ruby/%{version}
+%dir %{_libdir}/ruby/site_ruby
+%dir %{_libdir}/ruby/site_ruby/%{version}
+%dir %{_libdir}/ruby/site_ruby/%{version}/%{_target}
+%dir %{_libdir}/ruby/vendor_ruby
+%dir %{_libdir}/ruby/vendor_ruby/%{version}
+%dir %{_libdir}/ruby/vendor_ruby/%{version}/%{_target}
+%{_libdir}/ruby/%{version}/*
+%{_libdir}/libruby*.*
+
+
+%files devel
+%defattr(-, root, root)
+%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+%dir %{_includedir}/ruby-%{version}
+%{_includedir}/ruby-%{version}/*
