@@ -1,14 +1,13 @@
 Name: iptables
-Version: 1.4.0
-Release: 1ev
+Version: 1.4.8
+Release: 1.0ev
 Summary: Userspace utilities for the kernel package filter
 URL: http://www.netfilter.org/
 Group: System Environment/Base
 License: GPL-2
-Vendor: MSP Slackware
+Vendor: GNyU Linux
 Source: ftp://ftp.netfilter.org/pub/iptables/%{name}-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: gcc-core, make >= 3.79.1
+BuildRequires: make, gcc, libtool, kernel-headers
 
 %description
 iptables is the userspace command line program used to configure the Linux
@@ -20,63 +19,87 @@ The iptables package also includes ip6tables. ip6tables is used for
 configuring the IPv6 packet filter.
 
 
+%package devel
+Summary: Development package for iptables
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: pkgconfig
+
+%description devel
+iptables development headers and libraries.
+
+
 %prep
 %setup -q
 
 
 %build
-%{__make} \
-	CC='%{_target_platform}-gcc' \
-	COPT_FLAGS="$RPM_OPT_FLAGS" \
-	BINDIR='%{_sbindir}' \
-	LIBDIR='%{_libdir}' \
-	MANDIR='%{_mandir}' \
-	INCDIR='%{_includedir}'
+%configure \
+	--sbindir=/sbin \
+	--bindir=/bin \
+	--libdir='/%{_lib}' \
+	--libexecdir='/%{_lib}'
+%{__make} %{?_smp_mflags}
 
 
 %install
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
-%{__make_install} \
-	BINDIR='%{_sbindir}' \
-	LIBDIR='%{_libdir}' \
-	MANDIR='%{_mandir}' \
-	INCDIR='%{_includedir}' \
-	DESTDIR='%{buildroot}' \
-	PREFIX='%{_prefix}'
+%{__make} install DESTDIR='%{buildroot}'
+
+%{__mkdir_p} '%{buildroot}/%{_libdir}'
+%{__mv} '%{buildroot}/%{_lib}/pkgconfig' '%{buildroot}/%{_libdir}'
 
 
 %preun
-if [ "$1" != "0" ]
-then
+if [ "$1" -gt 0 ]; then
 	iptables-save
 fi
 
+
 %post
-/sbin/ldconfig
+%{__ldconfig}
 iptables-restore
 
+
 %postun
-/sbin/ldconfig
-
-
-%clean
-[[ '%{buildroot}' != '/' ]] && %{__rm} -rf '%{buildroot}'
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
 %doc COPYING INCOMPATIBILITIES COMMIT_NOTES
-%{_libdir}/iptables/
-%{_mandir}/man8/ip6tables.8*
-%{_mandir}/man8/ip6tables-restore.8*
-%{_mandir}/man8/ip6tables-save.8*
-%{_mandir}/man8/iptables-restore.8*
-%{_mandir}/man8/iptables-save.8*
-%{_mandir}/man8/iptables.8*
-%{_sbindir}/ip6tables
-%{_sbindir}/ip6tables-restore
-%{_sbindir}/ip6tables-save
-%{_sbindir}/iptables
-%{_sbindir}/iptables-restore
-%{_sbindir}/iptables-save
-%{_sbindir}/iptables-xml
+%attr(0710, root, root) /sbin/ip6tables
+%attr(0710, root, root) /sbin/ip6tables-multi
+%attr(0710, root, root) /sbin/ip6tables-restore
+%attr(0710, root, root) /sbin/ip6tables-save
+%attr(0710, root, root) /sbin/iptables
+%attr(0710, root, root) /sbin/iptables-multi
+%attr(0710, root, root) /sbin/iptables-restore
+%attr(0710, root, root) /sbin/iptables-save
+%attr(0710, root, root) /bin/iptables-xml
+/%{_lib}/libip4tc.so*
+/%{_lib}/libip6tc.so*
+/%{_lib}/libiptc.so*
+/%{_lib}/libxtables.so*
+%dir /%{_lib}/xtables
+/%{_lib}/xtables/lib*.so
+%doc %{_mandir}/man8/ip6tables.8*
+%doc %{_mandir}/man8/ip6tables-restore.8*
+%doc %{_mandir}/man8/ip6tables-save.8*
+%doc %{_mandir}/man8/iptables-restore.8*
+%doc %{_mandir}/man8/iptables-save.8*
+%doc %{_mandir}/man8/iptables-xml.8*
+%doc %{_mandir}/man8/iptables.8*
+
+
+%files devel
+%defattr(-, root, root)
+%doc COPYING INCOMPATIBILITIES COMMIT_NOTES
+/%{_lib}/libip4tc.la
+/%{_lib}/libip6tc.la
+/%{_lib}/libiptc.la
+/%{_lib}/libxtables.la
+%{_includedir}/*.h
+%dir %{_includedir}/libiptc
+%{_includedir}/libiptc/*.h
+%{_libdir}/pkgconfig/libiptc.pc
+%{_libdir}/pkgconfig/xtables.pc
