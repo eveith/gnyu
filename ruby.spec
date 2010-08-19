@@ -1,7 +1,7 @@
 Name: ruby
 Version: 1.9.1
-%define patchlevel 429
-Release: 7.0ev
+%define patchlevel 430
+Release: 8.0ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
