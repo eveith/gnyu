@@ -1,15 +1,17 @@
 Name: ruby
-Version: 1.9.1
-%define patchlevel 430
-Release: 8.0ev
+Version: 1.9.2
+%define patchlevel 0
+Release: 9.0ev
 Summary: An interpreted script programing language (Ruby)
 URL: http://www.ruby-lang.org/
 Group: Development/Languages
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{version}-p%{patchlevel}.tar.gz
-BuildRequires: make, gcc, groff
+BuildRequires: make, gcc, gcc-g++, binutils,
+BuildRequires: doxygen, groff
 BuildRequires: openssl, readline, ncurses, zlib, db, libX11
+Requires: ruby-libs = %{version}-%{release}
 
 %description
 Ruby is the interpreted scripting language for quick and
@@ -31,21 +33,39 @@ Features of Ruby:
 
 
 %package libs
-Summary: Libraries and directory structures neccessary to run or embed Ruby
+Summary: Ruby's core libraries and the corresponding directory structure
 Group: System Environment/Libraries
-Provides: libruby1.9 = %{version}-%{release}
-Provides: libruby = %{version}-%{release}
-Obsoletes: libruby < %{version}-%{release}
-Conflicts: libruby < %{version}-%{release}
+Requires: libruby1.9 = %{version}-%{release}
 
 %description libs
 This is the Ruby language's core library, as well as the directory structure
-needed for Ruby gems (i.e., addon-libraries for ruby).
+needed for Ruby gems (i.e., addon-libraries for ruby). For the API
+documentation, see the %{name}-doc package.
+
+
+%package -n libruby1.9
+Summary: Ruby C library
+Group: System Environment/Libraries
+Conflicts: ruby-libs < 1.9.2
+
+%description -n libruby1.9
+This library represents Ruby's C part and is used to embed the interpreter.
+
+
+%package doc
+Summary: API documentation for Ruby developers
+Group: Development/Documentation
+Requires: ruby = %{version}-%{release}
+
+%description doc
+This package contains the complete API documentation of Ruby, in both RI and
+HTML format, along with the "ri" command line utility.
 
 
 %package devel
 Summary: Ruby development headers
 Group: Development/Libraries
+Requires: libruby1.9 = %{version}-%{release}
 
 %description devel
 Header files and libraries for building a extension library for the Ruby or an
@@ -58,9 +78,10 @@ application embedded Ruby.
 
 %build
 %configure \
-	--enable-pthread \
+	--with-ruby-version=full \
 	--enable-shared \
-	--enable-install-doc
+	--enable-install-doc \
+	--with-mantype=man
 %{__make} %{?_smp_mflags}
 
 
@@ -76,52 +97,71 @@ application embedded Ruby.
 	'%{buildroot}/%{_libdir}/ruby/vendor_ruby/%{version}/%{_target}'
 
 
-%post
+%post -n libruby1.9
 %{__ldconfig}
 
 
-%postun
+%postun -n libruby1.9
 %{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
-%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+%doc README* COPYING* GPL LEGAL NEWS ToDo
 %{_bindir}/ruby
 %{_bindir}/testrb
 %{_bindir}/rdoc
 %{_bindir}/erb
 %{_bindir}/gem
 %{_bindir}/rake
-%{_bindir}/ri
 %{_bindir}/irb
-%dir %{_datadir}/ri
-%dir %{_datadir}/ri/%{version}/
-%doc %{_datadir}/ri/%{version}/*
 %doc %{_mandir}/man1/ruby.1*
 %doc %{_mandir}/man1/erb.1*
 %doc %{_mandir}/man1/irb.1*
 %doc %{_mandir}/man1/rake.1*
-%doc %{_mandir}/man1/ri.1*
 
 
 %files libs
 %defattr(-, root, root)
-%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
+%doc README* COPYING* GPL LEGAL NEWS ToDo
 %dir %{_libdir}/ruby
-%dir %{_libdir}/ruby/%{version}
+%dir %{_libdir}/ruby/1.9.?
+%dir %{_libdir}/ruby/gems
+%dir %{_libdir}/ruby/gems/1.9.?
+%dir %{_libdir}/ruby/gems/1.9.?/specifications
+%{_libdir}/ruby/gems/1.9.?/*/*
 %dir %{_libdir}/ruby/site_ruby
-%dir %{_libdir}/ruby/site_ruby/%{version}
-%dir %{_libdir}/ruby/site_ruby/%{version}/%{_target}
+%dir %{_libdir}/ruby/site_ruby/1.9.?
+%dir %{_libdir}/ruby/site_ruby/1.9.?/%{_target}
 %dir %{_libdir}/ruby/vendor_ruby
-%dir %{_libdir}/ruby/vendor_ruby/%{version}
-%dir %{_libdir}/ruby/vendor_ruby/%{version}/%{_target}
-%{_libdir}/ruby/%{version}/*
-%{_libdir}/libruby*.*
+%dir %{_libdir}/ruby/vendor_ruby/1.9.?
+%dir %{_libdir}/ruby/vendor_ruby/1.9.?/%{_target}
+%{_libdir}/ruby/1.9.?/*
+
+
+%files doc
+%defattr(-, root, root)
+%doc README* COPYING* GPL LEGAL NEWS ToDo
+%{_bindir}/ri
+%doc %{_mandir}/man1/ri.1*
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/1.9.?/
+%doc %{_datadir}/ri/1.9.?/*
+%dir %{_datadir}/doc/ruby
+%dir %{_datadir}/doc/ruby/html
+%doc %{_datadir}/doc/ruby/html/*
+
+
+
+%files -n libruby1.9
+%defattr(-, root, root)
+%doc README* COPYING* GPL LEGAL NEWS ToDo
+%{_libdir}/libruby.so*
 
 
 %files devel
 %defattr(-, root, root)
-%doc README* COPYING* GPL LEGAL LGPL NEWS ToDo
-%dir %{_includedir}/ruby-%{version}
-%{_includedir}/ruby-%{version}/*
+%doc README* COPYING* GPL LEGAL NEWS ToDo
+%dir %{_includedir}/ruby-1.9.?
+%{_includedir}/ruby-1.9.?/*
+%{_libdir}/libruby-static.a
