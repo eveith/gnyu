@@ -98,17 +98,17 @@ repository to Git.
 %install
 %{__make} install install-man DESTDIR='%{buildroot}' 
 
-%{__mkdir} '%{buildroot}/%{_sysconfdir}'
-%{__touch} '%{buildroot}/%{_sysconfdir}/gitconfig'
+%{__mkdir} '%{buildroot}%{_sysconfdir}'
+%{__touch} '%{buildroot}%{_sysconfdir}/gitconfig'
 
 # Move manpages *sigh*
-%{__mv} '%{buildroot}/%{_datadir}/man' '%{buildroot}/%{_mandir}' ||:
-%{__mv} '%{buildroot}/%{_mandir}/man'/* '%{buildroot}/%{_mandir}'
-%{__rm_rf} '%{buildroot}/%{_mandir}/man'
+%{__mv} '%{buildroot}%{_datadir}/man' '%{buildroot}%{_mandir}' ||:
+%{__mv} '%{buildroot}%{_mandir}/man'/* '%{buildroot}%{_mandir}'
+%{__rm_rf} '%{buildroot}%{_mandir}/man'
 
 # Remove Perl files we do not ship
-%{__rm} -rf '%{buildroot}/%{perl_archlib}'
-%{__rm} -rf '%{buildroot}/%{perl_sitearch}'
+%{__rm} -rf '%{buildroot}%{perl_archlib}'
+%{__rm} -rf '%{buildroot}%{perl_sitearch}'
 
 
 %files
