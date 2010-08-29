@@ -1,13 +1,13 @@
 Name: doxygen
-Version: 1.6.3
-Release: 2.0ev
+Version: 1.7.1
+Release: 3.0ev
 Summary: A documentation system for programing languages
 URL: http://www.doxygen.org
 Group: Development/Tools
 License: GPL-2
 Vendor: GNyU-Linux
 Source: ftp://ftp.stack.nl/pub/users/dimitri/%{name}-%{version}.src.tar.gz
-BuildRequires: sed, flex, bison, make, perl, python, gcc-g++
+BuildRequires: sed, flex, bison, make, perl >= 5.0, python, gcc-g++
 BuildRequires: libstdc++, graphviz >= 1.8.10
 
 %description
@@ -22,7 +22,8 @@ distributions.
 
 
 %prep
-%setup -q -n '%{name}-%{version}'
+%setup -q 
+# -n '%{name}-%{version}'
 
 
 %build
@@ -35,8 +36,8 @@ export CFLAGS CXXFLAGS
 	--shared \
 	--prefix '%{_prefix}' \
 	--docdir '%{_docdir}'
-echo "TMAKE_CXXFLAGS += ${CFLAGS}" >> .tmakeconfig
-%{__make} %{?_smp_mflags}
+echo "TMAKE_CXXFLAGS += ${CXXFLAGS}" >> .tmakeconfig
+%{__make} %{?_smp_mflags} CXXFLAGS="${CXXFLAGS}"
 %{__make} doc
 
 
@@ -47,6 +48,7 @@ echo "TMAKE_CXXFLAGS += ${CFLAGS}" >> .tmakeconfig
 %files
 %defattr(-, root, root)
 %doc LICENSE LANGUAGE* README* VERSION PLATFORMS 
+%doc examples
 %{_bindir}/doxygen
 %{_bindir}/doxytag
 %doc %{_mandir}/man1/doxygen.1*
