@@ -1,6 +1,6 @@
 Name: beecrypt
-Version: 4.1.2
-Release: 1.1ev
+Version: 4.2.1
+Release: 2.0ev
 Summary: A strong and fast cryptography toolkit
 URL: http://beecrypt.sf.net/
 Group: System Environment/Libraries
@@ -9,7 +9,7 @@ Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/beecrypt/beecrypt-%{version}.tar.gz
 BuildRequires: grep, awk, libtool, make, gcc, gcc-g++, libstdc++
 BuildRequires: python
-Requires: libbeecrypt6 = %{version}-%{release}
+Requires: libbeecrypt7 = %{version}-%{release}
 
 %description
 BeeCrypt is an ongoing project to provide a strong and fast cryptography
@@ -18,7 +18,7 @@ functions, message authentication codes, multiprecision integer routines, and
 public key primitives.
 
 
-%package -n libbeecrypt6
+%package -n libbeecrypt7
 Summary: A strong and fast cryptography toolkit
 Group: System Environment/Libraries
 
@@ -29,12 +29,12 @@ functions, message authentication codes, multiprecision integer routines, and
 public key primitives.
 
 
-%package -n libbeecrypt_java0
+%package -n libbeecrypt_java7
 Summary: Java glue for libbeecrypt
 Group: System Environment/Libraries
 Provides: beecrypt-java = %{version}-%{release}
 
-%description -n libbeecrypt_java0
+%description -n libbeecrypt_java7
 This package contains the glue code to use the BeeCrypt C/C++ functions from
 Java.
 
@@ -65,27 +65,27 @@ beecrypt's functions from python scripts.
 
 %build
 %configure
-%{__make} %{?_smp_mflags}
+%{__make} %{?_smp_mflags} libaltdir='%{_libdir}'
 
 
 %install
-%{__make} install DESTDIR='%{buildroot}'
+%{__make} install DESTDIR='%{buildroot}' libaltdir='%{_libdir}'
 %{__rm} '%{buildroot}/%{_libdir}'/libbeecrypt*.so
 
 
-%post -n libbeecrypt6
+%post -n libbeecrypt7
 %{__ldconfig}
 
 
-%postun -n libbeecrypt6
+%postun -n libbeecrypt7
 %{__ldconfig}
 
 
-%post -n libbeecrypt_java0
+%post -n libbeecrypt_java7
 %{__ldconfig}
 
 
-%postun -n libbeecrypt_java0
+%postun -n libbeecrypt_java7
 %{__ldconfig}
 
 
@@ -94,14 +94,14 @@ beecrypt's functions from python scripts.
 %doc AUTHORS BENCHMARKS BUGS CONTRIBUTORS COPYING* NEWS README*
 
 
-%files -n libbeecrypt6
+%files -n libbeecrypt7
 %defattr(-, root, root)
-%{_libdir}/libbeecrypt.so.6*
+%{_libdir}/libbeecrypt.so.7*
 
 
-%files -n libbeecrypt_java0
+%files -n libbeecrypt_java7
 %defattr(-, root, root)
-%{_libdir}/libbeecrypt_java.so.0*
+%{_libdir}/libbeecrypt_java.so.7*
 
 
 %files devel
