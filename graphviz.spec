@@ -52,10 +52,12 @@ compiling applications that will ultimately link with Graphviz.
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
+%{__touch} '%{buildroot}%{_libdir}/graphviz/config6'
 
 
 %post
 %{__ldconfig}
+%{_bindir}/dot -c
 
 
 %postun
@@ -105,6 +107,7 @@ compiling applications that will ultimately link with Graphviz.
 %{_libdir}/libgvc.so*
 %{_libdir}/libgvpr.so*
 %dir %{_libdir}/graphviz
+%ghost %{_libdir}/graphviz/config6
 %{_libdir}/graphviz/libgvplugin_core.so*
 %{_libdir}/graphviz/libgvplugin_gd.so*
 %{_libdir}/graphviz/libgvplugin_gdk_pixbuf.so*
