@@ -1,28 +1,17 @@
 Name: graphviz
-Version: 2.12
-Release: 1ev
+Version: 2.26.3
+Release: 2.0ev
 Summary: Graph drawing utilities with web and graphical interfaces
 URL: http://www.graphviz.org/
 Group: Development/Tools
-License: CPL
-Vendor: MSP Slackware
-Packager: Eric MSP Veith <eveith@wwweb-library.net>
-Source: http://www.graphviz.org/pub/graphviz/ARCHIVE/graphviz-%{version}.tar.gz
+License: CPL-1.0
+Source: http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-root
-BuildRequires: make >= 3.79.1, cairo, expat, fontconfig, freetype, gettext
-BuildRequires: glib2, libpng, pango, gcc-core, gcc-g++, libtool, m4, swig
-BuildRequires: ghostscript
-Requires: cairo, expat, fontconfig, freetype, gettext, glib2, libpng, pango
-Requires: ghostscript
-Provides: libtool(%{_libdir}/graphviz/libgvplugin_core.la)
-Provides: libtool(%{_libdir}/graphviz/libgvplugin_gd.la)
-Provides: libtool(%{_libdir}/graphviz/libgvplugin_neato_layout.la)
-Provides: libtool(%{_libdir}/graphviz/libgvplugin_pango.la)
-Provides: libtool(%{_libdir}/graphviz/libgvplugin_xlib.la)
-Provides: libtool(%{_libdir}/libagraph.la) libtool(%{_libdir}/libcdt.la)
-Provides: libtool(%{_libdir}/libexpr.la) libtool(%{_libdir}/libgraph.la)
-Provides: libtool(%{_libdir}/libgvc.la) libtool(%{_libdir}/libgvc_builtins.la)
-Provides: libtool(%{_libdir}/libpathplan.la)
+BuildRequires: make >= 3.79.1, grep, sed, pkg-config >= 0.20, flex, bison
+BuildRequires: gcc, gcc-g++
+BuildRequires: cairo >= 1.1.10, expat >= 2.0, libX11, zlib
+BuildRequires: ghostscript >= 8.52, freetype >= 2.0, fontconfig, gtk2 >= 2.7.0
+BuildRequires: libpng, libjpeg, librsvg
 
 %description
 graphviz is a set of graph drawing tools and libraries. It supports
@@ -35,35 +24,56 @@ display of finite state machines, software diagrams, database schemas, and
 communication networks.
 
 
+%package devel
+Summary: Graphviz development headers
+Group: Development/Libraries
+Requires: pkg-config
+
+%description devel
+This package contains include files and pkg-config information intended for
+compiling applications that will ultimately link with Graphviz.
+
+
 %prep
 %setup -q
 
 
 %build
-%configure --with-mylibgd --without-gtk
-make
+%configure \
+	--disable-sharp \
+	--disable-guile \
+	--disable-java \
+	--disable-lua \
+	--disable-php \
+	--disable-r \
+	--disable-tcl
+%{__make} %{?_smp_mflag}
 
 
 %install
-make install DESTDIR="$RPM_BUILD_ROOT"
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-	&& rm -vf ${RPM_BUILD_ROOT}/%{_infodir}/dir
+%{__make} install DESTDIR='%{buildroot}'
 
 
 %post
-/sbin/ldconfig
+%{__ldconfig}
+
 
 %postun
-/sbin/ldconfig
-
-
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+%{__ldconfig}
 
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README doc/
+%doc AUTHORS COPYING ChangeLog NEWS README
+%{_bindir}/diffimg
+%{_bindir}/gml2gv
+%{_bindir}/gv2gxl
+%{_bindir}/gvgen
+%{_bindir}/gxl2gv
+%{_bindir}/mm2gv
+%{_bindir}/osage
+%{_bindir}/sfdp
+%{_bindir}/vimdot
 %{_bindir}/acyclic
 %{_bindir}/bcomps
 %{_bindir}/ccomps
@@ -87,49 +97,93 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_bindir}/tred
 %{_bindir}/twopi
 %{_bindir}/unflatten
-%{_includedir}/graphviz/
-%{_libdir}/graphviz/
-%{_libdir}/libagraph.*
-%{_libdir}/libcdt.*
-%{_libdir}/libexpr.*
-%{_libdir}/libgraph.*
-%{_libdir}/libgvc.*
-%{_libdir}/libgvc_builtins.*
-%{_libdir}/libpathplan.*
-%{_libdir}/pkgconfig/libagraph.pc
+%{_libdir}/libcdt.so*
+%{_libdir}/libgraph.so*
+%{_libdir}/libcgraph.so*
+%{_libdir}/libpathplan.so*
+%{_libdir}/libxdot.so*
+%{_libdir}/libgvc.so*
+%{_libdir}/libgvpr.so*
+%{_libdir}/graphviz/libgvplugin_core.so*
+%{_libdir}/graphviz/libgvplugin_gd.so*
+%{_libdir}/graphviz/libgvplugin_gdk_pixbuf.so*
+%{_libdir}/graphviz/libgvplugin_gs.so*
+%{_libdir}/graphviz/libgvplugin_gtk.so*
+%{_libdir}/graphviz/libgvplugin_pango.so*
+%{_libdir}/graphviz/libgvplugin_rsvg.so*
+%{_libdir}/graphviz/libgvplugin_xlib.so*
+%{_libdir}/graphviz/libgvplugin_dot_layout.so*
+%{_libdir}/graphviz/libgvplugin_neato_layout.so*
+%doc %{_mandir}/man1/dot.1*
+%doc %{_mandir}/man1/osage.1*
+%doc %{_mandir}/man1/neato.1*
+%doc %{_mandir}/man1/twopi.1*
+%doc %{_mandir}/man1/fdp.1*
+%doc %{_mandir}/man1/circo.1*
+%doc %{_mandir}/man1/sfdp.1*
+%doc %{_mandir}/man1/gc.1*
+%doc %{_mandir}/man1/gvcolor.1*
+%doc %{_mandir}/man1/gxl2gv.1*
+%doc %{_mandir}/man1/acyclic.1*
+%doc %{_mandir}/man1/nop.1*
+%doc %{_mandir}/man1/ccomps.1*
+%doc %{_mandir}/man1/sccmap.1*
+%doc %{_mandir}/man1/tred.1*
+%doc %{_mandir}/man1/unflatten.1*
+%doc %{_mandir}/man1/gvpack.1*
+%doc %{_mandir}/man1/dijkstra.1*
+%doc %{_mandir}/man1/bcomps.1*
+%doc %{_mandir}/man1/mm2gv.1*
+%doc %{_mandir}/man1/gvgen.1*
+%doc %{_mandir}/man1/gml2gv.1*
+%doc %{_mandir}/man1/gv2gxl.1*
+%doc %{_mandir}/man1/gvpr.1*
+%doc %{_mandir}/man1/lefty.1*
+%doc %{_mandir}/man1/lneato.1*
+%doc %{_mandir}/man1/dotty.1*
+%doc %{_mandir}/man1/smyrna.1*
+%doc %{_mandir}/man1/prune.1*
+%doc %{_mandir}/man7/graphviz.7*
+%dir %{_datadir}/graphviz
+%doc %{_datadir}/graphviz/doc
+%{_datadir}/graphviz/graphs
+%{_datadir}/graphviz/lefty
+
+
+%files devel
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README
+%doc %{_mandir}/man3/cdt.3*
+%doc %{_mandir}/man3/graph.3*
+%doc %{_mandir}/man3/cgraph.3*
+%doc %{_mandir}/man3/pathplan.3*
+%doc %{_mandir}/man3/xdot.3*
+%doc %{_mandir}/man3/gvc.3*
+%dir %{_includedir}/graphviz
+%{_includedir}/graphviz/*.h
+%{_includedir}/graphviz/gv.i
+%{_includedir}/graphviz/gv.cpp
+%{_libdir}/libcdt.la
+%{_libdir}/libgraph.la
+%{_libdir}/libcgraph.la
+%{_libdir}/libpathplan.la
+%{_libdir}/libxdot.la
+%{_libdir}/libgvc.la
+%{_libdir}/libgvpr.la
+%{_libdir}/graphviz/libgvplugin_core.la
+%{_libdir}/graphviz/libgvplugin_gd.la
+%{_libdir}/graphviz/libgvplugin_gdk_pixbuf.la
+%{_libdir}/graphviz/libgvplugin_gs.la
+%{_libdir}/graphviz/libgvplugin_gtk.la
+%{_libdir}/graphviz/libgvplugin_pango.la
+%{_libdir}/graphviz/libgvplugin_rsvg.la
+%{_libdir}/graphviz/libgvplugin_xlib.la
+%{_libdir}/graphviz/libgvplugin_dot_layout.la
+%{_libdir}/graphviz/libgvplugin_neato_layout.la
 %{_libdir}/pkgconfig/libcdt.pc
-%{_libdir}/pkgconfig/libexpr.pc
+%{_libdir}/pkgconfig/libcgraph.pc
 %{_libdir}/pkgconfig/libgraph.pc
 %{_libdir}/pkgconfig/libgvc.pc
-%{_libdir}/pkgconfig/libgvc_builtins.pc
+%{_libdir}/pkgconfig/libgvpr.pc
 %{_libdir}/pkgconfig/libpathplan.pc
-%{_mandir}/man1/acyclic.1.gz
-%{_mandir}/man1/bcomps.1.gz
-%{_mandir}/man1/ccomps.1.gz
-%{_mandir}/man1/circo.1.gz
-%{_mandir}/man1/dijkstra.1.gz
-%{_mandir}/man1/dot.1.gz
-%{_mandir}/man1/dot2gxl.1.gz
-%{_mandir}/man1/dotty.1.gz
-%{_mandir}/man1/fdp.1.gz
-%{_mandir}/man1/gc.1.gz
-%{_mandir}/man1/gvcolor.1.gz
-%{_mandir}/man1/gvpack.1.gz
-%{_mandir}/man1/gvpr.1.gz
-%{_mandir}/man1/gxl2dot.1.gz
-%{_mandir}/man1/lefty.1.gz
-%{_mandir}/man1/lneato.1.gz
-%{_mandir}/man1/neato.1.gz
-%{_mandir}/man1/nop.1.gz
-%{_mandir}/man1/prune.1.gz
-%{_mandir}/man1/sccmap.1.gz
-%{_mandir}/man1/tred.1.gz
-%{_mandir}/man1/twopi.1.gz
-%{_mandir}/man1/unflatten.1.gz
-%{_mandir}/man3/agraph.3.gz
-%{_mandir}/man3/cdt.3.gz
-%{_mandir}/man3/expr.3.gz
-%{_mandir}/man3/graph.3.gz
-%{_mandir}/man3/gvc.3.gz
-%{_mandir}/man3/pathplan.3.gz
-%{_datadir}/graphviz/
+%{_libdir}/pkgconfig/libxdot.pc
