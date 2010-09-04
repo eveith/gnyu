@@ -104,6 +104,7 @@ compiling applications that will ultimately link with Graphviz.
 %{_libdir}/libxdot.so*
 %{_libdir}/libgvc.so*
 %{_libdir}/libgvpr.so*
+%dir %{_libdir}/graphviz
 %{_libdir}/graphviz/libgvplugin_core.so*
 %{_libdir}/graphviz/libgvplugin_gd.so*
 %{_libdir}/graphviz/libgvplugin_gdk_pixbuf.so*
