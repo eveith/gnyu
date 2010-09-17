@@ -1,17 +1,22 @@
 Name: eglibc
 Summary: Standard Shared Libraries (from the GNU C Library)
-Version: 2.10
-Release: 4.0ev 
+Version: 2.11
+Release: 5.0ev 
 Group: System Environment/Base
 License: GPL-2, LGPL-2.1
 URL: http://www.eglibc.org/
 Source0: %{name}-nscd.ii
 Source1: %{name}-nsswitch.conf
 Source2: %{name}-bindresvport.blacklist
-BuildRequires: subversion
+Provides: glibc = %{version}-%{release}
+Obsoletes: glibc < %{version}-%{release}
+Conflicts: glibc < %{version}-%{release}
+BuildRequires(prep): subversion
 BuildRequires: make >= 3.80, gcc >= 4.1, binutils >= 2.15, perl >= 5.8
-BuildRequires: texinfo >= 3.12f, gawk >= 3.0, sed >= 3.02
-BuildRequires: kernel-headers >= 2.6.18
+BuildRequires: texinfo >= 3.12f, gawk >= 3.0, sed >= 3.02, bash >= 2.0
+BuildRequires: bison, info
+%define kernel_version 2.6.27
+BuildRequires: kernel-headers >= ${kernel_version}
 %define run_testsuite 1
 
 %description
@@ -21,12 +26,20 @@ library, and the POSIX thread library.	A system is not functional
 without these libraries.
 
 
+%package devel
+Summary: Header files and tools needed for C development
+Group: Development/Libraries
+Requires: eglibc = %{version}-%{release}
+
+%description devel
+These header files, libraries and tools are needed as soon as one wants to
+develop C programs or compile C sources.
+
+
 %package info
 Summary: Info Files for the GNU C Library
 Group: Documentation
 Requires: /sbin/install-info
-AutoReq: on
-AutoProv: on
 
 %description info
 This package contains the documentation for the GNU C library stored as
@@ -37,8 +50,6 @@ complete and is partially out of date.
 %package html
 Summary: HTML Documentation for the GNU C Library
 Group: Documentation
-AutoReq: on
-AutoProv: on
 
 %description html
 This package contains the HTML documentation for the GNU C library. Due
@@ -110,7 +121,7 @@ ulimit -a
 nice
 
 # Adjust glibc version.h
-echo '#define CONFHOST "%{_target_cpu}-slackware-linux"' >> src/libc/version.h
+echo '#define CONFHOST "%{_target_cpu}-gnyu-linux"' >> src/libc/version.h
 
 # Glibc cares about the CFLAGS. Don't touch them; it might break the library.
 unset CFLAGS CXXFLAGS
@@ -129,118 +140,103 @@ pushd obj
 	--without-selinux \
 	--with-tls \
 	--with-__thread \
-	--enable-kernel=2.6.22 \
-	--with-cpu='%{_target_cpu}'
+	--enable-kernel='%{kernel_version}' \
+	--with-cpu='%{_target_cpu}' \
+	--enable-check-abi=warn
 %{__make} %{?_smp_mflags}
 %{__make} html
+%{__make} check check-abi
 popd
 
 
 %install
 # Make sure we will create the gconv-modules.cache
-%{__mkdir} -p '%{buildroot}/%{_libdir}/gconv'
-%{__touch} '%{buildroot}/%{_libdir}/gconv/gconv-modules.cache'
+
+%{__mkdir_p} '%{buildroot}%{_libdir}/gconv'
+%{__touch} '%{buildroot}%{_libdir}/gconv/gconv-modules.cache'
+
+# Create ghost ld.so.cache file
+
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}'
+%{__touch} '%{buildroot}%{_sysconfdir}/ld.so.cache'
 
 # Do not install in parallel, timezone Makefile will fail
 pushd obj
 %{__make} install install_root='%{buildroot}'
 %{__make} localedata/install-locales install_root='%{buildroot}'
 popd
+
 %find_lang libc
 
 # Adjust /etc/localtime
+
 %{__rm} -f '%{buildroot}/%{_sysconfdir}/localtime'
 %{__cp} -f '%{buildroot}/%{_prefix}/share/zoneinfo/UTC' \
 	'%{buildroot}/%{_sysconfdir}/localtime'
 
 # Install nscd tools
-%{__cp} src/libc/nscd/nscd.conf '%{buildroot}/%{_sysconfdir}'
-%{__mkdir_p} '%{buildroot}/%{_localstatedir}/run/nscd'
-%{__touch} '%{buildroot}/%{_localstatedir}/run/nscd/'{passwd,group,hosts}
-%{__touch} '%{buildroot}/%{_localstatedir}/run/nscd/'{socket,nscd.pid}
+
+%{__cp} src/libc/nscd/nscd.conf '%{buildroot}%{_sysconfdir}'
+%{__mkdir_p} '%{buildroot}%{_localstatedir}/run/nscd'
+%{__touch} '%{buildroot}%{_localstatedir}/run/nscd/'{passwd,group,hosts}
+%{__touch} '%{buildroot}%{_localstatedir}/run/nscd/'{socket,nscd.pid}
 
 # Install nscd startup file
-%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/initng/daemon'
+
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/initng/daemon'
 %{install_ifile '%{SOURCE0}' daemon/nscd.i}
 
-# Install bindresvport.blacklist
+# Install bindresvport.blacklist and default/nss
+
 %{__install} -m 0644 '%{SOURCE2}' \
-	'%{buildroot}/%{_sysconfdir}/bindresvport.blacklist'
+	'%{buildroot}%{_sysconfdir}/bindresvport.blacklist'
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/default'
+%{__install} -m 0644 src/libc/nis/nss '%{buildroot}%{_sysconfdir}/default'
 
 # Create ld.so.conf
-%{__cat} << __EOF > '%{buildroot}/%{_sysconfdir}/ld.so.conf'
+%{__cat} << __EOF > '%{buildroot}%{_sysconfdir}/ld.so.conf'
 /%{_lib}
 %{_libdir}
 /usr/local/%{_lib}
-%ifarch %{ix86}
+/usr/i586-gnyu-linux/lib
+/usr/i686-gnyu-linux/lib
 /usr/i586-slackware-linux/lib
 /usr/i686-slackware-linux/lib
-%endif
 include /etc/ld.so.conf.d/*
 __EOF
 
-%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/ld.so.conf.d'
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/ld.so.conf.d'
 
 # install nsswitch.conf
 %{__install} -m 0644 '%{SOURCE1}' \
-	'%{buildroot}/%{_sysconfdir}/nsswitch.conf'
+	'%{buildroot}%{_sysconfdir}/nsswitch.conf'
 
 # Don't look at it! We don't wish a /bin/sh requires
-%{__chmod} 0644 \
-	'%{buildroot}/%{_bindir}/ldd' \
-	'%{buildroot}/sbin/sln'
+# Or /usr/bin/perl, for that matter.
+
+for i in '%{_bindir}/ldd' '%{_bindir}/catchsegv' '%{_bindir}/mtrace' \
+		'%{_bindir}/xtrace'; do
+	%{__chmod} 0644 "%{buildroot}${i}"
+done
 
 # Remove not needed files from BuildRoot
-%{__rm_rf} '%{buildroot}/%{_infodir}/dir'
-
-# Now, finally, move the library files so that the system does not
-# crash when we update glibc...
-%{__mkdir_p} '%{buildroot}/%{_lib}/incoming'
-%{__find} '%{buildroot}/%{_lib}' -maxdepth 1 -not -type d -and -not -type l \
-	-exec %{__cp} -a '{}' '%{buildroot}/%{_lib}/incoming' \;
+%{__rm_rf} '%{buildroot}%{_infodir}/dir'
 
 
-%post 
-post_install_glibc() {
-	# This is the 'incoming' dir
-	incoming_dir="${1}"
-	cd "${incoming_dir}"
-
-	for file in *.so
-	do
-		if [[ -f "${file}" ]]
-		then
-			%{__cp} -a "${file}" "../${file}.incoming"
-		fi
-	done
-
-	cd ..
-	%{__ldconfig} -l *.incoming
-	
-	for incoming_file in *.incoming
-	do
-		basename=$(basename "${incoming_file}" .incoming)
-		%{__rm} -f "${basename}"
-		%{__cp} -a "${incoming_file}" "${basename}"
-		%{__ldconfig} -l "${basename}"
-		%{__rm} -f "${incoming_file}"
-	done
-}
-post_install_glibc '/%{_lib}/incoming'
-%{__ldconfig}
+%post -p <lua>
+os.execute("/sbin/ldconfig")
 
 
 %post info
-update-info-dir
+update-info-dir ||:
 
 
 %postun info
-update-info-dir
+update-info-dir ||:
 
 
 %post -n nscd
-if [[ "${1}" -eq 0 ]]
-then
+if [[ "${1}" -eq 0 ]]; then
 	ng-update add daemon/nscd default
 	ngc -u daemon/nscd
 fi
@@ -248,8 +244,7 @@ exit 0
 
 
 %preun -n nscd
-if [[ "${1}" -eq 0 ]]
-then
+if [[ "${1}" -eq 0 ]]; then
 	ngc -d daemon/nscd
 	ng-update del daemon/nscd default
 fi > /dev/null 2>&1 
@@ -267,78 +262,81 @@ exit 0
 %config(noreplace) %attr(0644, root, root) %{_sysconfdir}/rpc
 %verify(not md5 size mtime) %config(noreplace) %{_sysconfdir}/nsswitch.conf
 %config(noreplace) %{_sysconfdir}/bindresvport.blacklist
-%ghost /%{_lib}/ld-%{version}*.so
+%config(noreplace) %{_sysconfdir}/default/nss
+/%{_lib}/ld-%{version}*.so
 %ifarch x86_64
-%ghost /%{_lib}/ld-linux-x86-64.so.2
+/%{_lib}/ld-linux-x86-64.so.2
 %else
-%ghost /%{_lib}/ld-linux.so.2
+/%{_lib}/ld-linux.so.2
 %endif
-%ghost /%{_lib}/libBrokenLocale-%{version}*.so
-%ghost /%{_lib}/libBrokenLocale.so.1
-%ghost /%{_lib}/libSegFault.so
-%ghost /%{_lib}/libanl-%{version}*.so
-%ghost /%{_lib}/libanl.so.1
-%ghost /%{_lib}/libc-%{version}*.so
-%ghost /%{_lib}/libc.so.6*
-%ghost /%{_lib}/libcidn-%{version}*.so
-%ghost /%{_lib}/libcidn.so.1
-%ghost /%{_lib}/libcrypt-%{version}*.so
-%ghost /%{_lib}/libcrypt.so.1
-%ghost /%{_lib}/libdl-%{version}*.so
-%ghost /%{_lib}/libdl.so.2*
-%ghost /%{_lib}/libm-%{version}*.so
-%ghost /%{_lib}/libm.so.6*
-%ghost /%{_lib}/libmemusage.so
-%ghost /%{_lib}/libnsl-%{version}*.so
-%ghost /%{_lib}/libnsl.so.1
-%ghost /%{_lib}/libnss_compat-%{version}*.so
-%ghost /%{_lib}/libnss_compat.so.2
-%ghost /%{_lib}/libnss_dns-%{version}*.so
-%ghost /%{_lib}/libnss_dns.so.2
-%ghost /%{_lib}/libnss_files-%{version}*.so
-%ghost /%{_lib}/libnss_files.so.2
-%ghost /%{_lib}/libnss_hesiod-%{version}*.so
-%ghost /%{_lib}/libnss_hesiod.so.2
-%ghost /%{_lib}/libnss_nis-%{version}*.so
-%ghost /%{_lib}/libnss_nis.so.2
-%ghost /%{_lib}/libnss_nisplus-%{version}*.so
-%ghost /%{_lib}/libnss_nisplus.so.2
-%ghost /%{_lib}/libpcprofile.so
-%ghost /%{_lib}/libpthread-%{version}*.so
-%ghost /%{_lib}/libpthread.so.0
-%ghost /%{_lib}/libresolv-%{version}*.so
-%ghost /%{_lib}/libresolv.so.2
-%ghost /%{_lib}/librt-%{version}*.so
-%ghost /%{_lib}/librt.so.1
-%ghost /%{_lib}/libthread_db-1.0.so
-%ghost /%{_lib}/libthread_db.so.1
-%ghost /%{_lib}/libutil-%{version}*.so
-%ghost /%{_lib}/libutil.so.1
-/%{_lib}/incoming/
+/%{_lib}/libBrokenLocale-%{version}*.so
+/%{_lib}/libBrokenLocale.so.1
+/%{_lib}/libSegFault.so
+/%{_lib}/libanl-%{version}*.so
+/%{_lib}/libanl.so.1
+/%{_lib}/libc-%{version}*.so
+/%{_lib}/libc.so.6*
+/%{_lib}/libcidn-%{version}*.so
+/%{_lib}/libcidn.so.1
+/%{_lib}/libcrypt-%{version}*.so
+/%{_lib}/libcrypt.so.1
+/%{_lib}/libdl-%{version}*.so
+/%{_lib}/libdl.so.2*
+/%{_lib}/libm-%{version}*.so
+/%{_lib}/libm.so.6*
+/%{_lib}/libmemusage.so
+/%{_lib}/libnsl-%{version}*.so
+/%{_lib}/libnsl.so.1
+/%{_lib}/libnss_compat-%{version}*.so
+/%{_lib}/libnss_compat.so.2
+/%{_lib}/libnss_dns-%{version}*.so
+/%{_lib}/libnss_dns.so.2
+/%{_lib}/libnss_files-%{version}*.so
+/%{_lib}/libnss_files.so.2
+/%{_lib}/libnss_hesiod-%{version}*.so
+/%{_lib}/libnss_hesiod.so.2
+/%{_lib}/libnss_nis-%{version}*.so
+/%{_lib}/libnss_nis.so.2
+/%{_lib}/libnss_nisplus-%{version}*.so
+/%{_lib}/libnss_nisplus.so.2
+/%{_lib}/libpcprofile.so
+/%{_lib}/libpthread-%{version}*.so
+/%{_lib}/libpthread.so.0
+/%{_lib}/libresolv-%{version}*.so
+/%{_lib}/libresolv.so.2
+/%{_lib}/librt-%{version}*.so
+/%{_lib}/librt.so.1
+/%{_lib}/libthread_db-1.0.so
+/%{_lib}/libthread_db.so.1
+/%{_lib}/libutil-%{version}*.so
+/%{_lib}/libutil.so.1
 %{__ldconfig}
 %{_bindir}/gencat
 %{_bindir}/getconf
 %{_bindir}/getent
 %{_bindir}/iconv
-%attr(0711, root, root) %{_bindir}/ldd
-%attr(0711, root, root) /sbin/sln
+%attr(0755, root, root) %{_bindir}/ldd
+%attr(0751, root, root) /sbin/sln
 %ifarch %ix86 
 %{_bindir}/lddlibc4
 %endif
-%{_bindir}/locale
-%{_bindir}/localedef
 %attr(4711, root, root) %{_libexecdir}/pt_chown
-%dir %attr(0711, root, root) %{_libexecdir}/getconf
+%dir %attr(0755, root, root) %{_libexecdir}/getconf
 %{_libexecdir}/getconf/*
 %{_sbindir}/rpcinfo
 %{_sbindir}/iconvconfig
-%{_bindir}/catchsegv
-%{_bindir}/mtrace
-%{_bindir}/pcprofiledump
+
+
+%files devel
+%defattr(-, root, root)
+%doc src/libc/LICENSES src/libc/ChangeLog* src/libc/COPYING*
+%doc src/libc/README* src/libc/CONFORMANCE* src/libc/FAQ src/libc/NEWS
+%doc src/libc/NOTES src/libc/BUGS src/libc/CANCEL*
+%attr(0751, root, root) %{_bindir}/?trace
 %{_bindir}/rpcgen
 %{_bindir}/sprof
-%{_bindir}/xtrace
-%{_includedir}/*
+%{_bindir}/pcprofiledump
+%attr(0751, root, root) %{_bindir}/catchsegv
 %{_libdir}/*.o
 %{_libdir}/*.so
 %{_libdir}/libBrokenLocale.a
@@ -398,10 +396,13 @@ exit 0
 %{_libdir}/libthread_db_pic.map
 %{_libdir}/libutil_pic.a
 %{_libdir}/libutil_pic.map
+%{_includedir}/*
 
 
 %files locale -f libc.lang
 %defattr(-, root, root)
+%{_bindir}/locale
+%{_bindir}/localedef
 %{_datadir}/locale/locale.alias
 %{_libdir}/locale/
 %{_libdir}/gconv/
