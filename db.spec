@@ -1,6 +1,6 @@
 Name: db
 Version: 5.1.19
-Release: 2.0ev
+Release: 2.1ev
 Summary: An embedded database for traditional and client/server applications
 URL: http://www.oracle.com/database/berkeley-db/index.html
 Group: System Environment/Libraries
@@ -96,23 +96,24 @@ pushd build_unix
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS
 CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS
 FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS
-../dist/configure --host=%{_host} \
-	--build=%{_build} \
-	--target=%{_target_platform} \
-	--program-prefix=%{?_program_prefix} \
-	--prefix=%{_prefix} \
-	--exec-prefix=%{_exec_prefix} \
-	--bindir=%{_bindir} \
-	--sbindir=%{_sbindir} \
+../dist/configure \
+	--host='%{_host}' \
+	--build='%{_build}' \
+	--target='%{_target_platform}' \
+	--program-prefix='%{?_program_prefix}' \
+	--prefix='%{_prefix}' \
+	--exec-prefix='%{_exec_prefix}' \
+	--bindir='%{_bindir}' \
+	--sbindir='%{_sbindir}' \
 	--sysconfdir='%{_sysconfdir}' \
-	--datadir=%{_datadir} \
-	--includedir=%{_includedir} \
-	--libdir=%{_libdir} \
-	--libexecdir=%{_libexecdir} \
-	--localstatedir=%{_localstatedir} \
-	--sharedstatedir=%{_sharedstatedir} \
-	--mandir=%{_mandir} \
-	--infodir=%{_infodir} \
+	--datadir='%{_datadir}' \
+	--includedir='%{_includedir}' \
+	--libdir='%{_libdir}' \
+	--libexecdir='%{_libexecdir}' \
+	--localstatedir='%{_localstatedir}' \
+	--sharedstatedir='%{_sharedstatedir}' \
+	--mandir='%{_mandir}' \
+	--infodir='%{_infodir}' \
 	--enable-sql \
 	--enable-compat185 \
 	--enable-cxx
@@ -129,6 +130,14 @@ pushd build_unix
 
 # Remove stupidly placed docs
 %{__rm} -rf '%{buildroot}%{_prefix}/docs'
+
+# Compatibility for different header path expectations
+%{__mkdir_p} '%{buildroot}%{_includedir}/db51'
+pushd '%{buildroot}%{_includedir}/db51'
+for i in ../*.h; do
+	%{__ln_s} "${i}" .
+done
+popd
 
 popd
 
@@ -177,6 +186,7 @@ popd
 %{_includedir}/db_185.h
 %{_includedir}/db_cxx.h
 %{_includedir}/dbsql.h
+%{_includedir}/db51/*.h
 %{_libdir}/libdb*.a
 %{_libdir}/libdb*.la
 
