@@ -68,7 +68,7 @@ Group: Applications/Databases
 Requires: db4.5 = %{version}
 Provides: db4.5-utils = %{version}-%{release}
 Obsoletes: db-utils < %{version}-%{release}, db45-utils
-Obsoletes: db4.5-utils < %{version}-%{release}
+Obsoletes: db4.5-utils
 
 %description -n db-utils
 	This package provides serveral helper utilities to manage Berkeley DB
@@ -141,17 +141,22 @@ Obsoletes: db-docs < %{version}-%{release}, db45-docs
 %post
 	%{__ldconfig}
 
+
 %post cxx
 	%{__ldconfig}
+
 
 %post java
 	%{__ldconfig}
 
+
 %postun
 	%{__ldconfig}
 
+
 %postun cxx
 	%{__ldconfig}
+
 
 %postun java
 	%{__ldconfig}
