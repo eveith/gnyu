@@ -187,6 +187,7 @@ popd
 %{_includedir}/db_cxx.h
 %{_includedir}/dbsql.h
 %{_includedir}/db51/*.h
+%dir %{_includedir}/db51
 %{_libdir}/libdb*.a
 %{_libdir}/libdb*.la
 
