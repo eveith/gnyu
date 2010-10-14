@@ -1,5 +1,5 @@
 Name: db
-Version: 4.5.20
+Version: 4.7.25
 Release: 2.0ev
 Summary: An embedded database for traditional and client/server applications
 URL: http://www.oracle.com/database/berkeley-db/index.html
@@ -8,8 +8,8 @@ License: BSD
 Vendor: GNyU-Linux
 Source: http://download.oracle.com/berkeley-db/db-%{version}.tar.gz
 BuildRequires: gcc, gcc-g++, make >= 3.79.1, gettext, libstdc++
-Obsoletes: db4.5
-Conflicts: db4.5
+Obsoletes: db4.7
+Conflicts: db4.7
 
 %description
 Berkeley DB (libdb) is a programmatic toolkit that provides embedded database
@@ -37,13 +37,13 @@ need to installed them if you want to link against this version of the db
 libraries.
 
 
-%package -n libdb4.5
+%package -n libdb4.7
 Summary: Berkeley DB C library API
 Group: System Environment/Libraries
 Obsoletes: db < %{version}-%{release}
 Conflicts: db < %{version}-%{release}
 
-%description -n libdb4.5
+%description -n libdb4.7
 Berkeley DB (libdb) is a programmatic toolkit that provides embedded database
 support for both traditional and client/server applications.  It includes
 b+tree, queue, extended linear hashing, fixed, and variable-length record
@@ -54,13 +54,13 @@ packages. It is available for a wide variety of UNIX platforms as well as
 Windows XP, Windows NT, and Windows '95 (MSVC 6 and 7).
 
 
-%package -n libdb_cxx4.5
+%package -n libdb_cxx4.7
 Summary: C++ API to Berkeley DB
 Group: System Environment/Libraries
 Obsoletes: db-cxx < %{version}-%{release}
 Conflicts: db-cxx < %{version}-%{release}
 
-%description -n libdb_cxx4.5
+%description -n libdb_cxx4.7
 While the "libdb" package only contains the C API, this package comes with 
 C++ bindings for Berkeley DB. It is totally independend from the C 
 API package.
@@ -139,19 +139,19 @@ pushd build_unix
 popd
 
 
-%post -n libdb4.5
+%post -n libdb4.7
 %{__ldconfig}
 
 
-%post -n libdb_cxx4.5
+%post -n libdb_cxx4.7
 %{__ldconfig}
 
 
-%postun -n libdb4.5
+%postun -n libdb4.7
 %{__ldconfig}
 
 
-%postun -n libdb_cxx4.5
+%postun -n libdb_cxx4.7
 %{__ldconfig}
 
 
@@ -161,7 +161,7 @@ popd
 %doc README LICENSE
 
 
-%files -n libdb4.5
+%files -n libdb4.7
 %defattr(-, root, root)
 %doc README LICENSE
 %{_libdir}/libdb.so
@@ -175,14 +175,14 @@ popd
 %{_includedir}/db_185.h
 %{_includedir}/db_cxx.h
 %{_libdir}/libdb.a
-%{_libdir}/libdb-4.5.a
-%{_libdir}/libdb-4.5.la
+%{_libdir}/libdb-4.7.a
+%{_libdir}/libdb-4.7.la
 %{_libdir}/libdb_cxx.a
-%{_libdir}/libdb_cxx-4.5.a
-%{_libdir}/libdb_cxx-4.5.la
+%{_libdir}/libdb_cxx-4.7.a
+%{_libdir}/libdb_cxx-4.7.la
 
 
-%files -n libdb_cxx4.5
+%files -n libdb_cxx4.7
 %defattr(-, root, root)
 %doc README LICENSE
 %{_libdir}/libdb_cxx.so
