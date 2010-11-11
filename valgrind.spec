@@ -1,6 +1,6 @@
 Name: valgrind
-Version: 3.5.0
-Release: 1.0ev
+Version: 3.6.0
+Release: 2.0ev
 Summary: A framework for building dynamic analysis tools
 URL: http://www.valgrind.org
 Group: Development/Tools
@@ -10,8 +10,8 @@ Source: http://valgrind.org/downloads/valgrind-%{version}.tar.bz2
 BuildRequires: grep, sed, make, gcc >= 3.0, gcc-g++ >= 3.0, pkg-config
 BuildRequires: perl, diffutils
 BuildRequires: boost, qt4 >= 4.3, gdb, glibc >= 2.2
-BuildConflicts: glibc > 2.10
-Conflicts: glibc > 2.10
+BuildConflicts: glibc > 2.12
+Conflicts: glibc > 2.12
 
 %description
 Valgrind is an award-winning instrumentation framework for building
@@ -76,6 +76,7 @@ applications with the valgrind framework.
 %{_bindir}/callgrind_annotate
 %{_bindir}/callgrind_control
 %{_bindir}/cg_annotate
+%{_bindir}/cg_diff
 %{_bindir}/cg_merge
 %{_bindir}/ms_print
 %{_bindir}/no_op_client_for_valgrind
