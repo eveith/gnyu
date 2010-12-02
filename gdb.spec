@@ -1,15 +1,15 @@
 Name: gdb
-Version: 6.7
-Release: 1ev
+Version: 7.2
+Release: 2.0ev
 Summary: The GNU Project Debugger
 URL: http://sourceware.org/gdb/
 Group: Development/Debuggers
 License: GPL-3, GPL-2, LGPL
-Vendor: MSP Slackware
+Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/gdb/gdb-%{version}.tar.bz2
-Buildroot: %{_tmppath}/%{name}-buildroot
-BuildRequires: make, gcc-core, expat, ncurses
-Requires: %{_libdir}/libiberty.a, %{_libdir}/libbfd.a, %{_libdir}/libopcodes.a
+BuildRequires: sed, gawk, grep, make, bison, flex, perl
+BuildRequires: m4, automake, autoconf, gcc, gcc-g++, gettext-tools
+BuildRequires: elfutils-libelf, expat, ncurses
 
 %description
 GDB, the GNU Project debugger, allows you to see what is going on `inside'
@@ -32,40 +32,47 @@ machine as GDB (native) or on another machine (remote).
 
 
 %build
-%configure
-make %{_smp_mflags}
+%configure \
+	--enable-tui \
+	--without-python
+%{__make} %{?_smp_mflags}
 
 
 %install
-[ -d "$RPM_BUILD_ROOT" ] && rm -rf "$RPM_BUILD_ROOT"
-make install DESTDIR="$RPM_BUILD_ROOT"
-rm -rf "${RPM_BUILD_ROOT}"/{%{_libdir},%{_includedir}}
+%{__make} install DESTDIR='%{buildroot}'
 
-[ -e "${RPM_BUILD_ROOT}/%{_infodir}/dir" ] \
-    && rm -f "${RPM_BUILD_ROOT}/%{_infodir}/dir"
+# Delete stuff already provided by other packages, e.g. binutils
+
+%{__rm_rf} '%{buildroot}%{_datadir}/locale'
+%{__rm_rf} '%{buildroot}%{_infodir}'/bfd*
+%{__rm_rf} '%{buildroot}%{_infodir}'/standard*
+%{__rm_rf} '%{buildroot}%{_infodir}'/mmalloc*
+%{__rm_rf} '%{buildroot}%{_infodir}'/configure*
+%{__rm_rf} '%{buildroot}%{_includedir}'
+%{__rm_rf} '%{buildroot}%{_libdir}'/lib{bfd*,opcodes*,iberty*,mmalloc*}
+
+[ -e "${RPM_BUILD_ROOT}%{_infodir}/dir" ] \
+    && %{__rm} "${RPM_BUILD_ROOT}%{_infodir}/dir"
 
 
 %post
-/sbin/regen-info-dir
+update-info-dir
+
 
 %postun
-/sbin/regen-info-dir
+update-info-dir
 
 
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
-
-
-%files
+%files 
 %defattr(-, root, root)
 %doc COPYING* README gdb/CONTRIBUTE gdb/ChangeLog* gdb/NEWS gdb/PROBLEMS
 %doc gdb/README
 %{_bindir}/gdb*
-%{_infodir}/annotate.info*
-%{_infodir}/bfd.info*
-%{_infodir}/configure.info*
-%{_infodir}/gdb*.info*
-%{_infodir}/stabs.info*
-%{_infodir}/standards.info*
-%{_mandir}/man1/gdb*.1*
-%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_libdir}/libinproctrace.so
+%doc %{_infodir}/annotate.info*
+%doc %{_infodir}/gdb*.info*
+%doc %{_infodir}/stabs.info*
+%doc %{_mandir}/man1/gdb*.1*
+%dir %{_datadir}/gdb
+%dir %{_datadir}/gdb/syscalls
+%{_datadir}/gdb/syscalls/*.*
