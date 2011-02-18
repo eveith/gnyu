@@ -23,6 +23,7 @@ dri::23:root
 shadow::24:root
 mail::25:root,mail
 news::26:root,news
+rpm::7:rpm
 games::49:root,games
 nogroup::99:nobody
 users::100:
