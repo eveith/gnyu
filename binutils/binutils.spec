@@ -1,13 +1,14 @@
 Name: binutils
-Version: 2.19.1
-Release: 3ev
+Version: 2.21
+Release: 4.0
 Summary: A collection of binary tools
 Group: Development/Tools
-License: GPL-2, GPL-3, LGPL-2
+License: GPL-2, GPL-3, LGPL-2, LGPL-3
 Source: http://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.bz2
-Vendor: GNyU-Linux
-BuildRequires: make, gcc, bison, flex, perl, gettext, texinfo
+BuildRequires: sed, gawk, m4, autoconf, automake, flex, bison, make, gcc, perl
+BuildRequires: gettext, texinfo
 BuildRequires: zlib, gmp, mpfr
+BuildRequires(check): expect
 
 %description
 The GNU Binutils are a collection of binary tools. The main ones are:
@@ -42,6 +43,10 @@ and disassemble machine instructions.
 %{__make} %{?_smp_mflags}
 
 
+%check
+%{__make} check
+
+
 %install
 %{__make} install DESTDIR='%{buildroot}'
 %{__rm} -f %{buildroot}/%{_infodir}/dir
@@ -55,12 +60,10 @@ done
 
 
 %post
-%{__ldconfig}
 update-info-dir
 
 
 %postun
-%{__ldconfig}
 update-info-dir
 
 
@@ -71,8 +74,10 @@ update-info-dir
 %{_bindir}/ar
 %{_bindir}/as
 %{_bindir}/c++filt
+%{_bindir}/elfedit
 %{_bindir}/gprof
 %{_bindir}/ld
+%{_bindir}/ld.bfd
 %{_bindir}/nm
 %{_bindir}/objcopy
 %{_bindir}/objdump
@@ -86,6 +91,7 @@ update-info-dir
 %{_prefix}/%{_target_platform}/bin/ar
 %{_prefix}/%{_target_platform}/bin/as
 %{_prefix}/%{_target_platform}/bin/ld
+%{_prefix}/%{_target_platform}/bin/ld.bfd
 %{_prefix}/%{_target_platform}/bin/nm
 %{_prefix}/%{_target_platform}/bin/objcopy
 %{_prefix}/%{_target_platform}/bin/objdump
@@ -114,6 +120,7 @@ update-info-dir
 %doc %{_mandir}/man1/as.1*
 %doc %{_mandir}/man1/c++filt.1*
 %doc %{_mandir}/man1/dlltool.1*
+%doc %{_mandir}/man1/elfedit.1*
 %doc %{_mandir}/man1/gprof.1*
 %doc %{_mandir}/man1/ld.1*
 %doc %{_mandir}/man1/nlmconv.1*
