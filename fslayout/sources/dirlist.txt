@@ -20,8 +20,10 @@
 %dir %attr(0755, root, root) /media
 %dir %attr(0755, root, root) /mnt
 %dir %attr(0755, root, root) /opt
+%dir %attr(0755, root, root) /proc
 %dir %attr(0755, root, root) /sbin
 %dir %attr(0755, root, root) /srv
+%dir %attr(0755, root, root) /sys
 %dir %attr(1777, root, root) /tmp
 %dir %attr(0755, root, root) /usr
 %dir %attr(0755, root, root) /usr/bin
