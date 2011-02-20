@@ -1,22 +1,25 @@
 Name: eglibc
 Summary: Standard Shared Libraries (from the GNU C Library)
-Version: 2.11
-Release: 5.0ev 
+%define svnrev 12839
+Version: 2.13
+Release: 6.0
 Group: System Environment/Base
 License: GPL-2, LGPL-2.1
 URL: http://www.eglibc.org/
-Source0: %{name}-nscd.ii
-Source1: %{name}-nsswitch.conf
-Source2: %{name}-bindresvport.blacklist
+Source0: %{name}-%{version}.%{svnrev}.tar.bz2
+Source1: nscd.ii
+Source2: nsswitch.conf
+Source3: bindresvport.blacklist
 Provides: glibc = %{version}-%{release}
 Obsoletes: glibc < %{version}-%{release}
 Conflicts: glibc < %{version}-%{release}
-BuildRequires(prep): subversion
-BuildRequires: make >= 3.80, gcc >= 4.1, binutils >= 2.15, perl >= 5.8
+#BuildRequires(prep): subversion
+BuildRequires: make >= 3.80, gcc >= 4.1, gcc-g++ >= 4.1, binutils >= 2.20
+BuildRequires: perl >= 5.8
 BuildRequires: texinfo >= 3.12f, gawk >= 3.0, sed >= 3.02, bash >= 2.0
-BuildRequires: bison, info
+BuildRequires: bison, info, gettext-tools >= 0.17
 %define kernel_version 2.6.27
-BuildRequires: kernel-headers >= ${kernel_version}
+BuildRequires: kernel-headers >= %{kernel_version}
 %define run_testsuite 1
 
 %description
@@ -55,7 +58,6 @@ Group: Documentation
 This package contains the HTML documentation for the GNU C library. Due
 to a lack of resources, this documentation is not complete and is
 partially out of date.
-
 
 
 %package i18ndata
@@ -106,10 +108,11 @@ You can set your timezone by copying the apropriate file from
 
 
 %prep
-%setup -Tcq
-svn_branch_version=$(echo %{version} | tr . _)
-svn co "svn://svn.eglibc.org/branches/eglibc-${svn_branch_version}" src
-%{__find} src -name 'configure' -exec %{__touch} '{}' \;
+#%setup -Tcq
+#svn_branch_version=$(echo %{version} | tr . _)
+#svn co "svn://svn.eglibc.org/branches/eglibc-${svn_branch_version}" src
+%setup -q
+%{__find} . -name 'configure' -exec %{__touch} '{}' \;
 %{__mkdir} obj
 
 
@@ -121,13 +124,13 @@ ulimit -a
 nice
 
 # Adjust glibc version.h
-echo '#define CONFHOST "%{_target_cpu}-gnyu-linux"' >> src/libc/version.h
+echo '#define CONFHOST "%{_target_cpu}-gnyu-linux"' >> libc/version.h
 
 # Glibc cares about the CFLAGS. Don't touch them; it might break the library.
 unset CFLAGS CXXFLAGS
 
 pushd obj
-../src/libc/configure \
+../libc/configure \
 	--build='%{_target_platform}' \
 	--host='%{_target_platform}' \
 	--prefix='%{_prefix}' \
@@ -135,17 +138,24 @@ pushd obj
 	--mandir='%{_mandir}' \
 	--infodir='%{_infodir}' \
 	--enable-add-ons='libidn,nptl' \
-	--srcdir='../src/libc' \
+	--srcdir='../libc' \
+	--enable-stackguard-randomization \
 	--without-cvs \
 	--without-selinux \
 	--with-tls \
 	--with-__thread \
 	--enable-kernel='%{kernel_version}' \
 	--with-cpu='%{_target_cpu}' \
-	--enable-check-abi=warn
+	--enable-check-abi=warn \
+	--with-bugurl='bugs+eglibc@gnyu.org'
 %{__make} %{?_smp_mflags}
 %{__make} html
-%{__make} check check-abi
+popd
+
+
+%check
+pushd obj
+%{__make} -k check check-abi ||:
 popd
 
 
@@ -176,7 +186,7 @@ popd
 
 # Install nscd tools
 
-%{__cp} src/libc/nscd/nscd.conf '%{buildroot}%{_sysconfdir}'
+%{__cp} libc/nscd/nscd.conf '%{buildroot}%{_sysconfdir}'
 %{__mkdir_p} '%{buildroot}%{_localstatedir}/run/nscd'
 %{__touch} '%{buildroot}%{_localstatedir}/run/nscd/'{passwd,group,hosts}
 %{__touch} '%{buildroot}%{_localstatedir}/run/nscd/'{socket,nscd.pid}
@@ -191,7 +201,7 @@ popd
 %{__install} -m 0644 '%{SOURCE2}' \
 	'%{buildroot}%{_sysconfdir}/bindresvport.blacklist'
 %{__mkdir_p} '%{buildroot}%{_sysconfdir}/default'
-%{__install} -m 0644 src/libc/nis/nss '%{buildroot}%{_sysconfdir}/default'
+%{__install} -m 0644 libc/nis/nss '%{buildroot}%{_sysconfdir}/default'
 
 # Create ld.so.conf
 %{__cat} << __EOF > '%{buildroot}%{_sysconfdir}/ld.so.conf'
@@ -253,9 +263,9 @@ exit 0
 
 %files
 %defattr(-,root,root)
-%doc src/libc/LICENSES src/libc/ChangeLog* src/libc/COPYING*
-%doc src/libc/README* src/libc/CONFORMANCE* src/libc/FAQ src/libc/NEWS
-%doc src/libc/NOTES src/libc/BUGS src/libc/CANCEL*
+%doc libc/LICENSES libc/ChangeLog* libc/COPYING*
+%doc libc/README* libc/CONFORMANCE* libc/FAQ libc/NEWS
+%doc libc/NOTES libc/BUGS libc/CANCEL*
 %config %attr(0644, root, root) %{_sysconfdir}/ld.so.conf
 %dir %{_sysconfdir}/ld.so.conf.d
 %attr(0644, root, root) %verify(not md5 size mtime) %ghost %config(missingok, noreplace) %{_sysconfdir}/ld.so.cache
@@ -329,9 +339,9 @@ exit 0
 
 %files devel
 %defattr(-, root, root)
-%doc src/libc/LICENSES src/libc/ChangeLog* src/libc/COPYING*
-%doc src/libc/README* src/libc/CONFORMANCE* src/libc/FAQ src/libc/NEWS
-%doc src/libc/NOTES src/libc/BUGS src/libc/CANCEL*
+%doc libc/LICENSES libc/ChangeLog* libc/COPYING*
+%doc libc/README* libc/CONFORMANCE* libc/FAQ libc/NEWS
+%doc libc/NOTES libc/BUGS libc/CANCEL*
 %attr(0751, root, root) %{_bindir}/?trace
 %{_bindir}/rpcgen
 %{_bindir}/sprof
@@ -415,7 +425,7 @@ exit 0
 
 %files html
 %defattr(-, root, root)
-%doc src/libc/manual/libc/*.html
+%doc libc/manual/libc/*.html
 
 
 %files i18ndata
