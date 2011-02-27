@@ -1,35 +1,31 @@
 Name: bash
-Version: 4.1
-Release: 5.0ev
+Version: 4.2
+Release: 6.0
 Summary: The Bourne Again SHell
 URL: http://www.gnu.org/software/bash
 Group: System Environment/Shells
 License: GPL-3
-Vendor: GNyU-Linux
 Source: http://ftp.gnu.org/gnu/bash/%{name}-%{version}.tar.gz
-Patch001: %{name}-%{version}-001.diff
-Patch002: %{name}-%{version}-002.diff
-Patch100: bash-requires.patch
-BuildRequires: make >= 3.79.1, bison, gettext, gcc
-BuildRequires: readline >= 5.0, ncurses
+BuildRequires: make >= 3.79.1, bison, gettext-tools, gcc
+BuildRequires: texinfo
+BuildRequires: kernel-headers
+BuildRequires: readline-devel >= 5.0, ncurses-devel
+Requires(post): info
+Requires(postun): info
 
 %description
-This is the Bourne Again Shell.  Bash is the GNU Project's Bourne
-Again SHell, a complete implementation of the POSIX.2 shell spec,
-but also with interactive command line editing, job control on
-architectures that support it, csh-like features such as history
-substitution and brace expansion, and a slew of other features.
-For more information on the features of Bash that are new to this
-type of shell, see the file `doc/bashref.texi'.  There is also a
-large Unix-style man page.  The man page is the definitive description
-of the shell's features.
+This is the Bourne Again Shell.  Bash is the GNU Project's Bourne Again SHell,
+a complete implementation of the POSIX.2 shell spec, but also with interactive
+command line editing, job control on architectures that support it, csh-like
+features such as history substitution and brace expansion, and a slew of other
+features.  For more information on the features of Bash that are new to this
+type of shell, see `info bash'.  There is also a large Unix-style man page.
+The man page is the definitive description of the shell's features.
 
 
 %prep
 %setup -q
-%patch001 -p0 
-%patch002
-#%patch -P 100 -p1
+
 
 %build
 %configure \
@@ -41,6 +37,8 @@ of the shell's features.
 	--enable-array-variables \
 	--enable-bang-history \
 	--enable-brace-expansion \
+    --enable-casemod-attributes \
+    --enable-casemod-expansions \
 	--enable-command-timing \
 	--enable-cond-command \
 	--enable-cond-regexp \
@@ -60,31 +58,40 @@ of the shell's features.
 	--enable-restricted \
 	--enable-select \
 	--enable-mem-scramble \
-	--with-curses
+	--with-curses \
+    --with-installed-readline
 %{__make} %{?_smp_mflags}
+
+
+%check
+%{__make} tests
 
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
 %find_lang bash
-%{__rm} -f '%{buildroot}/%{_infodir}/dir'
+%{__rm} -f '%{buildroot}%{_infodir}/dir'
 
 pushd %{buildroot}/bin
 %{__ln_s} bash sh
 popd
 
-%{__mkdir_p} '%{buildroot}/%{_sysconfdir}/bash_completion.d'
+%{__mkdir_p} '%{buildroot}%{_sysconfdir}/bash_completion.d'
 
 
 
 %post
-%{__ldconfig}
-update-info-dir > /dev/null 2>&1 ||:
+if [[ "$1" -eq 1 ]]; then
+    install-info '%{_infodir}'/bash.info*
+fi
+exit 0
 
 
 %postun
-%{__ldconfig}
-update-info-dir 2>/dev/null 2>&1 ||:
+if [[ "$1" -eq 0 ]]; then
+    install-info --delete '%{_infodir}'/bash.info*
+fi
+exit 0
 
 
 %files -f bash.lang
