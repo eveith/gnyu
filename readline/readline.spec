@@ -87,9 +87,7 @@ update-info-dir
 
 
 %files -n libreadline6
-/%{_lib}/libreadline.so
 /%{_lib}/libreadline.so.6*
-/%{_lib}/libhistory.so
 /%{_lib}/libhistory.so.6*
 
 
@@ -102,6 +100,8 @@ update-info-dir
 %dir %{_includedir}/readline
 %{_includedir}/readline/*.h
 /%{_lib}/libhistory.a
+/%{_lib}/libreadline.so
 /%{_lib}/libreadline.a
+/%{_lib}/libhistory.so
 %dir %{_datadir}/readline
 %{_datadir}/readline/*.c
