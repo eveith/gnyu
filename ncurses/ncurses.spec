@@ -53,6 +53,8 @@ vt52, and xterm.
 %package devel
 Summary: Header files for developing NCurses-based programs
 Group: Development/Libraries
+Requires: libncurses5 = %{version}-%{release}
+Requires: libncursesw5 = %{version}-%{release}
 
 %description devel
 The curses library routines are a terminal-independent method of updating
@@ -153,7 +155,6 @@ done
 %files
 %defattr(-,root,root)
 %doc README ANNOUNCE doc/html/announce.html
-%config %attr(0644, root, root) %{_sysconfdir}/termcap
 %attr(0755, root, root) %{_bindir}/resetall
 %{_bindir}/captoinfo
 %{_bindir}/clear
@@ -178,6 +179,7 @@ done
 %files terminfo
 %defattr(-,root,root)
 %doc README ANNOUNCE doc/html/announce.html
+%config %attr(0644, root, root) %{_sysconfdir}/termcap
 %dir %{_datadir}/terminfo
 %{_datadir}/terminfo/*
 %dir %{_datadir}/tabset
