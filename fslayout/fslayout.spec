@@ -11,6 +11,7 @@ Source3: profile.sh
 Source4: hosts
 Source5: passwd
 Source6: group
+Source7: hostname
 BuildArch: noarch
 Obsoletes: fhs < %{version}-%{release}
 Conflicts: fhs < %{version}-%{release}
@@ -72,17 +73,24 @@ do
 	%{__mkdir_p} "%{buildroot}${dir}"
 done < '%{SOURCE1}'
 
-# IANA /etc files
-pushd iana-etc*
-%{__make_install} DESTDIR="${RPM_BUILD_ROOT}"
+# Create links
+
+pushd '%{buildroot}'
+%{__ln_s} /run var/run
+%{__ln_s} /etc/hostname etc/HOSTNAME
 popd
 
-%{__install} -m0644 '%{SOURCE1}' '%{buildroot}/etc/profile'
+# IANA /etc files
+pushd iana-etc*
+%{__make} install DESTDIR='%{buildroot}'
+popd
+
+%{__install} -m0644 '%{SOURCE3}' '%{buildroot}/etc/profile'
 %{__cp} '%{SOURCE4}' '%{buildroot}/etc/hosts'
-echo gnyu.localdomain > '%{buildroot}/etc/HOSTNAME'
 echo 'GNyU-Linux %{version}' > '%{buildroot}/etc/GNyU-version'
 %{__cp} '%{SOURCE5}' '%{buildroot}/etc/passwd'
 %{__cp} '%{SOURCE6}' '%{buildroot}/etc/group'
+%{__cp} '%{SOURCE7}' '%{buildroot}/etc/hostname'
 %{__touch} \
 	'%{buildroot}/etc/passwd-' \
 	'%{buildroot}/etc/group-' \
@@ -110,11 +118,13 @@ IFS=$old_ifs
 %files -f dirlist
 %defattr(-, root, root)
 %attr(0755, root, root) %dir /
+/var/run
 
 
 %files -n etc
 %defattr(-, root, root)
-%config(noreplace) %attr(0644, root, root) /etc/HOSTNAME
+%attr(-, root, root) /etc/HOSTNAME
+%config(noreplace) %attr(0644, root, root) /etc/hostname
 %config(noreplace) %attr(0644, root, root) /etc/hosts
 %config %attr(0644, root, root) /etc/protocols
 %config %attr(0644, root, root) /etc/services
