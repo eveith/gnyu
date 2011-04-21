@@ -6,8 +6,9 @@ Group: Development/Tools
 License: GPL-2, GPL-3, LGPL-2, LGPL-3
 Source: http://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.bz2
 BuildRequires: sed, gawk, m4, autoconf, automake, flex, bison, make, gcc, perl
-BuildRequires: gettext, texinfo
-BuildRequires: zlib, gmp, mpfr
+BuildRequires: kernel-headers, eglibc-devel
+BuildRequires: gettext-tools, texinfo
+BuildRequires: zlib, gmp-devel, mpfr-devel
 BuildRequires(check): expect
 
 %description
