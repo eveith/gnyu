@@ -21,6 +21,7 @@
 %dir %attr(0755, root, root) /mnt
 %dir %attr(0755, root, root) /opt
 %dir %attr(0755, root, root) /proc
+%dir %attr(0755, root, root) /run
 %dir %attr(0755, root, root) /sbin
 %dir %attr(0755, root, root) /srv
 %dir %attr(0755, root, root) /sys
@@ -117,7 +118,6 @@
 %dir %attr(0755, root, root) /var/lock
 %dir %attr(0755, root, root) /var/log
 %dir %attr(0755, root, root) /var/opt
-%dir %attr(0755, root, root) /var/run
 %dir %attr(0755, root, root) /var/spool
 %dir %attr(0755, root, root) /var/spool/mail
 %dir %attr(1777, root, root) /var/tmp
