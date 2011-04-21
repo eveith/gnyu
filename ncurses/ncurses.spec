@@ -75,6 +75,7 @@ ncurses. It also brings the API documentation via manpages.
 pushd 'narrowc'
 %{__ln_s} ../configure .
 %configure \
+	--libdir='/%{_lib}' \
 	--with-shared \
 	--with-cxx \
 	--without-ada \
@@ -109,18 +110,18 @@ popd
 
 
 %install
-%{__mkdir_p} '%{buildroot}%{_libdir}'
+%{__mkdir_p} '%{buildroot}/%{_lib}'
 %{__mkdir_p} '%{buildroot}%{_datadir}'
 %{__mkdir_p} '%{buildroot}%{_includedir}'
 
 pushd 'widec'
-%{__make} install includedir='%{_includedir}/ncurses'
+%{__make} install includedir='%{_includedir}/ncurses' libdir='/%{_lib}'
 %{__mkdir_p} '%{buildroot}%{includedirw}'
 %{__mv} '%{buildroot}%{_includedir}/ncurses'/* '%{buildroot}%{includedirw}'
 popd
 
 pushd 'narrowc'
-%{__make} install includedir='%{_includedir}/ncurses'
+%{__make} install includedir='%{_includedir}/ncurses' libdir='/%{_lib}'
 popd
 
 %{__ln_s} '%{_datadir}/terminfo/l/linux' \
@@ -135,8 +136,8 @@ do
 done
 
 # Backwards compatibility with old curses library names
-%{__ln_s} -f libncurses.a '%{buildroot}%{_libdir}/libcurses.a'
-%{__ln_s} -f libncursesw.a '%{buildroot}%{_libdir}/libcursesw.a'
+%{__ln_s} -f libncurses.a '%{buildroot}/%{_lib}/libcurses.a'
+%{__ln_s} -f libncursesw.a '%{buildroot}/%{_lib}/libcursesw.a'
 
 # Install old termcap file
 %{__mkdir_p} '%{buildroot}%{_sysconfdir}'
@@ -184,34 +185,24 @@ done
 %{_datadir}/terminfo/*
 %dir %{_datadir}/tabset
 %{_datadir}/tabset/*
-%{_libdir}/terminfo
 
 
 %files -n libncurses5
 %defattr(-,root,root)
 %doc README ANNOUNCE doc/html/announce.html
-%{_libdir}/libcurses.so
-%{_libdir}/libncurses.so
-%{_libdir}/libncurses.so.5*
-%{_libdir}/libform.so
-%{_libdir}/libform.so.5*
-%{_libdir}/libmenu.so
-%{_libdir}/libmenu.so.5*
-%{_libdir}/libpanel.so
-%{_libdir}/libpanel.so.5*
+/%{_lib}/libncurses.so.5*
+/%{_lib}/libform.so.5*
+/%{_lib}/libmenu.so.5*
+/%{_lib}/libpanel.so.5*
 
 
 %files -n libncursesw5
 %defattr(-,root,root)
 %doc README ANNOUNCE doc/html/announce.html
-%{_libdir}/libncursesw.so
-%{_libdir}/libncursesw.so.5*
-%{_libdir}/libformw.so
-%{_libdir}/libformw.so.5*
-%{_libdir}/libmenuw.so
-%{_libdir}/libmenuw.so.5*
-%{_libdir}/libpanelw.so
-%{_libdir}/libpanelw.so.5*
+/%{_lib}/libncursesw.so.5*
+/%{_lib}/libformw.so.5*
+/%{_lib}/libmenuw.so.5*
+/%{_lib}/libpanelw.so.5*
 
 
 %files devel
@@ -221,6 +212,15 @@ done
 %doc doc/html/hackguide.html
 %doc doc/html/ncurses-intro.html
 %doc c++/README*
+/%{_lib}/libcurses.so
+/%{_lib}/libncurses.so
+/%{_lib}/libform.so
+/%{_lib}/libmenu.so
+/%{_lib}/libpanel.so
+/%{_lib}/libncursesw.so
+/%{_lib}/libformw.so
+/%{_lib}/libmenuw.so
+/%{_lib}/libpanelw.so
 %{_bindir}/ncurses5-config
 %{_bindir}/ncursesw5-config
 %dir %{_includedir}/ncurses
@@ -253,7 +253,7 @@ done
 %{_includedir}/ncurses*/termcap.h
 %{_includedir}/ncurses*/tic.h
 %{_includedir}/ncurses*/unctrl.h
-%{_libdir}/lib*.a
+/%{_lib}/lib*.a
 %doc %{_mandir}/man3/*.3x*
 %doc %{_mandir}/man5/term.5*
 %doc %{_mandir}/man5/terminfo.5*
