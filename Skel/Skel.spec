@@ -1,11 +1,10 @@
 Name:
 Version:
-Release: 1.0ev
+Release: 1.0
 Summary:
 URL:
 Group:
 License:
-Vendor: GNyU-Linux
 Source:
 BuildRequires:
 
@@ -13,7 +12,7 @@ BuildRequires:
 
 
 %prep
-	%setup -q
+%setup -q
 
 
 %build
@@ -22,8 +21,8 @@ BuildRequires:
 %install
 
 
-	[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
-		&& %{__rm} -f '%{buildroot}/%{_infodir}/dir'
+[[ -e '%{buildroot}/%{_infodir}/dir' ]] \
+    && %{__rm} -f '%{buildroot}/%{_infodir}/dir'
 
 
 %post
@@ -33,5 +32,5 @@ BuildRequires:
 
 
 %files
-	%defattr(-, root, root)
-	%doc 
+%defattr(-, root, root)
+%doc 
