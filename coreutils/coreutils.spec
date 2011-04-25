@@ -1,19 +1,17 @@
 Name: coreutils
-Version: 8.4
-Release: 4.0ev
+Version: 8.9
+Release: 5.0
 Summary: Core utilities that ought to exist on every GNU/Linux system
 URL: http://www.gnu.org/software/coreutils
 Group: System Environment/Base
 License: GPL-3
-Vendor: GNyU-Linux
 Source0: http://ftp.gnu.org/pub/gnu/coreutils/%{name}-%{version}.tar.gz
-Patch0: coreutils-5.97-i18n-1.patch
-Patch1: coreutils-5.97-uname-1.patch
-Patch2: coreutils-5.97-uname-2.patch
-BuildRequires: make, grep, sed, gcc, gcc-g++, gettext >= 0.17
-BuildRequires: gmp, libattr, libacl, libcap2
+BuildRequires: grep, sed, make, gcc, gcc-g++
+BuildRequires: gettext-tools >= 0.17
+BuildRequires: eglibc-devel, kernel-headers
+BuildRequires: gmp-devel, libattr, libacl, libcap2
+BuildRequires(check): findutils
 Obsoletes: mktemp
-Conflicts: mktemp
 Provides: mktemp
 
 %description
@@ -35,9 +33,6 @@ The programs that are installed with this package are:
 
 %prep
 %setup -q
-# %patch -p1 -P 0
-%patch1 -p1
-#%patch2 -p1
 
 
 %build
@@ -45,13 +40,9 @@ The programs that are installed with this package are:
 %{__make} %{?_smp_mflags}
 
 
-%check
-%{__make} check
-
-
 %install
 %{__make} install DESTDIR='%{buildroot}'
-%{__rm} %{buildroot}/%{_infodir}/dir ||:
+%{__rm} %{buildroot}%{_infodir}/dir ||:
 
 # Move binaries as (partly) proposed by the FHS, but keep some in 
 # %{_bindir}.
@@ -62,8 +53,8 @@ for file in cat chgrp chmod chown cp date dd df echo false \
 		kill ln ls mkdir mknod mv pwd rm rmdir stty sync true uname \
 		test '['
 do
-	%{__mv} "%{buildroot}/%{_bindir}/${file}" '%{buildroot}/bin'
-	%{__ln_s} "/bin/${file}" '%{buildroot}/%{_bindir}'
+	%{__mv} "%{buildroot}%{_bindir}/${file}" '%{buildroot}/bin'
+	%{__ln_s} "/bin/${file}" '%{buildroot}%{_bindir}'
 done
 
 # These must be moved, too, but some of them may reside in /usr/bin in future
@@ -75,12 +66,9 @@ for file in basename chroot cksum comm csplit cut dir dircolors dirname \
 		ptx readlink seq shred sleep sort split stat tail touch tr \
 		tsort unexpand uniq unlink uptime users vdir wc who whoami yes
 do
-	%{__mv} "%{buildroot}/%{_bindir}/${file}" '%{buildroot}/bin'
-	%{__ln_s} "/bin/${file}" '%{buildroot}/%{_bindir}'
+	%{__mv} "%{buildroot}%{_bindir}/${file}" '%{buildroot}/bin'
+	%{__ln_s} "/bin/${file}" '%{buildroot}%{_bindir}'
 done
-
-# FIXME: env should only be in /usr/bin, we must update some old packages.
-%{__cp} %{buildroot}/%{_bindir}/env %{buildroot}/bin
 
 # "su" is provided by another package, because this version is not
 # PAM-enabled. So delete it for now. Likewise, the "groups" script comes with
@@ -94,6 +82,10 @@ done
 	-exec %{__rm} -vf '{}' \;
 	
 %find_lang coreutils
+
+
+%check
+%{__make} check
 
 
 %post
@@ -110,9 +102,177 @@ update-info-dir
 %files -f coreutils.lang
 %defattr(-, root, root)
 %doc ABOUT-NLS AUTHORS COPYING ChangeLog README* THANKS* TODO
-/bin/*
-%{_bindir}/*
 %dir %{_libdir}/coreutils
+/bin/cat
+/bin/chgrp
+/bin/chmod
+/bin/chown
+/bin/cp
+/bin/date
+/bin/dd
+/bin/df
+/bin/echo
+/bin/false
+/bin/kill
+/bin/ln
+/bin/ls
+/bin/mkdir
+/bin/mknod
+/bin/mv
+/bin/pwd
+/bin/rm
+/bin/rmdir
+/bin/stty
+/bin/sync
+/bin/true
+/bin/uname
+/bin/test
+/bin/[
+/bin/basename
+/bin/chroot
+/bin/cksum
+/bin/comm
+/bin/csplit
+/bin/cut
+/bin/dir
+/bin/dircolors
+/bin/dirname
+/bin/expand
+/bin/expr
+/bin/fmt
+/bin/fold
+/bin/head
+/bin/hostid
+/bin/id
+/bin/install
+/bin/link
+/bin/logname
+/bin/mkfifo
+/bin/nice
+/bin/nl
+/bin/nohup
+/bin/od
+/bin/paste
+/bin/ptx
+/bin/readlink
+/bin/seq
+/bin/shred
+/bin/sleep
+/bin/sort
+/bin/split
+/bin/stat
+/bin/tail
+/bin/touch
+/bin/tr
+/bin/tsort
+/bin/unexpand
+/bin/uniq
+/bin/unlink
+/bin/users
+/bin/vdir
+/bin/wc
+/bin/who
+/bin/whoami
+/bin/yes
+%{_bindir}/install
+%{_bindir}/chroot
+%{_bindir}/hostid
+%{_bindir}/nice
+%{_bindir}/who
+%{_bindir}/users
+%{_bindir}/pinky
+%{_bindir}/stty
+%{_bindir}/df
+%{_bindir}/stdbuf
+%{_bindir}/[
+%{_bindir}/base64
+%{_bindir}/basename
+%{_bindir}/cat
+%{_bindir}/chcon
+%{_bindir}/chgrp
+%{_bindir}/chmod
+%{_bindir}/chown
+%{_bindir}/cksum
+%{_bindir}/comm
+%{_bindir}/cp
+%{_bindir}/csplit
+%{_bindir}/cut
+%{_bindir}/date
+%{_bindir}/dd
+%{_bindir}/dir
+%{_bindir}/dircolors
+%{_bindir}/dirname
+%{_bindir}/du
+%{_bindir}/echo
+%{_bindir}/env
+%{_bindir}/expand
+%{_bindir}/expr
+%{_bindir}/factor
+%{_bindir}/false
+%{_bindir}/fmt
+%{_bindir}/fold
+%{_bindir}/head
+%{_bindir}/id
+%{_bindir}/join
+%{_bindir}/kill
+%{_bindir}/link
+%{_bindir}/ln
+%{_bindir}/logname
+%{_bindir}/ls
+%{_bindir}/md5sum
+%{_bindir}/mkdir
+%{_bindir}/mkfifo
+%{_bindir}/mknod
+%{_bindir}/mktemp
+%{_bindir}/mv
+%{_bindir}/nl
+%{_bindir}/nproc
+%{_bindir}/nohup
+%{_bindir}/od
+%{_bindir}/paste
+%{_bindir}/pathchk
+%{_bindir}/pr
+%{_bindir}/printenv
+%{_bindir}/printf
+%{_bindir}/ptx
+%{_bindir}/pwd
+%{_bindir}/readlink
+%{_bindir}/rm
+%{_bindir}/rmdir
+%{_bindir}/runcon
+%{_bindir}/seq
+%{_bindir}/sha1sum
+%{_bindir}/sha224sum
+%{_bindir}/sha256sum
+%{_bindir}/sha384sum
+%{_bindir}/sha512sum
+%{_bindir}/shred
+%{_bindir}/shuf
+%{_bindir}/sleep
+%{_bindir}/sort
+%{_bindir}/split
+%{_bindir}/stat
+%{_bindir}/sum
+%{_bindir}/sync
+%{_bindir}/tac
+%{_bindir}/tail
+%{_bindir}/tee
+%{_bindir}/test
+%{_bindir}/timeout
+%{_bindir}/touch
+%{_bindir}/tr
+%{_bindir}/true
+%{_bindir}/truncate
+%{_bindir}/tsort
+%{_bindir}/tty
+%{_bindir}/uname
+%{_bindir}/unexpand
+%{_bindir}/uniq
+%{_bindir}/unlink
+%{_bindir}/vdir
+%{_bindir}/wc
+%{_bindir}/whoami
+%{_bindir}/yes
 %{_libdir}/coreutils/libstdbuf.so
 %doc %{_mandir}/man1/base64.1*
 %doc %{_mandir}/man1/basename.1*
