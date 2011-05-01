@@ -1,6 +1,6 @@
 Name: gcc
 Version: 4.5.2
-Release: 4.0
+Release: 4.1
 Summary: The GNU Compiler Collection (Core Package)
 URL: http://gcc.gnu.org/
 License: GPL-3
@@ -10,8 +10,8 @@ BuildRequires: sed, grep, gawk >= 3.1.5, make >= 3.80
 BuildRequires: gcc >= 2.95, gcc-g++ >= 2.95, binutils >= 2.20.51
 BuildRequires: texinfo, gettext-tools
 Buildrequires: gmp-devel >= 4.3.2, mpfr-devel >= 2.4.2, mpc-devel >= 0.8.1
-BuildRequires: ppl-devel >= 0.11, cloog-parma >= 0.16.1
-BuildRequires: zlib-devel, libelf-devel
+BuildRequires: ppl-devel >= 0.11, cloog-parma-devel >= 0.16.1
+BuildRequires: zlib, libelf-devel
 Requires: cpp = %{version}-%{release}
 Conflicts: gcc-core
 Obsoletes: gcc-core < %{version}-%{release}
@@ -195,6 +195,11 @@ pushd '%{buildroot}'
 popd
 
 %{__rm} '%{buildroot}/%{_infodir}/dir' ||:
+
+# We don't include the GDB python scripts right now.
+
+%{__rm_rf} '%{buildroot}%{_datadir}/gcc-%{version}' \
+    '%{buildroot}%{_libdir}'/libstdc++.so.*-gdb.py
 
 
 %post
@@ -520,13 +525,13 @@ update-info-dir
 %files -n libstdc++6
 %defattr(-, root, root)
 %{_libdir}/libstdc++.so.6*
-%dir %{_datadir}/gcc-%{version}
-%dir %{_datadir}/gcc-%{version}/python
-%dir %{_datadir}/gcc-%{version}/python/libstdcxx
-%dir %{_datadir}/gcc-%{version}/python/libstdcxx/v6
-%{_datadir}/gcc-%{version}/python/libstdcxx/__init__.py
-%{_datadir}/gcc-%{version}/python/libstdcxx/v6/__init__.py
-%{_datadir}/gcc-%{version}/python/libstdcxx/v6/printers.py
+#%dir %{_datadir}/gcc-%{version}
+#%dir %{_datadir}/gcc-%{version}/python
+#%dir %{_datadir}/gcc-%{version}/python/libstdcxx
+#%dir %{_datadir}/gcc-%{version}/python/libstdcxx/v6
+#%{_datadir}/gcc-%{version}/python/libstdcxx/__init__.py
+#%{_datadir}/gcc-%{version}/python/libstdcxx/v6/__init__.py
+#%{_datadir}/gcc-%{version}/python/libstdcxx/v6/printers.py
 
 
 %files -n libgomp1
