@@ -115,6 +115,7 @@ CLooG.
 %{_includedir}/cloog/int.h
 %{_includedir}/cloog/loop.h
 %{_includedir}/cloog/matrix.h
+%dir %{_includedir}/cloog/matrix
 %{_includedir}/cloog/matrix/constraintset.h
 %{_includedir}/cloog/names.h
 %{_includedir}/cloog/options.h
