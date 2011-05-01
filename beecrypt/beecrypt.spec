@@ -1,14 +1,14 @@
 Name: beecrypt
 Version: 4.2.1
-Release: 2.0ev
+Release: 3.0
 Summary: A strong and fast cryptography toolkit
 URL: http://beecrypt.sf.net/
 Group: System Environment/Libraries
 License:  GPL-2, LGPL-2.1
-Vendor: GNyU-Linux
 Source: http://downloads.sourceforge.net/beecrypt/beecrypt-%{version}.tar.gz
-BuildRequires: grep, awk, libtool, make, gcc, gcc-g++, libstdc++
-BuildRequires: python
+BuildRequires: grep, awk, make, gcc, gcc-g++
+BuildRequires: libstdc++-devel
+BuildRequires: python-devel
 Requires: libbeecrypt7 = %{version}-%{release}
 
 %description
@@ -27,16 +27,6 @@ BeeCrypt is an ongoing project to provide a strong and fast cryptography
 toolkit. Includes entropy sources, random generators, block ciphers, hash
 functions, message authentication codes, multiprecision integer routines, and
 public key primitives.
-
-
-%package -n libbeecrypt_java7
-Summary: Java glue for libbeecrypt
-Group: System Environment/Libraries
-Provides: beecrypt-java = %{version}-%{release}
-
-%description -n libbeecrypt_java7
-This package contains the glue code to use the BeeCrypt C/C++ functions from
-Java.
 
 
 %package devel
@@ -70,23 +60,10 @@ beecrypt's functions from python scripts.
 
 %install
 %{__make} install DESTDIR='%{buildroot}' libaltdir='%{_libdir}'
-%{__rm} '%{buildroot}/%{_libdir}'/libbeecrypt*.so
 
 
-%post -n libbeecrypt7
-%{__ldconfig}
-
-
-%postun -n libbeecrypt7
-%{__ldconfig}
-
-
-%post -n libbeecrypt_java7
-%{__ldconfig}
-
-
-%postun -n libbeecrypt_java7
-%{__ldconfig}
+%post -n libbeecrypt7 -p %{__ldconfig}
+%postun -n libbeecrypt7 -p %{__ldconfig}
 
 
 %files
@@ -99,13 +76,9 @@ beecrypt's functions from python scripts.
 %{_libdir}/libbeecrypt.so.7*
 
 
-%files -n libbeecrypt_java7
-%defattr(-, root, root)
-%{_libdir}/libbeecrypt_java.so.7*
-
-
 %files devel
 %defattr(-, root, root)
+%{_libdir}/libbeecrypt.so
 %dir %{_includedir}/beecrypt
 %{_includedir}/beecrypt/*.h
 %{_libdir}/libbeecrypt*.a
