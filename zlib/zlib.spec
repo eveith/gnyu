@@ -8,7 +8,7 @@ License: BSD
 Source: http://zlib.net/zlib-%{version}.tar.gz
 BuildRequires: grep, sed, make, gcc
 BuildRequires: eglibc-devel
-Requires: zlib1 = %{version}-%{release}
+Requires: libz1 = %{version}-%{release}
 
 %description
 zlib is designed to be a free, general-purpose, legally unencumbered -- that
