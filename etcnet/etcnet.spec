@@ -7,7 +7,7 @@ Group: System Environment/Base
 URL: http://etcnet.org/
 Source:	%{name}-%{version}.tar.gz
 BuildRequires: make, findutils
-Requires: grep, sed, iproute2
+Requires: grep, sed, iproute2, ifrename
 BuildArch:	noarch
 
 %description
