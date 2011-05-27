@@ -7,6 +7,7 @@ Group: System Environment/Base
 License: BSD
 Source: ftp://ftp.astron.com/pub/file/file-%{version}.tar.gz
 BuildRequires: grep, sed, make >= 3.79.1, gcc
+BuildRequires: eglibc-devel, zlib-devel
 
 %description
 The file command is "a file type guesser", that is, a command-line tool that
@@ -19,6 +20,7 @@ actual contents. This is, of course, more reliable, but requires a bit of I/O.
 %package devel
 Summary: Development headers for file
 Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
 
 %description devel
 The file command is "a file type guesser", that is, a command-line tool that
