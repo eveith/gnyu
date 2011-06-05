@@ -1,0 +1,35 @@
+# This is GNyU Linux' distribution-specific macro file.
+# Macros defined here are global and overwrite some of RPM's defaults.
+# Please do not make changes to this file, as they will be overwritten each
+# time RPM is upgraded. Add user-specific macros in ~/.rpmmacros, or (when
+# shipping macros with a package) create a file in /etc/rpm/macros.d. Make 
+# sure it is read after this one.
+
+
+#
+# PATH MACROS
+#
+
+%_usr                             /usr
+%_usrsrc                          %{_usr}/src
+%_var                             /var
+%_prefix                          %{_usr}
+%_exec_prefix                     %{_prefix}
+%_bindir                          %{_exec_prefix}/bin
+%_sbindir                         %{_exec_prefix}/sbin
+%_libexecdir                      %{_exec_prefix}/libexec
+%_lib				              lib
+%_libdir                          %{_exec_prefix}/%{_lib}
+%_includedir                      %{_prefix}/include
+%_oldincludedir                   /usr/include
+%_infodir                         %{_datadir}/info
+%_mandir                          %{_datadir}/man
+%_docdir                          %{_datadir}/doc
+%_defaultdocdir                   %{_usr}/doc
+%_datadir                         %{_prefix}/share
+%_localedir                       %{_datadir}/locale
+%_sharedstatedir                  %{_prefix}/com
+%_sysconfdir                      /etc
+%_localstatedir                   %{_var}
+%_usrlibrpm                       /usr/lib/rpm
+%_rpmhome                         %{_usrlibrpm}

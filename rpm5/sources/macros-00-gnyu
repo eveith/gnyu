@@ -1,0 +1,240 @@
+# This is GNyU Linux' distribution-specific macro file.
+# Macros defined here are global and overwrite some of RPM's defaults.
+# Please do not make changes to this file, as they will be overwritten each
+# time RPM is upgraded. Add user-specific macros in ~/.rpmmacros, or (when
+# shipping macros with a package) create a file in /etc/rpm/macros.d. Make 
+# sure it is read after this one.
+
+
+%vendor                           GNyU-Linux
+%distribution                     GNyU-Linux
+
+
+#
+# APPLICATION MACROS
+#
+
+%__ldconfig                       /sbin/ldconfig
+%__awk                            /bin/gawk
+%__sed                            /bin/sed
+%__grep                           /bin/grep
+%__cat                            /bin/cat
+%__touch                          /bin/touch
+%__chmod                          /bin/chmod
+%__chown                          /bin/chown
+%__chgrp                          /bin/chgrp
+%__cp                             /bin/cp
+%__mv                             /bin/mv
+%__install                        /bin/install
+%__ln                             /bin/ln
+%__find                           %{_bindir}/find
+%__rm                             /bin/rm
+%__tar                            /bin/tar
+%__xar                            %{_bindir}/xar
+%__cpio                           /bin/cpio
+%__gzip                           /bin/gzip
+%_gzipbin                         %{__gzip}
+%__gunzip                         /bin/gunzip
+%__unzip                          %{_bindir}/unzip
+%_unzipbin                        %{__unzip}
+%__bzip2                          /bin/bzip2
+%_bzip2bin                        %{__bzip2}
+%__gpg                            %{_bindir}/gpg
+%__patch                          /bin/patch
+%__bash                           /bin/bash
+%__sh                             %{__bash}
+%__perl                           %{_bindir}/perl
+%__python                         %{_bindir}/python
+%__lua                            %{_bindir}/lua
+%__ssh                            %{_bindir}/ssh
+%__vcheck                         %{__perl} %{_rpmhome}/vcheck
+%__mkdir_p                        %{__mkdir} -p
+%__ln_s                           %{__ln} -s
+%__rm_rf                          %{__rm} -rf
+%__ngc                            /sbin/ngc
+%__ng_update                      /sbin/ng-update
+%__useradd                        %{_sbindir}/useradd
+%__userdel                        %{_sbindir}/userdel
+%__groupadd                       %{_sbindir}/groupadd
+%__groupdel                       %{_sbindir}/groupdel
+
+
+#
+# BUILD SYSTEM PATH MACROS
+#
+
+%__cmake                          %{_bindir}/cmake
+%__make                           %{_bindir}/make
+%__fakeroot                       %{_bindir}/fakeroot
+%__libtoolize                     %{_bindir}/libtoolize
+%__aclocal                        %{_bindir}/aclocal
+%__autoheader                     %{_bindir}/autoheader
+%__automake                       %{_bindir}/automake
+%__autoconf                       %{_bindir}/autoconf
+%__cpp                            %{_bindir}/%{_target_platform}-gcc -E
+%__cc                             %{_bindir}/%{_target_platform}-gcc
+%__cxx                            %{_bindir}/%{_target_platform}-g++
+%__ar                             %{_bindir}/ar
+%__as                             %{_bindir}/as
+%__ld                             %{_bindir}/ld
+%__nm                             %{_bindir}/nm
+%__objcopy                        %{_bindir}/objcopy
+%__objdump                        %{_bindir}/objdump
+%__strip                          %{_bindir}/strip
+%__ccache                         %{_bindir}/ccache
+%__distcc                         %{_bindir}/distcc
+%__m2rpath                        %{_rpmhome}/m2rpath.pl
+
+%_topdir                          %{_usrsrc}/rpm
+%_specdir                         %{_topdir}/SOURCES
+%_sourcedir                       %{_topdir}/SOURCES
+%_srcrpmdir                       %{_topdir}/SRPMS
+%_rpmdir                          %{_topdir}/RPMS
+%_builddir                        %{_topdir}/BUILD
+%_buildshell                      %{__sh}
+%_tmppath                         %{_var}/tmp
+
+%buildroot          %{_tmppath}/%{name}-%{version}-%{release}.%{_arch}.%(id -u)
+%_install_script_path             /bin:/sbin:/usr/bin:/usr/sbin
+
+
+#
+# PLATFORM DEFINITION MACROS
+#
+# These macro definitions are defaults and should be overwritten by the macro
+# file in the corresponding target architectur directory.
+
+%_arch                            i386
+%_build_arch                      i386
+%_vendor                          gnyu
+%_os                              linux
+%_gnu                             -gnu
+%_host_platform		           %{_host_cpu}-%{_host_vendor}-%{_host_os}%{?_gnu}
+%_build_platform	        %{_build_cpu}-%{_build_vendor}-%{_build_os}%{?_gnu}
+%_target_platform	     %{_target_cpu}-%{_target_vendor}-%{_target_os}%{?_gnu}
+%_host                            i686-gnyu-linux-gnu
+%_host_alias                      i686-gnyu-linux%{nil}
+%_host_cpu                        i686
+%_host_vendor                     gnyu
+%_host_os                         linux-gnu
+%_build                           %{_host}
+%_build_alias                     %{_host_alias}
+%_build_cpu                       %{_host_cpu}
+%_build_vendor                    %{_host_vendor}
+%_build_os                        %{_host_os}
+%_target                          %{_host}
+%_target_alias                    %{_host_alias}
+%_target_cpu                      %{_host_cpu}
+%_target_vendor                   %{_host_vendor}
+%_target_os                       %{_host_os}
+%_optflags                        -m32 -march=%{_target_cpu} -O2 -pipe
+
+
+
+#
+# BUILD SYSTEM SCRIPT MACROS
+#
+
+%make_install                     %{?__fakeroot} make install
+
+
+# These macros print out the version of the actual installed language
+# interpreter, which can be very helpful when building against a specific
+# version.
+#
+%_perl_version                    %(eval $(%{__perl} -V:version); echo $version)
+%_python_version                  %(%{__python} -c \\
+                         'import sys; print "%i.%i.%i" %sys.version_info[0:3]')
+%_python_base_version             %(%{__python} -c \\
+                         'import sys; print "%i.%i" %sys.version_info[0:2]')
+
+
+#
+# BUILD SYSTEM SETINGS
+#
+
+# The following configuration triggers the dependency generator behaviour.
+# This sets whether to use the internal or external dependency generator.
+#     0   Use external generator
+#     1   Use internal generator, if available
+#     2   Use __scriptlet_requires to process scriptlet dependencies
+#
+%_use_internal_dependency_generator    2
+
+# Filter /bin/sh requires?
+#
+%_disable_shell_interpreter_deps  0
+
+# Filter GLIBC_PRIVATE Provides: and Requires:?
+#
+%_filter_GLIBC_PRIVATE            0
+
+# The following macros toggle automatic dependency generator for several
+# programing languages. They take the path to the generator or %{nil}, which
+# disables them. The dependency generators are only used if 
+# %_use_internal_dependency_generator is set to a non-zero value.
+#
+%__perl_provides                  %{_rpmhome}/perl.prov
+%__perl_requires                  %{_rpmhome}/perl.req
+%__python_provides                %{_rpmhome}/pythondeps.sh --provides
+%__python_requires                %{_rpmhome}/pythondeps.sh --requires
+%__php_provides                   %{_rpmhome}/php.prov
+%__php_requires                   %{_rpmhome}/php.req
+%__java_provides                  %{_rpmhome}/javadeps.sh --provides
+%__java_requires                  %{_rpmhome}/javadeps.sh --requires
+%__libtool_provides  %{_rpmhome}/libtooldeps.sh --provides %{buildroot} %{name}
+%__libtool_requires  %{_rpmhome}/libtooldeps.sh --requires %{buildroot} %{name}
+%__pkgconfig_provides             %{_rpmhome}/pkgconfigdeps.sh --provides
+%__pkgconfig_requires             %{_rpmhome}/pkgconfigdeps.sh --requires
+%__mono_provides                  %{_rpmhome}/mono-find-provides
+%__mono_requires                  %{_rpmhome}/mono-find-requires
+%__scriptlet_requires             %{nil}
+
+
+#
+# PACKAGE FORMAT
+#
+
+# RPM package payload compression type is specified with these macros. 
+# Valid values are:
+#       "w9.gzdio"    gzip level 9 (default)
+#       "w9.bzdio"    bzip2 level 9
+#       "w7.lzdio"    LZMA level 7
+#
+%_source_payload                  w7.lzdio
+%_binary_payload                  w7.lzdio
+
+# Sets metadata digest algorithm. The following values are recognized:
+#       1       MD5 (default for backwards compatiblity)
+#       2       SHA1
+#       3       RIPEMD-160
+#       5       MD2
+#       6       TIGER-192
+#       8       SHA256
+#       9       SHA384
+#       10      SHA512
+#       104     MD4
+#       105     RIPEMD-128
+#       106     CRC-32
+#       107     ADLER-32
+#       108     CRC-64 (ECMA-182 polynomial, untested uint64_t problems)
+#       109     Jenkins lookup3.c hashlittle()
+#
+%_build_file_digest_algo          10
+%_build_binary_file_digest_algo   %{_build_file_digest_algo}
+%_build_source_file_digest_algo   %{_build_file_digest_algo}
+
+# Define RPM version compatibility when creating packages. A value of 
+# 30005 produces packages compatible with rpm-3.0.5. This does not need to
+# be changed, as values < 30005 are not supported and increasing the number 
+# does not make sense.
+#
+%_package_version                 30005
+
+
+#
+# DATABASE SETTINGS
+#
+
+%_dbpath                          %{_localstatedir}/lib/rpm
+%_dbpath_rebuild                  %{_dbpath}
