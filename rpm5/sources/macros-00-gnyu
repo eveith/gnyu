@@ -99,39 +99,6 @@
 
 
 #
-# PLATFORM DEFINITION MACROS
-#
-# These macro definitions are defaults and should be overwritten by the macro
-# file in the corresponding target architectur directory.
-
-%_arch                            i386
-%_build_arch                      i386
-%_vendor                          gnyu
-%_os                              linux
-%_gnu                             -gnu
-%_host_platform		           %{_host_cpu}-%{_host_vendor}-%{_host_os}%{?_gnu}
-%_build_platform	        %{_build_cpu}-%{_build_vendor}-%{_build_os}%{?_gnu}
-%_target_platform	     %{_target_cpu}-%{_target_vendor}-%{_target_os}%{?_gnu}
-%_host                            i686-gnyu-linux-gnu
-%_host_alias                      i686-gnyu-linux%{nil}
-%_host_cpu                        i686
-%_host_vendor                     gnyu
-%_host_os                         linux-gnu
-%_build                           %{_host}
-%_build_alias                     %{_host_alias}
-%_build_cpu                       %{_host_cpu}
-%_build_vendor                    %{_host_vendor}
-%_build_os                        %{_host_os}
-%_target                          %{_host}
-%_target_alias                    %{_host_alias}
-%_target_cpu                      %{_host_cpu}
-%_target_vendor                   %{_host_vendor}
-%_target_os                       %{_host_os}
-%_optflags                        -m32 -march=%{_target_cpu} -O2 -pipe
-
-
-
-#
 # BUILD SYSTEM SCRIPT MACROS
 #
 
