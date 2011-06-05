@@ -2,13 +2,14 @@ Name: texinfo
 Version: 4.13a
 Release: 2.0ev
 Summary: Tools needed to create Texinfo format documentation files.
-Url: http://www.gnu.org/software/texinfo/
+URL: http://www.gnu.org/software/texinfo
 Group: Applications/Publishing
 License: GPL-3
-Vendor: GNyU-Linux
 Source0: ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.gz
-Source2: texi2pdf.man
-BuildRequires: make, gcc, gettext >= 0.17, zlib, ncurses
+#Source2: texi2pdf.man
+BuildRequires: grep, sed, make, gcc
+BuildRequires: gettext-tools >= 0.17,
+BuildRequires: eglibc-devel, zlib-devel, ncurses-devel
 Requires: tetex
 Provides: texinfo-tex = %{version}-%{release}
 
@@ -24,6 +25,7 @@ are going to write documentation for the GNU Project.
 %package -n info
 Summary: A stand-alone TTY-based reader for GNU texinfo documentation.
 Group: System Environment/Base
+Provides: /sbin/install-info
 
 %description -n info
 The GNU project uses the texinfo file format for much of its
@@ -42,33 +44,41 @@ browser program for viewing texinfo files.
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
-%find_lang '%{name}'
-%{__touch} '%{buildroot}/%{_infodir}/dir'
+%find_lang %{name}
+%{__touch} '%{buildroot}%{_infodir}/dir'
 
 pushd '%{buildroot}'
-%{__install} -m644 '%{SOURCE2}' .%{_mandir}/man1/texi2pdf.1
-%{__mkdir_p} ./sbin
-%{__mv} .%{_bindir}/install-info ./sbin
+#%{__install} -m644 '%{SOURCE2}' '.%{_mandir}/man1/texi2pdf.1'
+%{__mkdir_p} sbin
+%{__mv} '.%{_bindir}/install-info' sbin
 popd
 
 
 %post
-update-info-dir
+if [ "$1" -eq 1 ]; then
+    /sbin/install-info '%{infodir}'/texinfo.info*
+fi
 
 
 %preun
-update-info-dir
+if [ "$1" -eq 0 ]; then
+    /sbin/install-info --delete '%{infodir}'/texinfo.info*
+fi
 
 
-%post -n info
-update-info-dir
+%post -n info -p <lua>
+if arg[1] == 1 then
+    os.execute("/sbin/install-info %{infodir}/info.info %{infodir}/dir")
+end
 
 
 %preun -n info
-update-info-dir
+if [ "$1" -eq 0 ]; then
+    /sbin/install-info --delete '%{infodir}'/info.info* '%{infodir}/dir'
+fi
 
 
-%files -f '%{name}.lang'
+%files -f %{name}.lang
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog INSTALL INTRODUCTION NEWS README TODO
 %{_bindir}/makeinfo
