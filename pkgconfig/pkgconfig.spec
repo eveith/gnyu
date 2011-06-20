@@ -1,14 +1,16 @@
 Name: pkg-config
-Version: 0.23
-Release: 2ev
+Version: 0.26
+Release: 1.0
 Summary: A tool that transparently manages compile/link flags
-URL: http://pkgconfig.freedesktop.org/wiki/
+URL: http://pkgconfig.freedesktop.org/wiki
 Group: Development/Tools
 License: GPL
-Vendor: GNyU-Linux
 Source: http://pkgconfig.freedesktop.org/releases/%{name}-%{version}.tar.gz
-BuildRequires: make >= 3.79.1, gcc
-Provides: pkgconfig
+BuildRequires: grep, sed, make >= 3.79.1, gcc
+BuildRequires: pkg-config
+BuildRequires: eglibc-devel
+BuildRequires: glib-devel >= 2.0, popt-devel
+Provides: pkgconfig = %{version}-%{release}
 
 %description
 pkg-config is a helper tool used when compiling applications and libraries. It
@@ -26,19 +28,31 @@ be installed on every system. :-)
 
 
 %build
-%configure
+%configure \
+    --with-installed-popt
 %{__make} %{?_smp_mflags}
 
 
 %install
 %{__make} install DESTDIR='%{buildroot}'
-%{__mkdir_p} "${RPM_BUILD_ROOT}/%{_libdir}/pkgconfig"
+
+for i in '%{_libdir}' '%{_datadir}'; do
+    %{__mkdir_p} "%{buildroot}${i}/pkgconfig"
+done
+
+%{__rm_rf} '%{buildroot}%{_datadir}/doc'
 
 
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog* INSTALL README* NEWS
+%doc pkg-config-guide.html
+
 %{_bindir}/pkg-config
+
 %doc %{_mandir}/man1/pkg-config.1*
+
 %{_datadir}/aclocal/pkg.m4
+
 %dir %{_libdir}/pkgconfig
+%dir %{_datadir}/pkgconfig
