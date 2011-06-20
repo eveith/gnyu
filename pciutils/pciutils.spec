@@ -8,7 +8,6 @@ License: GPL-2
 Source: http://www.kernel.org/pub/software/utils/pciutils/pciutils-%{version}.tar.bz2
 BuildRequires: make, gcc
 BuildRequires: eglibc-devel, kernel-headers
-BuildRequires: zlib-devel
 BuildRequires: gzip, wget
 
 %description
@@ -45,7 +44,7 @@ configuration registers and several utilities based on this library.
 %{__make} %{?_smp_mflags} \
     CC="${CC:-%{__cc}}" \
     OPT="${CFLAGS:-%{optflags}}" \
-    ZLIB=yes \
+    ZLIB=no \
     SHARED=yes \
     PREFIX='%{_prefix}'
 
