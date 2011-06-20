@@ -26,7 +26,7 @@ A library to read, create and modify ACL file attributes.
 %package devel
 Summary: Development headers for libacl
 Group: Development/Libraries
-Requires: libacl1 = %{name}-%{version}
+Requires: libacl1 = %{version}-%{release}
 
 %description devel
 ACL/libacl is a set of tools and a library for reading, creating and modifing
