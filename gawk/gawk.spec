@@ -1,14 +1,17 @@
 Name: gawk
-Version: 3.1.7
-Release: 2ev
+Version: 4.0.0
+Release: 1.0
 Summary: A pattern scanning and processing language
 URL: http://www.gnu.org/software/gawk
 Group: System Environment/Base
 License: GPL-3
-Vendor: GNyU-Linux
-Source: http://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.bz2
-BuildRequires: make, gcc, gettext
-Provides: awk
+Source: http://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.xz
+BuildRequires: grep, sed, gawk, make
+BuildRequires: bison, gcc
+BuildRequires: gettext-tools >= 0.18.1
+BuildRequires: eglibc-devel, readline-devel
+Provides: awk = %{version}-%{release}
+Requires: info
 
 %description
 If you are like many computer users, you would frequently like to make changes
@@ -22,50 +25,62 @@ it possible to handle simple data-reformatting jobs with just a few lines of
 code.
 
 
+%files -f gawk.lang
+%defattr(-, root, root)
+%doc ABOUT-NLS AUTHORS COPYING ChangeLog* FUTURES LIMITATIONS POSIX* PROBLEMS
+%doc README*
+
+/bin/awk
+/bin/gawk*
+/bin/dgawk
+/bin/igawk
+/bin/pgawk*
+
+%doc %{_infodir}/gawk.info*
+%doc %{_infodir}/gawkinet.info*
+
+%dir %{_libexecdir}/awk
+%{_libexecdir}/awk/??cat
+
+%doc %{_mandir}/man1/gawk.1*
+%doc %{_mandir}/man1/igawk.1*
+%doc %{_mandir}/man1/pgawk.1*
+
+%dir %{_datadir}/awk
+%{_datadir}/awk/*.awk
+
+
+%post
+if [ "$1" -eq 1 ]; then
+    install-info %{_infodir}/gawk.info* '%{_infodir}/dir'
+fi
+
+
+%preun
+if [ "$1" -eq 0 ]; then
+    install-info --delete %{_infodir}/gawk.info* '%{_infodir}/dir'
+fi
+
+
 %prep
 %setup -q
 
 
 %build
-%configure \
-	--enable-switch \
-	--enable-portals
+%configure
 %{__make} %{?_smp_mflags}
-%{__make} check
 
 
 %install
-%{__make} install DESTDIR="${RPM_BUILD_ROOT}" LDFLAGS="-s"
-%{__rm} ${RPM_BUILD_ROOT}/%{_infodir}/dir ||:
+%{__make} install DESTDIR='%{buildroot}'
 %find_lang gawk
 
+%{__rm} ${RPM_BUILD_ROOT}/%{_infodir}/dir ||:
+
 # Move awk to /bin where we need it at boot time
-%{__mkdir_p} "${RPM_BUILD_ROOT}/bin"
-%{__mv} -v "${RPM_BUILD_ROOT}/%{_bindir}"/*awk* "${RPM_BUILD_ROOT}/bin"
+
+%{__mv} '%{buildroot}%{_bindir}' '%{buildroot}/bin'
 
 
-%post
-update-info-dir
-
-
-%postun
-update-info-dir
-
-
-%files -f gawk.lang
-%defattr(-, root, root)
-%doc ABOUT-NLS AUTHORS COPYING ChangeLog* FUTURES LIMITATIONS POSIX* PROBLEMS
-%doc README*
-/bin/awk
-/bin/gawk*
-/bin/igawk
-/bin/pgawk*
-%doc %{_infodir}/gawk.info*
-%doc %{_infodir}/gawkinet.info*
-%dir %{_libexecdir}/awk
-%{_libexecdir}/awk/??cat
-%doc %{_mandir}/man1/gawk.1*
-%doc %{_mandir}/man1/igawk.1*
-%doc %{_mandir}/man1/pgawk.1*
-%dir %{_datadir}/awk
-%{_datadir}/awk/*.awk
+%check
+%{__make} check ||:
