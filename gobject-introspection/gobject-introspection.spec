@@ -1,15 +1,15 @@
 Name: gobject-introspection
-Version: 0.6.14
-Release: 1.0
+Version: 0.10.8
+Release: 2.0
 Summary: A library for describing APIs
 URL: http://live.gnome.org/GObjectIntrospection
 Group: System Environment/Libraries
 License: LGPL-2.1
-Source: http://ftp.gnome.org/pub/GNOME/sources/gobject-introspection/0.6/gobject-introspection-%{version}.tar.bz2
+Source: http://ftp.gnome.org/pub/GNOME/sources/gobject-introspection/0.10/gobject-introspection-%{version}.tar.bz2
 BuildRequires: grep, sed, make
 BuildRequires: flex, bison, gcc
 BuildRequires: pkg-config
-BuildRequires: glib-devel >= 2.0, libffi-devel, python-devel, pcre-devel
+BuildRequires: glib-devel >= 2.24.0, libffi-devel, python-devel, pcre-devel
 
 
 %description
@@ -20,7 +20,7 @@ a uniform, machine readable format.
 %files
 %defattr(-,root,root)
 %doc AUTHORS CONTRIBUTORS COPYING COPYING.GPL NEWS README TODO
-#%{_bindir}/g-ir-annotation-tool
+%{_bindir}/g-ir-annotation-tool
 %{_bindir}/g-ir-compiler
 %{_bindir}/g-ir-generate
 %{_bindir}/g-ir-scanner
@@ -37,8 +37,8 @@ a uniform, machine readable format.
 
 %dir %{_datadir}/gobject-introspection-1.0
 %{_datadir}/gobject-introspection-1.0/Makefile.introspection
-#%{_datadir}/gobject-introspection-1.0/tests/
-#%{_datadir}/gobject-introspection-1.0/gdump.c
+%{_datadir}/gobject-introspection-1.0/tests/
+%{_datadir}/gobject-introspection-1.0/gdump.c
 
 
 %package devel
@@ -56,7 +56,7 @@ a uniform, machine readable format.
 
 %files devel
 %defattr(-,root,root)
-#%doc %{_datadir}/gtk-doc/html/gi/
+%doc %{_datadir}/gtk-doc/html/gi/
 %{_includedir}/gobject-introspection-1.0/
 
 %{_libdir}/libgirepository-1.0.so
