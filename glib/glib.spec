@@ -14,8 +14,8 @@ BuildRequires: python >= 2.4, perl >= 5.002
 BuildRequires(check): libxml2
 Requires: libglib2.0 = %{version}-%{release}
 Provides: glib2 = %{version}-%{release}
-Obsoletes: glibc2 < %{version}-%{release}
-Conflicts: glibc2 < %{version}-%{release}
+Obsoletes: glib2 < %{version}-%{release}
+Conflicts: glib2 < %{version}-%{release}
 
 %description
 GLib is the low-level core library that forms the basis 
