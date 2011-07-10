@@ -1,6 +1,6 @@
 Name: gcc
-Version: 4.5.2
-Release: 4.1
+Version: 4.5.3
+Release: 5.0
 Summary: The GNU Compiler Collection (Core Package)
 URL: http://gcc.gnu.org/
 License: GPL-3
@@ -11,7 +11,7 @@ BuildRequires: gcc >= 2.95, gcc-g++ >= 2.95, binutils >= 2.20.51
 BuildRequires: texinfo, gettext-tools
 Buildrequires: gmp-devel >= 4.3.2, mpfr-devel >= 2.4.2, mpc-devel >= 0.8.1
 BuildRequires: ppl-devel >= 0.11, cloog-parma-devel >= 0.16.1
-BuildRequires: zlib, libelf-devel
+BuildRequires: zlib-devel, elfutils-libelf-devel
 Requires: cpp = %{version}-%{release}
 Conflicts: gcc-core
 Obsoletes: gcc-core < %{version}-%{release}
@@ -94,7 +94,7 @@ It is used by every program that is written in C++ and dynamically linked.
 %package -n libstdc++-devel
 Summary: Standard C++ implementations library development headers
 Group: Development/Libraries
-Requires: libstdc++ = %{version}-%{release}
+Requires: libstdc++6 = %{version}-%{release}
 
 %description -n libstdc++6
 The C++ standard defines some methods and classes that ought to be always
@@ -132,10 +132,10 @@ pushd obj
 
 # Run configure
 CC="${CC:-%{_target_platform}-gcc}"
-CFLAGS="${CFLAGS:-%{optflags}}"
 CXX="${CXX:-%{_target_platform}-g++}"
-CXXFLAGS="${CFLAGS:-%{optflags}}"
-export CC CFLAGS CXX CXXFLAGS
+export CC CXX 
+unset CFLAGS CXXFLAGS
+
 ../gcc-%{version}/configure \
 	--host='%{_host}' \
 	--build='%{_build}' \
@@ -156,12 +156,14 @@ export CC CFLAGS CXX CXXFLAGS
 	--infodir='%{_infodir}' \
 	--enable-threads \
 	--with-cpu='%{_target_cpu}' \
+    --with-tune=generic \
     --enable-lto \
 	--enable-__cxa_atexit \
 	--enable-nls \
 	--with-system-zlib \
+    --enable-shared \
 	--enable-languages=c,c++
-%{__make} %{?_smp_mflags}
+%{__make} %{?_smp_mflags} all all-target-libffi
 popd
 
 
@@ -202,22 +204,38 @@ popd
     '%{buildroot}%{_libdir}'/libstdc++.so.*-gdb.py
 
 
+%check
+%{__make} -k check ||:
+
+
 %post
 %{__ldconfig}
-update-info-dir
+if [ "$1" -eq 1 ]; then
+    for i in gcc libgomp; do
+        install-info %{_infodir}/${i}.info* '%{_infodir}/dir'
+    done
+fi
 
 
 %postun 
 %{__ldconfig}
-update-info-dir
+if [ "$1" -eq 1 ]; then
+    for i in gcc libgomp; do
+        install-info --delete %{_infodir}/${i}.info* '%{_infodir}/dir'
+    done
+fi
 
 
 %post -n cpp
-update-info-dir
+if [ "$1" -eq 1 ]; then
+    install-info %{_infodir}/cpp.info* '%{_infodir}/dir'
+fi
 
 
 %postun -n cpp
-update-info-dir
+if [ "$1" -eq 1 ]; then
+    install-info --delete %{_infodir}/cpp.info* '%{_infodir}/dir'
+fi
 
 
 %post -n libgcc_s1 -p %{__ldconfig}
@@ -226,20 +244,20 @@ update-info-dir
 %postun -n libstdc++6 -p %{__ldconfig}
 
 
-   /usr/share/gcc-4.5.2/python/libstdcxx/v6/__init__.py
-   /usr/share/gcc-4.5.2/python/libstdcxx/v6/printers.py
 %files -f gcc.lang
 %defattr(-, root, root)
 %doc gcc-%{version}/ABOUT-NLS gcc-%{version}/COPYING*
 %doc gcc-%{version}/ChangeLog* gcc-%{version}/LAST_UPDATED
 %doc gcc-%{version}/MAINTAINERS gcc-%{version}/NEWS
 %doc gcc-%{version}/README* gcc-%{version}/*/*.html
+
 %{_bindir}/cc
 %{_bindir}/gcc
 %{_bindir}/%{_target_platform}-gcc
 %{_bindir}/%{_target_platform}-gcc-%{version}
 %{_bindir}/gccbug
 %{_bindir}/gcov
+
 %{_libdir}/libgcc_s.so
 %{_libdir}/libgomp.a
 %{_libdir}/libgomp.la
@@ -251,9 +269,11 @@ update-info-dir
 %{_libdir}/libmudflapth.a
 %{_libdir}/libmudflapth.la
 %{_libdir}/libmudflapth.so
+
 %dir %{_libdir}/gcc
 %dir %{_libdir}/gcc/%{_target_platform}
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}
+
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtbegin.o
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtbeginS.o
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtbeginT.o
@@ -263,20 +283,25 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtprec32.o
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtprec64.o
 %{_libdir}/gcc/%{_target_platform}/%{version}/crtprec80.o
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed
 %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed/README
 %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed/limits.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed/linux
 %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed/linux/a.out.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed/syslimits.h
+
 %dir %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixinc.sh
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/fixincl
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/mkheaders
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/install-tools/mkinstalldirs
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools
 %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools/fixinc_list
 %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools/gsyslimits.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools/include
 %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools/include/README
 %{_libdir}/gcc/%{_target_platform}/%{version}/install-tools/include/limits.h
@@ -285,10 +310,12 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/libgcc.a
 %{_libdir}/gcc/%{_target_platform}/%{version}/libgcc_eh.a
 %{_libdir}/gcc/%{_target_platform}/%{version}/libgcov.a
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ada
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ada/gcc-interface
+
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ada/gcc-interface/ada-tree.def
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/alias.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/all-tree.def
@@ -308,10 +335,12 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/cgraph.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/cif-code.def
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/dbxelf.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/elfos.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/glibc-stdint.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/i386
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/i386/att.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/i386/i386-protos.h
@@ -323,6 +352,7 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/config/vxworks-dummy.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/configargs.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/coretypes.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/cp
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/cp/cp-tree.def
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/cp/cp-tree.h
@@ -362,6 +392,7 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ipa-prop.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ipa-reference.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/ipa-utils.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/java
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/java/java-tree.def
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/langhooks.h
@@ -370,6 +401,7 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/machmode.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/md5.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/mode-classes.def
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/objc
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/objc/objc-tree.def
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/obstack.h
@@ -423,6 +455,7 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/vec.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/vecprim.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/plugin/include/version.h
+
 %dir %{_libdir}/gcc/%{_target_platform}/%{version}/include
 %{_libdir}/gcc/%{_target_platform}/%{version}/include/abmintrin.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/include/ammintrin.h
@@ -460,12 +493,14 @@ update-info-dir
 %{_libdir}/gcc/%{_target_platform}/%{version}/include/x86intrin.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/include/xmmintrin.h
 %{_libdir}/gcc/%{_target_platform}/%{version}/include/xopintrin.h
+
 %dir %{_libexecdir}/gcc
 %dir %{_libexecdir}/gcc/%{_target_platform}
 %dir %{_libexecdir}/gcc/%{_target_platform}/%{version}
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/collect2
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/lto1
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/lto-wrapper
+
 %doc %{_mandir}/man1/gcc.1*
 %doc %{_mandir}/man1/gcov.1*
 %doc %{_mandir}/man7/fsf-funding.7*
@@ -483,14 +518,17 @@ update-info-dir
 %doc gcc-%{version}/ChangeLog* gcc-%{version}/LAST_UPDATED
 %doc gcc-%{version}/MAINTAINERS gcc-%{version}/NEWS
 %doc gcc-%{version}/README* gcc-%{version}/*/*.html
+
 /lib/cpp
 %{_bindir}/cpp
+
 %doc %{_infodir}/cpp.info*
 %doc %{_infodir}/cppinternals.info*
 %doc %{_mandir}/man1/cpp.1*
 %dir %{_prefix}/libexec/gcc
 %dir %{_prefix}/libexec/gcc/%{_target_platform}
 %dir %{_prefix}/libexec/gcc/%{_target_platform}/%{version}
+
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/cc1
 
 
@@ -500,14 +538,17 @@ update-info-dir
 %doc gcc-%{version}/ChangeLog* gcc-%{version}/LAST_UPDATED
 %doc gcc-%{version}/MAINTAINERS gcc-%{version}/NEWS
 %doc gcc-%{version}/README* gcc-%{version}/*/*.html
+
 %{_bindir}/c++
 %{_bindir}/g++
 %{_bindir}/%{_target_platform}-g++
 %{_bindir}/%{_target_platform}-c++
+
 %dir %{_libexecdir}/gcc
 %dir %{_libexecdir}/gcc/%{_target_platform}
 %dir %{_libexecdir}/gcc/%{_target_platform}/%{version}
 %{_libexecdir}/gcc/%{_target_platform}/%{version}/cc1plus
+
 %doc %{_mandir}/man1/g++.1*
 
 
