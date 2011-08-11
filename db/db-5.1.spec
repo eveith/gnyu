@@ -114,6 +114,8 @@ FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS
 	--mandir='%{_mandir}' \
 	--infodir='%{_infodir}' \
 	--enable-sql \
+    --enable-sql_compat \
+    --enable-sql_codegen \
 	--enable-compat185 \
 	--enable-cxx
 %{__make} %{?_smp_mflags}
