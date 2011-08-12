@@ -183,6 +183,7 @@ the shared library libsqlite3.
 %package sqlite3-devel
 Summary: Development files for Berkeley DB SQLite 3 replacement
 Group: Databases/Development
+Requires: db-sqlite3 = %{version}-%{release}
 
 
 %description sqlite3-devel
