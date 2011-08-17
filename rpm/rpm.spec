@@ -236,7 +236,7 @@ Summary: Scripts and executable programs used to build packages
 Group: System Environment/Package Management/Packaging
 Requires: %{name} = %{version}-%{release}
 Requires: bash, coreutils, findutils, which
-Requires: tar, gzip, bip2, xz, cpio
+Requires: tar, gzip, bzip2, xz, cpio
 Requires: diffutils, patch
 Requires: file
 Obsoletes: rpm5-build < %{version}-%{release}
