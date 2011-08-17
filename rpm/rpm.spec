@@ -11,16 +11,19 @@ Source3: pcre-8.12.tar.bz2
 Source4: macros-00-gnyu
 Source5: macros-00-gnyu-paths
 Patch0: pcre-pcreposix-glibc-conflict.patch
+Patch1: rpm-libsql-fix.patch
 BuildRequires: grep, sed, make, pkg-config, gcc
+BuildRequires: automake >= 1.11.1, autoconf >= 2.65, libtool >= 2.4
 BuildRequires: gettext-tools >= 0.16, bison
 BuildRequires: eglibc-devel, libstdc++-devel, kernel-headers
-BuildRequires: db-devel >= 5.1.19, popt-devel >= 1.15
+BuildRequires: db-devel >= 5.1.19, db-sqlite3-devel >= 5.1.19
+BuildRequires: popt-devel >= 1.15
 BuildRequires: libgomp1 >= 4.5.0, beecrypt-devel >= 4.2.0
 BuildRequires: neon-devel >= 0.27.0
 BuildRequires: elfutils-libelf-devel, file-devel >= 4.0
 BuildRequires: zlib-devel >= 1.2, bzip2-devel >= 1.0, xz-devel >= 4.999.9
 BuildRequires: expat-devel, pcre-devel >= 7.0
-BuildConflicts: m4 = 1.4.10
+BuildConflicts: m4 = 1.4.10 rpm-devel rpm5-devel
 Obsoletes: rpm5 < %{version}-%{release}
 Conflicts: rpm5 < %{version}-%{release}
 
@@ -39,7 +42,7 @@ BuildRequires: python >= 2.4
 %endif
 
 %if with_ruby
-BuildRequires: ruby-devel >= 1.9.1
+BuildRequires: ruby1.9-devel >= 1.9.1
 %endif
 
 
@@ -84,6 +87,7 @@ the package like its version, a description, etc.
 %attr(0644, rpm, rpm) %{_libdir}/rpm/macros
 %attr(0755, rpm, rpm) %dir %{_libdir}/rpm/*-linux
 %attr(0644, rpm, rpm) %{_libdir}/rpm/*-linux/macros
+%exclude %{_libdir}/rpm/brp-*-linux
 %attr(0755, rpm, rpm) %dir %{_libdir}/rpm/macros.d
 %attr(0644, rpm, rpm) %{_libdir}/rpm/macros.d/cmake
 %attr(0644, rpm, rpm) %{_libdir}/rpm/macros.d/gstreamer
@@ -121,6 +125,8 @@ the package like its version, a description, etc.
 %{exeattr} %{_libdir}/rpm/dbconvert.sh
 
 %dir %{_libdir}/rpm/bin
+%{exeattr} %{_libdir}/rpm/bin/dbconvert
+%{exeattr} %{_libdir}/rpm/bin/mgo
 %{exeattr} %{_libdir}/rpm/bin/mtree
 #%{exeattr} %{_libdir}/rpm/bin/rpmkey
 %{exeattr} %{_libdir}/rpm/bin/rpmrepo
@@ -128,6 +134,7 @@ the package like its version, a description, etc.
 %{exeattr} %{_libdir}/rpm/bin/wget
 
 %dir %{_libdir}/rpm/lib
+#%{_libdir}/rpm/libsql.so.*
 
 %attr(0755, rpm, rpm) %dir %{_localstatedir}/lib/rpm
 %attr(0755, rpm, rpm) %dir %{_localstatedir}/spool/repackage
@@ -219,6 +226,10 @@ will manipulate RPM packages and databases.
 %{_libdir}/librpmbuild.so
 %{_libdir}/pkgconfig/rpm.pc
 
+#%{_libdir}/rpm/libsql.so
+#%{_libdir}/rpm/libsql.a
+#%{_libdir}/rpm/libsql.la
+
 
 %package build
 Summary: Scripts and executable programs used to build packages
@@ -248,7 +259,7 @@ that are used to build packages using the RPM Package Manager.
 %{exeattr} %{_libdir}/rpm/cross-build
 %{exeattr} %{_libdir}/rpm/executabledeps.sh
 %{exeattr} %{_libdir}/rpm/find-*
-%{exeattr} %{_libdir}/rpm/gem_helper.rb
+#%{exeattr} %{_libdir}/rpm/gem_helper.rb
 %{exeattr} %{_libdir}/rpm/getpo.sh
 %{exeattr} %{_libdir}/rpm/http.req
 %{exeattr} %{_libdir}/rpm/javadeps.sh
@@ -375,6 +386,9 @@ the RPM database and use other RPM-specific functions.
 
 %prep
 %setup -q -a 3
+%patch1 -p1
+sh ./autogen.sh
+
 %{__mv} pcre-8.12 pcre
 pushd pcre
 %patch0 -p1
@@ -393,6 +407,8 @@ export LDFLAGS="$LDFLAGS -lgomp"
     %endif
     %if with_python
         --with-python \
+    %else
+        --without-python \
     %endif
     --with-popt=external \
     --with-zlib=external \
@@ -407,7 +423,7 @@ export LDFLAGS="$LDFLAGS -lgomp"
     --without-sqlite \
     --with-dbsql=external \
     %if %with_ruby
-        --with-ruby
+        --with-ruby \
     %endif
     --with-lua=internal \
     --with-syck=internal \
