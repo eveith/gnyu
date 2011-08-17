@@ -1,17 +1,17 @@
 Name: satsolver
-Version: 0.17.0
-Release: 1.0
+Version: 0.17.1
+Release: 1.1
 Summary: A package dependency solver using the Boolean Satisfiability approach
 URL: git://gitorious.org/opensuse/sat-solver.git
-Group: System Environment/Libraries
+Group: System Environment/Package Management/Libraries
 License: BSD
-Source: sat-solver-0.17.0.tar.gz
+Source: sat-solver-%{version}.tar.xz
 Patch: rpm5.patch
 BuildRequires: cmake >= 2.4.0, gcc
 BuildRequires: doxygen
 BuildRequires: eglibc-devel
 BuildRequires: expat-devel, zlib-devel, check-devel
-BuildRequires: ruby1.9-devel, rpm5-devel
+BuildRequires: ruby1.9-devel, rpm-devel >= 5.3.10
 
 
 %description
@@ -66,8 +66,8 @@ compile programs that make use of the satsolver.
 
 
 %prep
-%setup -q -n 'sat-solver'
-%patch0 -p1
+%setup -q -n 'sat-solver-%{version}'
+#%patch0 -p1
 %{__mkdir_p} build
 
 
@@ -82,3 +82,7 @@ popd
 pushd build
 %{__make} install DESTDIR='%{buildroot}'
 popd
+
+
+%check
+%{__make} check ||:
