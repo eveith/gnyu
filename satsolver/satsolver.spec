@@ -1,6 +1,6 @@
 Name: satsolver
 Version: 0.17.1
-Release: 1.1
+Release: 1.2
 Summary: A package dependency solver using the Boolean Satisfiability approach
 URL: git://gitorious.org/opensuse/sat-solver.git
 Group: System Environment/Package Management/Libraries
@@ -12,6 +12,7 @@ BuildRequires: doxygen
 BuildRequires: eglibc-devel
 BuildRequires: expat-devel, zlib-devel, check-devel
 BuildRequires: ruby1.9-devel, rpm-devel >= 5.3.10
+Requires: rpm = %(rpm --queryformat='%{VERSION}-%{RELEASE}' -q rpm)
 
 
 %description
