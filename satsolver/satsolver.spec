@@ -6,7 +6,9 @@ URL: git://gitorious.org/opensuse/sat-solver.git
 Group: System Environment/Package Management/Libraries
 License: BSD
 Source: sat-solver-%{version}.tar.xz
-Patch: rpm5.patch
+Patch0: rpm5.patch
+Patch1: cmake.patch
+Patch2: rpm5-nofedora.patch
 BuildRequires: cmake >= 2.4.0, gcc
 BuildRequires: doxygen
 BuildRequires: eglibc-devel
@@ -68,13 +70,13 @@ compile programs that make use of the satsolver.
 
 %prep
 %setup -q -n 'sat-solver-%{version}'
-#%patch0 -p1
 %{__mkdir_p} build
+%patch2 -p1
 
 
 %build
 pushd build
-%cmake -DRPM5=TRUE -DFEDORA=TRUE ..
+%cmake -DRPM5=TRUE ..
 %{__make} %{?_smp_mflags} VERBOSE=1
 popd
 

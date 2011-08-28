@@ -1,0 +1,13 @@
+diff --git a/ext/repo_rpmdb.c b/ext/repo_rpmdb.c
+index 83aee33..e7697fc 100644
+--- a/ext/repo_rpmdb.c
++++ b/ext/repo_rpmdb.c
+@@ -31,7 +31,7 @@
+ #include <rpm/rpmdb.h>
+ 
+ #ifndef DB_CREATE
+-# ifdef FEDORA
++# if defined(FEDORA) || defined(RPM5)
+ #  include <db.h>
+ # else
+ #  include <rpm/db.h>
