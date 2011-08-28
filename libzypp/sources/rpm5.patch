@@ -1,0 +1,169 @@
+diff --git a/tests/lib/CMakeLists.txt b/tests/lib/CMakeLists.txt
+index 5ff5932..c794382 100644
+--- a/tests/lib/CMakeLists.txt
++++ b/tests/lib/CMakeLists.txt
+@@ -7,4 +7,4 @@ ADD_LIBRARY(zypp_test_utils
+  WebServer.cc
+ )
+ 
+-TARGET_LINK_LIBRARIES(zypp_test_utils mongoose zypp boost_thread-mt)
++TARGET_LINK_LIBRARIES(zypp_test_utils mongoose zypp boost_thread)
+diff --git a/zypp/target/rpm/BinHeader.cc b/zypp/target/rpm/BinHeader.cc
+index 8ee23e0..81d6eb4 100644
+--- a/zypp/target/rpm/BinHeader.cc
++++ b/zypp/target/rpm/BinHeader.cc
+@@ -15,7 +15,7 @@ extern "C"
+ #ifdef _RPM_5
+ #undef RPM_NULL_TYPE
+ #define RPM_NULL_TYPE rpmTagType(0)
+-typedef rpmuint32_t rpm_count_t;
++typedef uint32_t rpm_count_t;
+ #else
+ #ifdef _RPM_4_4
+ typedef int32_t rpm_count_t;
+@@ -98,11 +98,13 @@ unsigned BinHeader::intList::set( void * val_r, unsigned cnt_r, rpmTagType type_
+   if ( val_r )
+     switch ( _type )
+     {
++#ifndef _RPM_5
+ #if RPM_CHAR_TYPE != RPM_INT8_TYPE
+       case RPM_CHAR_TYPE:
+ 	std::vector<long>( (char*)val_r, ((char*)val_r)+cnt_r ).swap( _data );
+ 	break;
+ #endif
++#endif
+       case RPM_INT8_TYPE:
+ 	std::vector<long>( (int8_t*)val_r, ((int8_t*)val_r)+cnt_r ).swap( _data );
+ 	break;
+@@ -248,11 +250,13 @@ unsigned BinHeader::int_list( tag tag_r, intList & lst_r ) const
+     {
+       switch ( headerget.type() )
+       {
++#ifndef _RPM_5
+       case RPM_NULL_TYPE:
+         return lst_r.set( 0, 0, headerget.type() );
+ #if RPM_CHAR_TYPE != RPM_INT8_TYPE
+       case RPM_CHAR_TYPE:
+ #endif
++#endif
+       case RPM_INT8_TYPE:
+       case RPM_INT16_TYPE:
+       case RPM_INT32_TYPE:
+@@ -284,8 +288,10 @@ unsigned BinHeader::string_list( tag tag_r, stringList & lst_r ) const
+     {
+       switch ( headerget.type() )
+       {
++#ifndef _RPM_5
+       case RPM_NULL_TYPE:
+         return lst_r.set( 0, 0 );
++#endif
+       case RPM_STRING_ARRAY_TYPE:
+         return lst_r.set( (char**)headerget.val(), headerget.cnt() );
+ 
+@@ -315,12 +321,14 @@ int BinHeader::int_val( tag tag_r ) const
+     {
+       switch ( headerget.type() )
+       {
++#ifndef _RPM_5
+       case RPM_NULL_TYPE:
+         return 0;
+ #if RPM_CHAR_TYPE != RPM_INT8_TYPE
+       case RPM_CHAR_TYPE:
+         return *((char*)headerget.val());
+ #endif
++#endif
+       case RPM_INT8_TYPE:
+         return *((int8_t*)headerget.val());
+       case RPM_INT16_TYPE:
+@@ -354,8 +362,10 @@ std::string BinHeader::string_val( tag tag_r ) const
+     {
+       switch ( headerget.type() )
+       {
++#ifndef _RPM_5
+       case RPM_NULL_TYPE:
+         return "";
++#endif
+       case RPM_STRING_TYPE:
+         return (char*)headerget.val();
+ 
+diff --git a/zypp/target/rpm/BinHeader.h b/zypp/target/rpm/BinHeader.h
+index 1dc636c..e836a98 100644
+--- a/zypp/target/rpm/BinHeader.h
++++ b/zypp/target/rpm/BinHeader.h
+@@ -27,6 +27,9 @@ extern "C"
+ #include "zypp/base/PtrTypes.h"
+ #include "zypp/target/rpm/librpm.h"
+ 
++#undef RPM_NULL_TYPE
++#define RPM_NULL_TYPE rpmTagType(0)
++
+ namespace zypp
+ {
+ namespace target
+diff --git a/zypp/target/rpm/librpm.h b/zypp/target/rpm/librpm.h
+index 2d7425d..1fc47d9 100644
+--- a/zypp/target/rpm/librpm.h
++++ b/zypp/target/rpm/librpm.h
+@@ -13,8 +13,19 @@
+ #define ZYPP_TARGET_RPM_LIBRPM_H
+ 
+ #ifdef _RPM_5
++extern "C" {
++    #include <stdint.h>
++    #include <stdlib.h>
++    #include <stdio.h>
++    #include <db51/db.h>
++}
++
+ // needs to be outside 'extern "C"'
+ #include <rpm/rpm4compat.h>
++
++#undef RPM_NULL_TYPE
++#define RPM_NULL_TYPE rpmTagType(0)
++
+ #endif // _RPM_5
+ 
+ extern "C"
+diff --git a/zypp/target/rpm/librpmDb.cc b/zypp/target/rpm/librpmDb.cc
+index 3f472f4..d9b1c4f 100644
+--- a/zypp/target/rpm/librpmDb.cc
++++ b/zypp/target/rpm/librpmDb.cc
+@@ -101,7 +101,11 @@ public:
+   {
+     if ( _ts )
+     {
+-      ::rpmtsFree(_ts);
++#     ifdef _RPM_5        
++        rpmtsFree(_ts);
++#     else
++        ::rpmtsFree(_ts);
++#     endif
+     }
+   }
+ };
+@@ -679,7 +683,11 @@ public:
+     if ( ! create( RPMDBI_PACKAGES ) )
+       return false;
+ #warning TESTCASE: rpmdbAppendIterator and (non)sequential access?
+-    ::rpmdbAppendIterator( _mi, &off_r, 1 );
++#   ifdef _RPM_5
++      ::rpmdbAppendIterator( _mi, (const uint32_t*)&off_r, 1 );
++#   else
++      ::rpmdbAppendIterator( _mi, &off_r, 1 );
++#   endif
+     return advance();
+   }
+ 
+diff --git a/zypp/target/rpm/librpmDb.cv3.cc b/zypp/target/rpm/librpmDb.cv3.cc
+index 185f7af..2630fcc 100644
+--- a/zypp/target/rpm/librpmDb.cv3.cc
++++ b/zypp/target/rpm/librpmDb.cv3.cc
+@@ -14,7 +14,7 @@
+ extern "C"
+ {
+ #ifdef _RPM_5
+-typedef rpmuint32_t rpm_count_t;
++typedef uint32_t rpm_count_t;
+ #define HGEPtr_t void *
+ #define headerGetEntryMinMemory headerGetEntry
+ #define headerNVR(h,n,v,r) headerNEVRA(h,n,NULL,v,r,NULL)

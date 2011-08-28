@@ -1,0 +1,217 @@
+diff -uNr libzypp-8.8.0/zypp/CMakeLists.txt libzypp-8.8.0.new/zypp/CMakeLists.txt
+--- libzypp-8.8.0/zypp/CMakeLists.txt	2010-11-17 02:30:32.000000000 +0800
++++ libzypp-8.8.0.new/zypp/CMakeLists.txt	2011-07-07 19:06:02.491506444 +0800
+@@ -895,7 +895,6 @@
+ ADD_LIBRARY(zypp SHARED ${zypp_lib_SRCS})
+ SET_TARGET_PROPERTIES( zypp PROPERTIES VERSION "${LIBZYPP_VERSION_INFO}" )
+ SET_TARGET_PROPERTIES( zypp PROPERTIES SOVERSION "${LIBZYPP_SOVERSION_INFO}" )
+-SET_TARGET_PROPERTIES( zypp PROPERTIES LINK_FLAGS "--as-needed" )
+ ADD_DEPENDENCIES(zypp schema_header)
+ # System libraries
+ SET(UTIL_LIBRARY util)
+diff -uNr libzypp-8.8.0/zypp/target/rpm/librpmDb.cc libzypp-8.8.0.new/zypp/target/rpm/librpmDb.cc
+--- libzypp-8.8.0/zypp/target/rpm/librpmDb.cc	2010-11-17 02:30:32.000000000 +0800
++++ libzypp-8.8.0.new/zypp/target/rpm/librpmDb.cc	2011-07-07 18:41:25.967569124 +0800
+@@ -40,7 +40,7 @@
+ 
+   const Pathname _root;   // root directory for all operations
+   const Pathname _dbPath; // directory (below root) that contains the rpmdb
+-  rpmdb          _db;     // database handle
++  rpmts _ts;              // transaction handle, includes database
+   shared_ptr<RpmException> _error;  // database error
+ 
+   friend ostream & operator<<( ostream & str, const D & obj )
+@@ -52,7 +52,7 @@
+   D( const Pathname & root_r, const Pathname & dbPath_r, bool readonly_r )
+       : _root  ( root_r )
+       , _dbPath( dbPath_r )
+-      , _db    ( 0 )
++      , _ts    ( 0 )
+   {
+     _error.reset();
+     // set %_dbpath macro
+@@ -60,31 +60,31 @@
+     const char * root = ( _root == "/" ? NULL : _root.asString().c_str() );
+     int          perms = 0644;
+ 
++    _ts = ::rpmtsCreate();
++    ::rpmtsSetRootDir( _ts, _root.c_str() );
++
+     // check whether to create a new db
+     PathInfo master( _root + _dbPath + "Packages" );
+     if ( ! master.isFile() )
+     {
+       // init database
+-      int res = ::rpmdbInit( root, perms );
++      int res = ::rpmtsInitDB( _ts, perms );
+       if ( res )
+       {
+         ERR << "rpmdbInit error(" << res << "): " << *this << endl;
+         _error = shared_ptr<RpmInitException>(new RpmInitException(_root, _dbPath));
++	rpmtsFree(_ts);
+         ZYPP_THROW(*_error);
+       }
+     }
+ 
+     // open database
+-    int res = ::rpmdbOpen( root, &_db, (readonly_r ? O_RDONLY : O_RDWR ), perms );
+-    if ( res || !_db )
++    int res = ::rpmtsOpenDB( _ts, (readonly_r ? O_RDONLY : O_RDWR ));
++    if ( res )
+     {
+-      if ( _db )
+-      {
+-        ::rpmdbClose( _db );
+-        _db = 0;
+-      }
+       ERR << "rpmdbOpen error(" << res << "): " << *this << endl;
+       _error = shared_ptr<RpmDbOpenException>(new RpmDbOpenException(_root, _dbPath));
++      rpmtsFree(_ts);
+       ZYPP_THROW(*_error);
+       return;
+     }
+@@ -94,9 +94,9 @@
+ 
+   ~D()
+   {
+-    if ( _db )
++    if ( _ts )
+     {
+-      ::rpmdbClose( _db );
++      ::rpmtsFree(_ts);
+     }
+   }
+ };
+@@ -452,37 +452,9 @@
+   unsigned count = 0;
+   if ( valid() )
+   {
+-#if defined(_RPM_4_4_COMPAT) || defined(_RPM_5)
+-    // looks like rpm-4.7 has no public dbi interface anymore
+-    int dbi = ::rpmdbOpen("/", &_d._db, O_RDONLY, 0);
+-    if (dbi == 0) {
+-        rpmdbMatchIterator mi = ::rpmdbInitIterator(_d._db, RPMTAG_NAME, NULL, 0);
+-        if (mi != NULL) {
+-            for (;;) {
+-                Header rpmHeader = ::rpmdbNextIterator(mi);
+-                if (rpmHeader != NULL)
+-                    ++count;
+-            }
+-        }
+-        ::rpmdbClose(_d._db);
+-    }
+-#else
+-    dbiIndex dbi = dbiOpen( _d._db, RPMTAG_NAME, 0 );
+-    if ( dbi )
+-    {
+-      DBC * dbcursor = 0;
+-      dbiCopen( dbi, dbi->dbi_txnid, &dbcursor, 0 );
+-
+-      DBT key, data;
+-      memset( &key, 0, sizeof(key) );
+-      memset( &data, 0, sizeof(data) );
+-      while ( dbiGet( dbi, dbcursor, &key, &data, DB_NEXT ) == 0 )
+-        count += data.size / dbi->dbi_jlen;
+-
+-      dbiCclose( dbi, dbcursor, 0 );
+-      /* no need to close dbi */
+-    }
+-#endif
++    db_const_iterator it( this );
++    for ( db_const_iterator it( this ); *it; ++it )
++      ++count;
+   }
+   return count;
+ }
+@@ -495,7 +467,7 @@
+ //
+ void * librpmDb::dont_call_it() const
+ {
+-  return _d._db;
++  return rpmtsGetRdb(_d._ts);
+ }
+ 
+ ///////////////////////////////////////////////////////////////////
+@@ -641,7 +613,7 @@
+     destroy();
+     if ( ! _dbptr )
+       return false;
+-    _mi = ::rpmdbInitIterator( _dbptr->_d._db, rpmTag(rpmtag), keyp, keylen );
++    _mi = ::rpmtsInitIterator( _dbptr->_d._ts, rpmTag(rpmtag), keyp, keylen );
+     return _mi;
+   }
+ 
+diff -uNr libzypp-8.8.0/zypp/target/rpm/librpmDb.cv3.cc libzypp-8.8.0.new/zypp/target/rpm/librpmDb.cv3.cc
+--- libzypp-8.8.0/zypp/target/rpm/librpmDb.cv3.cc	2010-11-17 02:30:32.000000000 +0800
++++ libzypp-8.8.0.new/zypp/target/rpm/librpmDb.cv3.cc	2011-07-07 18:48:32.313381543 +0800
+@@ -8,7 +8,8 @@
+ \---------------------------------------------------------------------*/
+ /** \file zypp/target/rpm/librpmDb.cv3.cc
+  *
+-*/
++ */
++#if 0
+ #include "librpm.h"
+ extern "C"
+ {
+@@ -546,7 +547,27 @@
+     MIL << endl;
+   }
+ }
++#endif
++
++#include <iostream>
++
++#include "zypp/base/Logger.h"
++
++#include "zypp/target/rpm/librpmDb.h"
++#include "zypp/target/rpm/RpmCallbacks.h"
++#include "zypp/ZYppCallbacks.h"
+ 
++using namespace std;
++
++#undef Y2LOG
++#define Y2LOG "librpmDb"
++
++namespace zypp
++{
++namespace target
++{
++namespace rpm
++{
+ /******************************************************************
+ *
+ *
+@@ -562,7 +583,10 @@
+   report->start(v3db_r);
+   try
+   {
+-    internal_convertV3toV4( v3db_r, v4db_r, report );
++    // Does no longer work with rpm 4.9.
++    // internal_convertV3toV4( v3db_r, v4db_r, report );
++    INT << "Unsupported: Convert rpm3 database to rpm4" << endl;
++    ZYPP_THROW(RpmDbOpenException(Pathname("/"), v3db_r));
+   }
+   catch (RpmException & excpt_r)
+   {
+diff -uNr libzypp-8.8.0/zypp/target/rpm/librpmDb.h libzypp-8.8.0.new/zypp/target/rpm/librpmDb.h
+--- libzypp-8.8.0/zypp/target/rpm/librpmDb.h	2010-11-17 02:30:32.000000000 +0800
++++ libzypp-8.8.0.new/zypp/target/rpm/librpmDb.h	2011-07-07 18:41:25.967569124 +0800
+@@ -86,7 +86,7 @@
+   /**
+    * For internal use. Pointer returned should immediately be
+    * wrapped into librpmDb::Ptr.
+-  *
++   *
+    * \throws RpmException
+    *
+    **/
+@@ -100,7 +100,7 @@
+    * outstanding reference goes out of scope. If no external reference is
+    * created, you'll have to explicitly call @ref dbRelease to close the
+    * database.
+-  *
++   *
+    * \throws RpmException
+    *
+    **/

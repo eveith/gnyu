@@ -1,0 +1,20 @@
+diff --git a/zypp/target/rpm/librpmDb.cc b/zypp/target/rpm/librpmDb.cc
+index 3f472f4..b69e832 100644
+--- a/zypp/target/rpm/librpmDb.cc
++++ b/zypp/target/rpm/librpmDb.cc
+@@ -62,6 +62,7 @@ public:
+     _ts = ::rpmtsCreate();
+     ::rpmtsSetRootDir( _ts, _root.c_str() );
+ 
++#ifndef _RPM_5
+     // check whether to create a new db
+     PathInfo master( _root + _dbPath + "Packages" );
+     if ( ! master.isFile() )
+@@ -82,6 +83,7 @@ public:
+         ZYPP_THROW(*_error);
+       }
+     }
++#endif
+ 
+     // open database
+     int res = ::rpmtsOpenDB( _ts, (readonly_r ? O_RDONLY : O_RDWR ));
