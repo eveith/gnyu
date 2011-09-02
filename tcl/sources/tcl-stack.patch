@@ -1,0 +1,65 @@
+Index: ChangeLog
+===================================================================
+--- ChangeLog
++++ ChangeLog
+@@ -1,5 +1,11 @@
++2011-06-30  Reinhard Max  <max@suse.de>
++
++	* unix/configure.in: Add a volatile declaration to the test for
++	TCL_STACK_GROWS_UP to prevent gcc 4.6 from producing invalid
++	results due to aggressive optimisation.
++
+ 2011-06-23  Don Porter  <dgp@users.sourceforge.net>
+ 
+ 	*** 8.5.10 TAGGED FOR RELEASE ***
+ 
+ 	* changes:	Update for 8.5.10 release.
+
+Index: unix/configure
+===================================================================
+--- unix/configure
++++ unix/configure
+@@ -18703,14 +18703,16 @@
+ cat >>conftest.$ac_ext <<_ACEOF
+ /* end confdefs.h.  */
+ 
+ 	int StackGrowsUp(int *parent) {
+ 	    int here;
++	    volatile int result;
+ 	    if (parent)
+-		return (&here < parent);
++		result = (&here < parent);
+ 	    else
+-		return StackGrowsUp(&here);
++		result = StackGrowsUp(&here);
++	    return result;
+ 	}
+ 	int main (int argc, char *argv[]) {
+ 	    return StackGrowsUp(0);
+ 	}
+ 
+
+Index: unix/configure.in
+===================================================================
+--- unix/configure.in
++++ unix/configure.in
+@@ -703,14 +703,16 @@
+ 
+ AC_CACHE_CHECK([if the C stack grows upwards in memory], tcl_cv_stack_grows_up, [
+     AC_TRY_RUN([
+ 	int StackGrowsUp(int *parent) {
+ 	    int here;
++	    volatile int result;
+ 	    if (parent)
+-		return (&here < parent);
++		result = (&here < parent);
+ 	    else
+-		return StackGrowsUp(&here);
++		result = StackGrowsUp(&here);
++	    return result;
+ 	}
+ 	int main (int argc, char *argv[]) {
+ 	    return StackGrowsUp(0);
+ 	}
+     ], tcl_cv_stack_grows_up=yes, tcl_cv_stack_grows_up=no,
+
