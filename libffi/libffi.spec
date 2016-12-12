@@ -16,6 +16,11 @@ A foreign function interface is the popular name for the interface that allows
 code written in one language to call code written in another language.
 
 
+%files
+%defattr(-, root, root)
+%doc README LICENSE ChangeLog*
+
+
 %package -n libffi5
 Summary: A library to allow code calls to other programing languages
 Group: System Environment/Libraries
@@ -28,6 +33,7 @@ code written in one language to call code written in another language.
 
 %files -n libffi5
 %defattr(-, root, root)
+%doc README LICENSE ChangeLog*
 %{_libdir}/libffi.so.5*
 
 
@@ -51,6 +57,7 @@ applications that use libffi.
 
 %files devel
 %defattr(-, root, root)
+%doc README LICENSE ChangeLog*
 %{_libdir}/libffi.so
 %{_libdir}/libffi.a
 %{_libdir}/libffi.la
