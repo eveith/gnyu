@@ -1,6 +1,6 @@
 Name: texinfo
 Version: 4.13a
-Release: 2.0ev
+Release: 1.0
 Summary: Tools needed to create Texinfo format documentation files.
 URL: http://www.gnu.org/software/texinfo
 Group: Applications/Publishing
@@ -72,10 +72,10 @@ if arg[1] == 1 then
 end
 
 
-%preun -n info
-if [ "$1" -eq 0 ]; then
-    /sbin/install-info --delete '%{infodir}'/info.info* '%{infodir}/dir'
-fi
+%preun -n info -p <lua>
+if arg[1] == 1 then
+    os.execute("/sbin/install-info --delete %{infodir}/info.info %{infodir}/dir")
+end
 
 
 %files -f %{name}.lang
