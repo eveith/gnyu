@@ -2,3 +2,4 @@ gnyubuild-*.log
 build.log
 .*.sw?
 */sources
+*/rpms
