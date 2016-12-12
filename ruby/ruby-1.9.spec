@@ -96,6 +96,7 @@ HTML format, along with the "ri" command line utility.
 Summary: Ruby development headers
 Group: Development/Libraries
 Requires: libruby1.9 = %{version}-%{release}
+Provides: ruby-devel = %{version}-%{release}
 
 %description devel
 Header files and libraries for building a extension library for the Ruby or an
